@@ -2,13 +2,13 @@ import { initializeApp } from 'firebase/app'
 import { getAuth } from 'firebase/auth'
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyCItiUpxYqnQbpZfK9KXfmItUh4GimKrmY',
-  authDomain: 'airtellecta-1d1ca.firebaseapp.com',
-  projectId: 'airtellecta-1d1ca',
-  storageBucket: 'airtellecta-1d1ca.firebasestorage.app',
-  messagingSenderId: '12963178872',
-  appId: '1:12963178872:web:8c57bea94661675f09c08d',
-  measurementId: 'G-S70V2ZKK2H',
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
 }
 
 const app = initializeApp(firebaseConfig)
