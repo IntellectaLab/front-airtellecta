@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { signInWithEmailAndPassword } from 'firebase/auth'
+import { auth } from '../../firebase'
 
 const UserIcon = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -56,10 +58,17 @@ export function LoginPage() {
     setError('')
     setLoading(true)
     try {
-      await new Promise((resolve) => setTimeout(resolve, 800))
+      await signInWithEmailAndPassword(auth, usuario.trim(), password)
       navigate('/dashboard')
-    } catch {
-      setError('Credenciales incorrectas. Verifica tu usuario y contraseña.')
+    } catch (err: unknown) {
+      const code = (err as { code?: string })?.code
+      if (code === 'auth/invalid-credential' || code === 'auth/user-not-found' || code === 'auth/wrong-password') {
+        setError('Credenciales incorrectas. Verifica tu usuario y contraseña.')
+      } else if (code === 'auth/too-many-requests') {
+        setError('Demasiados intentos fallidos. Intenta más tarde.')
+      } else {
+        setError('Error al iniciar sesión. Intenta de nuevo.')
+      }
     } finally {
       setLoading(false)
     }
