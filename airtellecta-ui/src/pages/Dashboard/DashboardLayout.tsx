@@ -368,11 +368,13 @@ function UserMenu() {
 // ── Nav items (usado para resolver el título del header) ───────────────────
 
 const NAV_ITEMS = [
-  { label: 'Resumen Nacional', path: '/dashboard',            end: true  },
-  { label: 'Mapa de Vulnerabilidad',    path: '/dashboard/mapa',       end: false },
-  { label: 'Tendencias',       path: '/dashboard/tendencias', end: false },
-  { label: 'Campañas',         path: '/dashboard/campanas',   end: false },
-  { label: 'Fuentes',          path: '/dashboard/fuentes',    end: false },
+  { label: 'Resumen Nacional', path: '/dashboard',                    end: true  },
+  { label: 'Mapa de Calor',    path: '/dashboard/mapa',               end: false },
+  { label: 'Tendencias',       path: '/dashboard/tendencias',         end: false },
+  { label: 'Panel Ejecutivo',  path: '/dashboard/panel-ejecutivo',    end: false },
+  { label: 'Costos',           path: '/dashboard/costos',             end: false },
+  { label: 'Simulador',        path: '/dashboard/simulador',          end: false },
+  { label: 'Correlaciones',   path: '/dashboard/correlaciones',      end: false },
 ]
 
 // ── Layout ─────────────────────────────────────────────────────────────────

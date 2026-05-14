@@ -4,9 +4,17 @@ import { MapaVulnerabilidad } from '../../components/MapaVulnerabilidad/MapaVuln
 import { TendenciaChart }     from '../../components/TendenciaChart/TendenciaChart'
 import { GastoCampanasCard }  from '../../components/GastoCampanasCard/GastoCampanasCard'
 import { DemograficoChart }   from '../../components/DemograficoChart/DemograficoChart'
+import { useResumenNacional } from '../../hooks/useResumenNacional'
 
-const DATA_ERROR: string | null = null
-const DATA_EMPTY = false
+function fmtMillones(n: number): string {
+  if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`
+  if (n >= 1_000) return `${(n / 1_000).toFixed(0)}K`
+  return n.toLocaleString('es-MX')
+}
+
+function fmtNumero(n: number): string {
+  return n.toLocaleString('es-MX')
+}
 
 const SparkleIcon = () => (
   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -56,43 +64,75 @@ function KpiCard({ label, value, description, descColor, highlight, icon, testId
   )
 }
 
+function KpiSkeleton() {
+  return (
+    <div className="metric-card-glass flex flex-col gap-2.5 p-5 rounded-[18px] animate-pulse">
+      <div className="h-3 w-24 rounded bg-[rgba(180,210,240,0.30)] dark:bg-white/[0.08]" />
+      <div className="h-10 w-32 rounded bg-[rgba(180,210,240,0.30)] dark:bg-white/[0.08]" />
+      <div className="h-3 w-40 rounded bg-[rgba(180,210,240,0.20)] dark:bg-white/[0.05]" />
+    </div>
+  )
+}
+
 export function ResumenNacional() {
+  const { data, isLoading, isError, refetch } = useResumenNacional()
+
   return (
     <div className="flex flex-col gap-4" data-testid="resumen-nacional">
 
-      {DATA_ERROR && <ErrorBanner message={DATA_ERROR} actionLabel="Reintentar" />}
-      {DATA_EMPTY && <EmptyState title="Sin datos disponibles" description="No hay información de consumo para el período seleccionado." />}
+      {isError && (
+        <ErrorBanner
+          message="No se pudo cargar el resumen nacional."
+          actionLabel="Reintentar"
+          onAction={() => refetch()}
+        />
+      )}
+
+      {!data && !isLoading && !isError && (
+        <EmptyState title="Sin datos disponibles" description="No hay información de consumo para el período seleccionado." />
+      )}
 
       {/* ── Fila 1 — 4 KPI cards ── */}
       <div className="grid grid-cols-4 gap-4">
-        <KpiCard
-          label="Edad de inicio"
-          value="14.3"
-          description=" años promedio nacional"
-          testId="kpi-promedio-edad"
-        />
-        <KpiCard
-          label="Costo en salud pública"
-          value="$7.7M"
-          description="↑ hospitalizaciones"
-          descColor="text-red-500 dark:text-red-400 font-medium"
-          testId="kpi-salud"
-        />
-        <KpiCard
-          label="Vapeadores activos"
-          value="$5.2M"
-          description="+18% vs 2023"
-          highlight
-          icon={<SparkleIcon />}
-          testId="kpi-vapeadores"
-        />
-        <KpiCard
-          label="Hospitalizaciones"
-          value="3,847"
-          description="contexto epidemiológico"
-          icon={<TrendUpIcon />}
-          testId="kpi-consumo"
-        />
+        {isLoading ? (
+          <>
+            <KpiSkeleton />
+            <KpiSkeleton />
+            <KpiSkeleton />
+            <KpiSkeleton />
+          </>
+        ) : data ? (
+          <>
+            <KpiCard
+              label="Prevalencia fumadores"
+              value={`${Number(data.prevalenciaFumadores).toFixed(1)}%`}
+              description="de la población adulta"
+              testId="kpi-prevalencia"
+            />
+            <KpiCard
+              label="Costo en salud pública"
+              value={`$${fmtMillones(data.defuncionesF17)}`}
+              description="↑ defunciones F17"
+              descColor="text-red-500 dark:text-red-400 font-medium"
+              testId="kpi-salud"
+            />
+            <KpiCard
+              label="Vapeadores activos"
+              value={fmtMillones(data.usuariosVapeo)}
+              description="usuarios de vapeo estimados"
+              highlight
+              icon={<SparkleIcon />}
+              testId="kpi-vapeadores"
+            />
+            <KpiCard
+              label="Urgencias relacionadas"
+              value={fmtNumero(data.urgenciasF17)}
+              description="urgencias F17 registradas"
+              icon={<TrendUpIcon />}
+              testId="kpi-urgencias"
+            />
+          </>
+        ) : null}
       </div>
 
       {/* ── Fila 2 — Mapa (3/5) + Consumo por edad (2/5) ── */}

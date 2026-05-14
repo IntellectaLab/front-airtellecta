@@ -1,7 +1,11 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { signInWithEmailAndPassword } from 'firebase/auth'
+<<<<<<< Updated upstream
 import { auth } from '../../firebase'
+=======
+import { auth } from '../../lib/firebase'
+>>>>>>> Stashed changes
 
 const UserIcon = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -58,6 +62,7 @@ export function LoginPage() {
     setError('')
     setLoading(true)
     try {
+<<<<<<< Updated upstream
       await signInWithEmailAndPassword(auth, usuario.trim(), password)
       navigate('/dashboard')
     } catch (err: unknown) {
@@ -66,6 +71,21 @@ export function LoginPage() {
         setError('Credenciales incorrectas. Verifica tu usuario y contraseña.')
       } else if (code === 'auth/too-many-requests') {
         setError('Demasiados intentos fallidos. Intenta más tarde.')
+=======
+      if (!auth) {
+        setError('Firebase no está configurado. Contacta al administrador del sistema.')
+        setLoading(false)
+        return
+      }
+      await signInWithEmailAndPassword(auth, usuario.trim(), password)
+      navigate('/dashboard')
+    } catch (err: unknown) {
+      const code = (err as { code?: string }).code ?? ''
+      if (code === 'auth/invalid-credential' || code === 'auth/wrong-password' || code === 'auth/user-not-found') {
+        setError('Credenciales incorrectas. Verifica tu usuario y contraseña.')
+      } else if (code === 'auth/too-many-requests') {
+        setError('Demasiados intentos. Intenta de nuevo más tarde.')
+>>>>>>> Stashed changes
       } else {
         setError('Error al iniciar sesión. Intenta de nuevo.')
       }
