@@ -376,7 +376,7 @@ export function Simulador() {
               <ImpactCard
                 icon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M23 6l-9.5 9.5-5-5L1 18" /><path d="M17 6h6v6" /></svg>}
                 label={isPositive ? 'Reducción prevalencia' : 'Aumento prevalencia'}
-                value={`${isPositive ? '-' : '+'}${absReduccion.toFixed(2)}`} unit="pp"
+                value={`${isPositive ? '-' : '+'}${absReducción.toFixed(2)}`} unit="pp"
                 color={accentColor}
                 context={`De ${baselinePrev.toFixed(2)}% a ${resultado.resumenFinal.prevalenciaFinalPct.toFixed(2)}%`}
               />

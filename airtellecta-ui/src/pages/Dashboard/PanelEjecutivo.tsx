@@ -92,7 +92,7 @@ export function PanelEjecutivo() {
               <KpiCard
                 label="Recaudación IEPS"
                 value={fmtMdp(data.recaudacion.iepsMasRecienteMdp)}
-                description={`último dato disponible (${data.recaudacion.año})`}
+                description={`último dato disponible (${data.recaudacion.anio})`}
                 accent="green"
                 testId="kpi-recaudacion"
               />
