@@ -62,7 +62,7 @@ function EstadoDetalle({ feature, estado, isLoaded, onClose }: EstadoDetalleProp
   const { label, cls } = riesgoLabel(prev)
   const national  = 15.06
   const polygons  = extractPolygons(feature)
-  const centroid  = geoCentroid(feature)
+  const centroid  = geoCentroid(feature as never)
   const center    = { lat: centroid[1], lng: centroid[0] }
 
   return (
