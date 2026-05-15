@@ -1,4 +1,5 @@
 import { NavLink, useNavigate } from 'react-router-dom'
+import { useAuth } from '../../context/AuthContext'
 
 const LogoIcon = () => (
   <svg width="26" height="26" viewBox="0 0 40 40" fill="none">
@@ -72,13 +73,18 @@ const NAV_ITEMS = [
   { label: 'Mapa de Calor',     path: '/dashboard/mapa',          icon: <MapIcon />,       end: false },
   { label: 'Tendencias',        path: '/dashboard/tendencias',    icon: <TrendingIcon />,  end: false },
   { label: 'Panel Ejecutivo',   path: '/dashboard/panel-ejecutivo', icon: <BriefcaseIcon />, end: false },
-  { label: 'Costos',            path: '/dashboard/costos',        icon: <DollarIcon />,    end: false },
   { label: 'Simulador',         path: '/dashboard/simulador',     icon: <SlidersIcon />,   end: false },
   { label: 'Correlaciones',    path: '/dashboard/correlaciones', icon: <ScatterIcon />,   end: false },
 ]
 
 export function Sidebar() {
   const navigate = useNavigate()
+  const { logout } = useAuth()
+
+  async function handleLogout() {
+    await logout()
+    navigate('/login', { replace: true })
+  }
 
   return (
     <aside
@@ -125,7 +131,7 @@ export function Sidebar() {
           className="w-full h-[46px] flex items-center justify-start pl-[22px] gap-[14px] rounded-[13px] border-none bg-transparent cursor-pointer font-sans text-white/35 hover:text-[#f87171] hover:bg-[rgba(248,113,113,0.10)] transition-colors duration-[180ms]"
           type="button"
           title="Cerrar sesión"
-          onClick={() => navigate('/login')}
+          onClick={handleLogout}
           data-testid="sidebar-logout"
         >
           <LogoutIcon />

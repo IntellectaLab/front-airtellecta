@@ -1,3 +1,9 @@
+export interface ApiResponse<T> {
+  success: boolean
+  data:    T
+  error?:  string
+}
+
 export interface ResumenNacional {
   prevalenciaFumadores: number
   poblacionFumadores: number
@@ -77,17 +83,6 @@ export interface Tendencias {
   vapeo2025: number
   dual2016: number
   dual2025: number
-}
-
-export interface CostoCie10 {
-  codigo: string
-  trastorno: string
-  costoPorPaciente: number
-  costoAjustado2025: number
-  anioBase: number
-  factorInflacion: number
-  fuente: string
-  fuenteDoi: string
 }
 
 export interface SimulacionRequest {

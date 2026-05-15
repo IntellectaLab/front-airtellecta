@@ -16,6 +16,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    if (!auth) {
+      setLoading(false)
+      return
+    }
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
       setUser(firebaseUser)
       setLoading(false)
@@ -24,11 +28,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [])
 
   const logout = async () => {
-    await signOut(auth)
+    if (auth) await signOut(auth)
   }
 
   const getToken = async (): Promise<string | null> => {
-    if (!auth.currentUser) return null
+    if (!auth?.currentUser) return null
     return auth.currentUser.getIdToken()
   }
 
