@@ -184,12 +184,12 @@ export function MapaVulnerabilidad() {
           <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
           <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
         </svg>
-        <p className="text-[13px] font-bold text-[#f97316]">
+        <p className="text-[15px] font-bold text-[#f97316]">
           API Key de Google Maps no configurada
         </p>
-        <p className="text-[12px] text-[#5580a8] dark:text-white/40 max-w-[280px] leading-relaxed">
-          Agrega <code className="bg-[rgba(180,210,240,0.35)] dark:bg-white/10 px-1.5 py-0.5 rounded text-[11px]">VITE_GOOGLE_MAPS_API_KEY</code> en tu archivo{' '}
-          <code className="bg-[rgba(180,210,240,0.35)] dark:bg-white/10 px-1.5 py-0.5 rounded text-[11px]">.env.local</code>
+        <p className="text-[14px] text-[#5580a8] dark:text-white/40 max-w-[280px] leading-relaxed">
+          Agrega <code className="bg-[rgba(180,210,240,0.35)] dark:bg-white/10 px-1.5 py-0.5 rounded text-[13px]">VITE_GOOGLE_MAPS_API_KEY</code> en tu archivo{' '}
+          <code className="bg-[rgba(180,210,240,0.35)] dark:bg-white/10 px-1.5 py-0.5 rounded text-[13px]">.env.local</code>
         </p>
       </div>
     )
@@ -202,7 +202,7 @@ export function MapaVulnerabilidad() {
         className="metric-card-glass flex items-center justify-center rounded-[18px] min-h-[320px]"
         data-testid="mapa-vulnerabilidad"
       >
-        <p className="text-[13px] text-[#ef4444]">No se pudo cargar Google Maps</p>
+        <p className="text-[15px] text-[#ef4444]">No se pudo cargar Google Maps</p>
       </div>
     )
   }
@@ -215,10 +215,10 @@ export function MapaVulnerabilidad() {
     >
       {/* Header */}
       <div className="px-5 pt-5 pb-2 shrink-0">
-        <p className="text-[13px] font-bold tracking-[0.8px] text-[#5580a8] uppercase dark:text-white/35">
+        <p className="text-[15px] font-bold tracking-[0.8px] text-[#5580a8] uppercase dark:text-white/35">
           Mapa de Vulnerabilidad
         </p>
-        <p className="text-[20px] font-semibold text-[#0c1f3f] dark:text-white">
+        <p className="text-[22px] font-semibold text-[#0c1f3f] dark:text-white">
           Índice de riesgo por estado
         </p>
       </div>
@@ -245,10 +245,10 @@ export function MapaVulnerabilidad() {
         {hoveredEstado && (
           <div className="absolute bottom-3 left-3 pointer-events-none z-10">
             <div className="metric-card-glass rounded-[12px] px-3 py-2.5 shadow-lg border border-[rgba(180,210,240,0.40)] dark:border-white/[0.10]">
-              <p className="text-[13px] font-bold text-[#0c1f3f] dark:text-white leading-tight">
+              <p className="text-[15px] font-bold text-[#0c1f3f] dark:text-white leading-tight">
                 {hoveredEstado.nombre}
               </p>
-              <p className="text-[12px] text-[#5580a8] dark:text-white/50 mt-0.5">
+              <p className="text-[14px] text-[#5580a8] dark:text-white/50 mt-0.5">
                 Prevalencia:{' '}
                 <span
                   className="font-semibold"
@@ -257,7 +257,7 @@ export function MapaVulnerabilidad() {
                   {Number(hoveredEstado.prevalencia).toFixed(1)}%
                 </span>
               </p>
-              <p className="text-[11px] text-[#8aaac5] dark:text-white/30 mt-px">
+              <p className="text-[13px] text-[#8aaac5] dark:text-white/30 mt-px">
                 ~{Number(hoveredEstado.fumadoresEstimados).toLocaleString('es-MX')} fumadores est.
               </p>
             </div>
@@ -273,7 +273,7 @@ export function MapaVulnerabilidad() {
               className="w-2.5 h-2.5 rounded-full shrink-0"
               style={{ background: l.color }}
             />
-            <span className="text-[11px] text-[#5580a8] dark:text-white/40">{l.label}</span>
+            <span className="text-[13px] text-[#5580a8] dark:text-white/40">{l.label}</span>
           </div>
         ))}
       </div>

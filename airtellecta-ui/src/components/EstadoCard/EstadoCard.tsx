@@ -67,26 +67,26 @@ export function EstadoCard({ estado, consumo, vsNacional, poblacion, riesgo }: E
       <div className="flex items-start justify-between gap-2">
         <div className="flex items-center gap-1.5">
           <span className={cfg.labelClass}>{cfg.icon}</span>
-          <p className={`text-[13px] font-bold tracking-[0.8px] uppercase ${cfg.labelClass}`}>
+          <p className={`text-[15px] font-bold tracking-[0.8px] uppercase ${cfg.labelClass}`}>
             {estado}
           </p>
         </div>
-        <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold border shrink-0 ${cfg.badgeClass}`}>
+        <span className={`px-2 py-0.5 rounded-full text-[12px] font-bold border shrink-0 ${cfg.badgeClass}`}>
           {cfg.badgeLabel}
         </span>
       </div>
 
       {/* Valor principal */}
-      <p className={`font-display text-[38px] font-extrabold leading-none tracking-[-1.5px] ${cfg.valueClass}`}>
+      <p className={`font-display text-[43px] font-extrabold leading-none tracking-[-1.5px] ${cfg.valueClass}`}>
         {consumo}
       </p>
 
       {/* Métricas secundarias */}
       <div className="flex flex-col gap-1">
-        <p className="text-[13px] text-[#5580a8] dark:text-white/40">
+        <p className="text-[15px] text-[#5580a8] dark:text-white/40">
           {vsNacional} vs. promedio nacional
         </p>
-        <p className="text-[12px] text-[#5580a8] dark:text-white/30">
+        <p className="text-[14px] text-[#5580a8] dark:text-white/30">
           {poblacion} afectados est.
         </p>
       </div>

@@ -72,7 +72,7 @@ function ChartTooltip({ active, payload, label }: {
 }) {
   if (!active || !payload?.length) return null
   return (
-    <div className="metric-card-glass rounded-[12px] px-3 py-2.5 border border-[rgba(180,210,240,0.4)] dark:border-white/10 text-[12px] shadow-lg">
+    <div className="metric-card-glass rounded-[12px] px-3 py-2.5 border border-[rgba(180,210,240,0.4)] dark:border-white/10 text-[14px] shadow-lg">
       <p className="font-bold text-[#0c1f3f] dark:text-white mb-1.5">{label}</p>
       {payload.map((entry) => (
         <p key={entry.name} className="flex items-center gap-1.5" style={{ color: entry.color }}>
@@ -81,7 +81,7 @@ function ChartTooltip({ active, payload, label }: {
         </p>
       ))}
       {payload.length === 2 && (
-        <p className="text-[11px] text-[#5580a8] dark:text-white/35 mt-1.5 pt-1.5 border-t border-[rgba(180,210,240,0.3)] dark:border-white/10">
+        <p className="text-[13px] text-[#5580a8] dark:text-white/35 mt-1.5 pt-1.5 border-t border-[rgba(180,210,240,0.3)] dark:border-white/10">
           Razón: ×{(payload[0].value / payload[1].value).toFixed(1)}
         </p>
       )}
@@ -102,13 +102,13 @@ function SectionCard({ children }: { children: React.ReactNode }) {
 function SectionHeader({ tag, title, desc }: { tag: string; title: string; desc: string }) {
   return (
     <div>
-      <p className="text-[13px] font-bold tracking-[0.8px] uppercase text-[#5580a8] dark:text-white/35 mb-1">
+      <p className="text-[15px] font-bold tracking-[0.8px] uppercase text-[#5580a8] dark:text-white/35 mb-1">
         {tag}
       </p>
-      <h2 className="font-display text-[20px] font-extrabold text-[#0c1f3f] dark:text-white mb-1">
+      <h2 className="font-display text-[22px] font-extrabold text-[#0c1f3f] dark:text-white mb-1">
         {title}
       </h2>
-      <p className="text-[13px] text-[#5580a8] dark:text-white/40 leading-relaxed max-w-[640px]">
+      <p className="text-[15px] text-[#5580a8] dark:text-white/40 leading-relaxed max-w-[640px]">
         {desc}
       </p>
     </div>
@@ -120,11 +120,11 @@ function ChartLegend() {
     <div className="flex items-center gap-5 justify-center">
       <div className="flex items-center gap-1.5">
         <span className="w-3 h-3 rounded-sm shrink-0 bg-[#2563eb]" />
-        <span className="text-[11px] text-[#5580a8] dark:text-white/40">Fumadores / vapers</span>
+        <span className="text-[13px] text-[#5580a8] dark:text-white/40">Fumadores / vapers</span>
       </div>
       <div className="flex items-center gap-1.5">
         <span className="w-3 h-3 rounded-sm shrink-0 bg-[rgba(148,163,184,0.6)]" />
-        <span className="text-[11px] text-[#5580a8] dark:text-white/40">No consumidores</span>
+        <span className="text-[13px] text-[#5580a8] dark:text-white/40">No consumidores</span>
       </div>
     </div>
   )
@@ -138,13 +138,13 @@ export function Correlaciones() {
 
       {/* Encabezado */}
       <div>
-        <p className="text-[13px] font-bold tracking-[0.8px] uppercase text-[#5580a8] dark:text-white/35 mb-1">
+        <p className="text-[15px] font-bold tracking-[0.8px] uppercase text-[#5580a8] dark:text-white/35 mb-1">
           Análisis de correlación
         </p>
-        <h1 className="font-display text-[22px] font-extrabold text-[#0c1f3f] dark:text-white mb-1">
+        <h1 className="font-display text-[25px] font-extrabold text-[#0c1f3f] dark:text-white mb-1">
           Tabaco, vapeo y comorbilidades
         </h1>
-        <p className="text-[13px] text-[#5580a8] dark:text-white/40 leading-relaxed max-w-[680px]">
+        <p className="text-[15px] text-[#5580a8] dark:text-white/40 leading-relaxed max-w-[680px]">
           Correlaciones entre el consumo de tabaco y vapeo con otras sustancias y condiciones de salud mental.
           Correlación no implica causalidad — los datos reflejan asociaciones estadísticas observadas en población mexicana.
         </p>
@@ -157,13 +157,13 @@ export function Correlaciones() {
             key={h.label}
             className={`rounded-[18px] p-5 border ${h.bgColor} ${h.border} flex flex-col gap-2`}
           >
-            <p className="text-[12px] font-bold tracking-[0.7px] uppercase text-[#5580a8] dark:text-white/35">
+            <p className="text-[14px] font-bold tracking-[0.7px] uppercase text-[#5580a8] dark:text-white/35">
               {h.label}
             </p>
-            <p className={`font-display text-[44px] font-extrabold leading-none tracking-[-1.5px] ${h.color}`}>
+            <p className={`font-display text-[50px] font-extrabold leading-none tracking-[-1.5px] ${h.color}`}>
               {h.ratio}
             </p>
-            <p className="text-[13px] text-[#1e3a5f] dark:text-white/55 leading-[1.5]">
+            <p className="text-[15px] text-[#1e3a5f] dark:text-white/55 leading-[1.5]">
               {h.desc}
             </p>
           </div>
@@ -214,7 +214,7 @@ export function Correlaciones() {
               key={d.sustancia}
               className="flex flex-col items-center gap-0.5 px-2 py-2 rounded-[10px] bg-[rgba(180,210,240,0.12)] dark:bg-white/[0.04]"
             >
-              <span className="text-[10px] text-[#5580a8] dark:text-white/35 text-center leading-tight">
+              <span className="text-[12px] text-[#5580a8] dark:text-white/35 text-center leading-tight">
                 {d.sustancia}
               </span>
               <span className="font-display text-[18px] font-extrabold text-[#ef4444] dark:text-[#f87171]">
@@ -267,11 +267,11 @@ export function Correlaciones() {
         <div className="flex items-center gap-5 justify-center">
           <div className="flex items-center gap-1.5">
             <span className="w-3 h-3 rounded-sm shrink-0 bg-[#8b5cf6]" />
-            <span className="text-[11px] text-[#5580a8] dark:text-white/40">Fumadores</span>
+            <span className="text-[13px] text-[#5580a8] dark:text-white/40">Fumadores</span>
           </div>
           <div className="flex items-center gap-1.5">
             <span className="w-3 h-3 rounded-sm shrink-0 bg-[rgba(148,163,184,0.6)]" />
-            <span className="text-[11px] text-[#5580a8] dark:text-white/40">No fumadores</span>
+            <span className="text-[13px] text-[#5580a8] dark:text-white/40">No fumadores</span>
           </div>
         </div>
 
@@ -280,7 +280,7 @@ export function Correlaciones() {
           <svg className="shrink-0 mt-0.5 text-[#8b5cf6]" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>
           </svg>
-          <p className="text-[12px] text-[#5580a8] dark:text-white/45 leading-relaxed">
+          <p className="text-[14px] text-[#5580a8] dark:text-white/45 leading-relaxed">
             <strong className="text-[#1e3a5f] dark:text-white/70">Relación bidireccional:</strong>{' '}
             Las personas con trastornos mentales tienen mayor probabilidad de iniciar el consumo de tabaco, y los fumadores tienen mayor riesgo de desarrollar estos trastornos. La nicotina actúa como modulador temporal del estado de ánimo, creando un ciclo de dependencia reforzada.
           </p>
@@ -326,7 +326,7 @@ export function Correlaciones() {
                   if (!active || !payload?.length) return null
                   const d = DATOS_VAPEO.find((r) => r.pct === payload[0].value)
                   return (
-                    <div className="metric-card-glass rounded-[12px] px-3 py-2.5 border border-[rgba(180,210,240,0.4)] dark:border-white/10 text-[12px] shadow-lg max-w-[220px]">
+                    <div className="metric-card-glass rounded-[12px] px-3 py-2.5 border border-[rgba(180,210,240,0.4)] dark:border-white/10 text-[14px] shadow-lg max-w-[220px]">
                       <p className="text-[#0c1f3f] dark:text-white leading-snug">{d?.etiqueta}</p>
                       <p className="font-bold mt-1" style={{ color: d?.color }}>{d?.pct}%</p>
                     </div>
@@ -350,12 +350,12 @@ export function Correlaciones() {
                 className="flex items-center gap-3 px-3 py-2.5 rounded-[11px] bg-[rgba(180,210,240,0.10)] dark:bg-white/[0.04]"
               >
                 <span
-                  className="font-display text-[22px] font-extrabold leading-none shrink-0 w-[60px] text-right"
+                  className="font-display text-[25px] font-extrabold leading-none shrink-0 w-[60px] text-right"
                   style={{ color: d.color }}
                 >
                   {d.pct}%
                 </span>
-                <span className="text-[12px] text-[#3a5a80] dark:text-white/55 leading-snug">
+                <span className="text-[14px] text-[#3a5a80] dark:text-white/55 leading-snug">
                   {d.etiqueta}
                 </span>
               </div>
@@ -368,7 +368,7 @@ export function Correlaciones() {
             <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
             <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
           </svg>
-          <p className="text-[12px] text-[#5580a8] dark:text-white/45 leading-relaxed">
+          <p className="text-[14px] text-[#5580a8] dark:text-white/45 leading-relaxed">
             <strong className="text-[#1e3a5f] dark:text-white/70">Alerta en jóvenes 18-25:</strong>{' '}
             Más del 28% de los jóvenes que inician con vapeo transicionan al cigarrillo convencional en menos de un año. El vapeo no es una vía segura de cesación para no fumadores y representa un vector de inicio en la población objetivo de este sistema.
           </p>
@@ -377,10 +377,10 @@ export function Correlaciones() {
 
       {/* ── Fuentes ── */}
       <div className="px-4 py-3 rounded-[12px] bg-[rgba(180,210,240,0.10)] dark:bg-white/[0.03] border border-[rgba(180,210,240,0.25)] dark:border-white/[0.06]">
-        <p className="text-[11px] font-bold tracking-[0.6px] uppercase text-[#5580a8] dark:text-white/30 mb-1.5">
+        <p className="text-[13px] font-bold tracking-[0.6px] uppercase text-[#5580a8] dark:text-white/30 mb-1.5">
           Fuentes de datos
         </p>
-        <p className="text-[11px] text-[#5580a8] dark:text-white/30 leading-relaxed">
+        <p className="text-[13px] text-[#5580a8] dark:text-white/30 leading-relaxed">
           ENCODAT 2016-17 (INSP/Secretaría de Salud) · OPS/OMS <em>MPOWER: Informe sobre la epidemia mundial de tabaquismo 2021</em> ·
           INSP <em>Encuesta Nacional de Adicciones</em> · Miech et al. (2021) Monitoring the Future ·
           Hartmann-Boyce et al. (2022) Cochrane Review on e-cigarettes ·

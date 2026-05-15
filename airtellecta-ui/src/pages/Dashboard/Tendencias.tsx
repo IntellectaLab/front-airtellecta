@@ -14,25 +14,25 @@ interface StatPairProps {
 function StatPair({ label, val2016, val2025, delta, deltaUp, testId }: StatPairProps) {
   return (
     <div className="metric-card-glass flex flex-col gap-3 p-5 rounded-[18px]" data-testid={testId ?? 'stat-pair'}>
-      <p className="text-[13px] font-bold tracking-[0.8px] uppercase text-[#5580a8] dark:text-white/35">
+      <p className="text-[15px] font-bold tracking-[0.8px] uppercase text-[#5580a8] dark:text-white/35">
         {label}
       </p>
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <p className="text-[11px] text-[#5580a8] dark:text-white/35 mb-1">2016</p>
-          <p className="font-display text-[30px] font-extrabold text-[#5580a8] dark:text-white/50 leading-none tracking-[-1px]">
+          <p className="text-[13px] text-[#5580a8] dark:text-white/35 mb-1">2016</p>
+          <p className="font-display text-[34px] font-extrabold text-[#5580a8] dark:text-white/50 leading-none tracking-[-1px]">
             {val2016}
           </p>
         </div>
         <div>
-          <p className="text-[11px] text-[#5580a8] dark:text-white/35 mb-1">2025</p>
-          <p className="font-display text-[30px] font-extrabold text-[#0c1f3f] dark:text-white leading-none tracking-[-1px]">
+          <p className="text-[13px] text-[#5580a8] dark:text-white/35 mb-1">2025</p>
+          <p className="font-display text-[34px] font-extrabold text-[#0c1f3f] dark:text-white leading-none tracking-[-1px]">
             {val2025}
           </p>
         </div>
       </div>
       {delta && (
-        <p className={`text-[13px] font-semibold ${deltaUp ? 'text-red-500 dark:text-red-400' : 'text-green-600 dark:text-green-400'}`}>
+        <p className={`text-[15px] font-semibold ${deltaUp ? 'text-red-500 dark:text-red-400' : 'text-green-600 dark:text-green-400'}`}>
           {delta}
         </p>
       )}
@@ -77,10 +77,10 @@ export function Tendencias() {
       )}
 
       <div>
-        <p className="text-[13px] font-bold tracking-[0.8px] uppercase text-[#5580a8] dark:text-white/35 mb-1">
+        <p className="text-[15px] font-bold tracking-[0.8px] uppercase text-[#5580a8] dark:text-white/35 mb-1">
           Comparativa histórica
         </p>
-        <h2 className="font-display text-[20px] font-extrabold text-[#0c1f3f] dark:text-white mb-4">
+        <h2 className="font-display text-[22px] font-extrabold text-[#0c1f3f] dark:text-white mb-4">
           Evolución 2016 – 2025
         </h2>
 
@@ -134,7 +134,7 @@ export function Tendencias() {
       {data && (
         <div className="metric-card-glass rounded-[18px] overflow-hidden" data-testid="tabla-tendencias">
           <div className="px-5 pt-5 pb-3 border-b border-[rgba(180,210,240,0.25)] dark:border-white/[0.06]">
-            <p className="text-[20px] font-semibold text-[#0c1f3f] dark:text-white">
+            <p className="text-[22px] font-semibold text-[#0c1f3f] dark:text-white">
               Tabla comparativa
             </p>
           </div>
@@ -142,10 +142,10 @@ export function Tendencias() {
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-[rgba(180,210,240,0.20)] dark:border-white/[0.05]">
-                  <th className="text-left px-5 py-3 text-[11px] font-bold tracking-[0.8px] uppercase text-[#5580a8] dark:text-white/35">Indicador</th>
-                  <th className="text-right px-5 py-3 text-[11px] font-bold tracking-[0.8px] uppercase text-[#5580a8] dark:text-white/35">2016</th>
-                  <th className="text-right px-5 py-3 text-[11px] font-bold tracking-[0.8px] uppercase text-[#5580a8] dark:text-white/35">2025</th>
-                  <th className="text-right px-5 py-3 text-[11px] font-bold tracking-[0.8px] uppercase text-[#5580a8] dark:text-white/35">Variación</th>
+                  <th className="text-left px-5 py-3 text-[13px] font-bold tracking-[0.8px] uppercase text-[#5580a8] dark:text-white/35">Indicador</th>
+                  <th className="text-right px-5 py-3 text-[13px] font-bold tracking-[0.8px] uppercase text-[#5580a8] dark:text-white/35">2016</th>
+                  <th className="text-right px-5 py-3 text-[13px] font-bold tracking-[0.8px] uppercase text-[#5580a8] dark:text-white/35">2025</th>
+                  <th className="text-right px-5 py-3 text-[13px] font-bold tracking-[0.8px] uppercase text-[#5580a8] dark:text-white/35">Variación</th>
                 </tr>
               </thead>
               <tbody>

@@ -5,6 +5,7 @@ import type {
   Tendencias,
   EntidadPrevalencia,
   PanelEjecutivo,
+  RecaudacionAnual,
   SimulacionRequest,
   SimulacionResultado,
 } from '../types/api'
@@ -57,6 +58,7 @@ export const apiService = {
   mapaEstatal:     (sexo?: 1 | 2) =>
     get<EntidadPrevalencia[]>(`/api/mapa-estatal${sexo ? `?sexo=${sexo}` : ''}`),
   panelEjecutivo:  () => get<PanelEjecutivo>('/api/panel-ejecutivo'),
+  recaudacion:     () => get<RecaudacionAnual[]>('/api/recaudacion'),
   simulacion:      (req: SimulacionRequest) =>
     post<SimulacionResultado>('/api/simulacion', req),
 }

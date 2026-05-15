@@ -85,6 +85,12 @@ export interface Tendencias {
   dual2025: number
 }
 
+export interface RecaudacionAnual {
+  anio:     number
+  montoMdp: number
+  fuente:   string
+}
+
 export interface SimulacionRequest {
   politicas?: string[]
   impuestoPctPrecio?: number

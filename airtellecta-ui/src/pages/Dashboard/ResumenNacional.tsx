@@ -50,14 +50,14 @@ function KpiCard({ label, value, description, descColor, highlight, icon, testId
             {icon}
           </span>
         )}
-        <p className={`text-[13px] font-bold tracking-[0.8px] uppercase ${highlight ? 'text-green-700 dark:text-green-400' : 'text-[#5580a8] dark:text-white/35'}`}>
+        <p className={`text-[15px] font-bold tracking-[0.8px] uppercase ${highlight ? 'text-green-700 dark:text-green-400' : 'text-[#5580a8] dark:text-white/35'}`}>
           {label}
         </p>
       </div>
-      <p className={`font-display text-[38px] font-extrabold leading-none tracking-[-1.5px] ${highlight ? 'text-green-700 dark:text-green-400' : 'text-[#0c1f3f] dark:text-white'}`}>
+      <p className={`font-display text-[43px] font-extrabold leading-none tracking-[-1.5px] ${highlight ? 'text-green-700 dark:text-green-400' : 'text-[#0c1f3f] dark:text-white'}`}>
         {value}
       </p>
-      <p className={`text-[14px] leading-[1.4] ${descColor ?? 'text-[#5580a8] dark:text-white/40'}`}>
+      <p className={`text-[16px] leading-[1.4] ${descColor ?? 'text-[#5580a8] dark:text-white/40'}`}>
         {description}
       </p>
     </div>

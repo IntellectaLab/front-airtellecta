@@ -20,7 +20,7 @@ interface CustomTooltipProps { active?: boolean; payload?: TooltipEntry[]; label
 const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
   if (!active || !payload?.length) return null
   return (
-    <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/10 rounded-[10px] px-3 py-2 shadow-lg text-[12px]">
+    <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/10 rounded-[10px] px-3 py-2 shadow-lg text-[14px]">
       <p className="font-bold text-slate-700 dark:text-white mb-1">{label}</p>
       {payload.map((e) => (
         <p key={e.name} className="my-0.5" style={{ color: e.color }}>
@@ -35,10 +35,10 @@ export function TendenciaChart() {
   return (
     <div className="metric-card-glass flex flex-col gap-3 p-5 rounded-[18px] h-full" data-testid="tendencia-chart">
       <div>
-        <p className="text-[13px] font-bold tracking-[0.8px] text-[#5580a8] uppercase dark:text-white/35">
+        <p className="text-[15px] font-bold tracking-[0.8px] text-[#5580a8] uppercase dark:text-white/35">
           Tendencia 2018–2025
         </p>
-        <p className="text-[20px] font-semibold text-[#0c1f3f] dark:text-white">Consumo anual</p>
+        <p className="text-[22px] font-semibold text-[#0c1f3f] dark:text-white">Consumo anual</p>
       </div>
 
       <ResponsiveContainer width="100%" height={200}>
