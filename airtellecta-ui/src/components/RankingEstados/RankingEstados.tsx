@@ -1,14 +1,20 @@
 import { useState } from 'react'
 import { createPortal } from 'react-dom'
 
-interface Estado {
+export interface EstadoRanking {
   rank:   number
   nombre: string
   valor:  number
   riesgo: 'critico' | 'alto' | 'medio' | 'bajo'
 }
 
-const TODOS_ESTADOS: Estado[] = [
+interface RankingEstadosProps {
+  estados?:   EstadoRanking[]
+  isLoading?: boolean
+  isError?:   boolean
+}
+
+const FALLBACK_ESTADOS: EstadoRanking[] = [
   { rank:  1, nombre: 'Colima',              valor: 28.4, riesgo: 'critico' },
   { rank:  2, nombre: 'Jalisco',             valor: 24.1, riesgo: 'critico' },
   { rank:  3, nombre: 'Ciudad de México',    valor: 22.8, riesgo: 'critico' },
@@ -43,10 +49,7 @@ const TODOS_ESTADOS: Estado[] = [
   { rank: 32, nombre: 'Oaxaca',              valor:  6.9, riesgo: 'bajo'    },
 ]
 
-const TOP_8 = TODOS_ESTADOS.slice(0, 8)
-const MAX   = TODOS_ESTADOS[0].valor
-
-const BAR_COLOR:   Record<string, string> = {
+const BAR_COLOR: Record<string, string> = {
   critico: 'bg-red-500',
   alto:    'bg-orange-400',
   medio:   'bg-amber-400',
@@ -78,7 +81,7 @@ const XIcon = () => (
   </svg>
 )
 
-function EstadoRow({ e, maxVal, compact = false }: { e: Estado; maxVal: number; compact?: boolean }) {
+function EstadoRow({ e, maxVal, compact = false }: { e: EstadoRanking; maxVal: number; compact?: boolean }) {
   const pct = (e.valor / maxVal) * 100
   return (
     <div className={`flex items-center gap-3 px-2 py-1.5 ${ROW_HL[e.riesgo]}`}>
@@ -94,13 +97,14 @@ function EstadoRow({ e, maxVal, compact = false }: { e: Estado; maxVal: number; 
         </div>
       </div>
       <span className={`${compact ? 'text-[12px]' : 'text-[13px]'} shrink-0 tabular-nums ${VALUE_COLOR[e.riesgo]}`}>
-        {e.valor}%
+        {e.valor.toFixed(1)}%
       </span>
     </div>
   )
 }
 
-function EstadosModal({ onClose }: { onClose: () => void }) {
+function EstadosModal({ todos, onClose }: { todos: EstadoRanking[]; onClose: () => void }) {
+  const max = todos[0]?.valor ?? 1
   return (
     <div className="modal-overlay-glass fixed inset-0 z-[500] flex items-center justify-center" onClick={onClose}>
       <div
@@ -113,7 +117,7 @@ function EstadosModal({ onClose }: { onClose: () => void }) {
               Ranking completo
             </p>
             <h2 className="font-display text-[20px] font-extrabold text-[#0c1f3f] dark:text-white">
-              Los 32 estados · 2025
+              Los {todos.length} estados · 2025
             </h2>
           </div>
           <button
@@ -135,14 +139,14 @@ function EstadosModal({ onClose }: { onClose: () => void }) {
         </div>
 
         <div className="overflow-y-auto custom-scrollbar px-4 py-3 flex flex-col gap-0.5">
-          {TODOS_ESTADOS.map((e) => (
-            <EstadoRow key={e.rank} e={e} maxVal={MAX} compact />
+          {todos.map((e) => (
+            <EstadoRow key={e.rank} e={e} maxVal={max} compact />
           ))}
         </div>
 
         <div className="px-6 py-4 border-t border-[rgba(180,210,240,0.25)] dark:border-white/[0.06] shrink-0">
           <p className="text-[11px] text-[#5580a8] dark:text-white/30 text-center">
-            Fuente: ENCODAT 2023 · Datos actualizados al Q4 2025
+            Fuente: ENCODAT · Datos actualizados 2025
           </p>
         </div>
       </div>
@@ -150,8 +154,11 @@ function EstadosModal({ onClose }: { onClose: () => void }) {
   )
 }
 
-export function RankingEstados() {
+export function RankingEstados({ estados, isLoading, isError }: RankingEstadosProps) {
   const [showModal, setShowModal] = useState(false)
+  const data  = estados ?? FALLBACK_ESTADOS
+  const top8  = data.slice(0, 8)
+  const max   = data[0]?.valor ?? 1
 
   return (
     <>
@@ -165,14 +172,28 @@ export function RankingEstados() {
               Ordenado por consumo
             </p>
           </div>
-          <span className="text-[12px] text-[#5580a8] dark:text-white/40 mt-1">de 32</span>
+          <span className="text-[12px] text-[#5580a8] dark:text-white/40 mt-1">de {data.length}</span>
         </div>
 
-        <div className="flex flex-col gap-1">
-          {TOP_8.map((e) => (
-            <EstadoRow key={e.rank} e={e} maxVal={MAX} />
-          ))}
-        </div>
+        {isLoading && (
+          <div className="flex flex-col gap-2 animate-pulse">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <div key={i} className="h-9 rounded-[10px] bg-[rgba(180,210,240,0.20)] dark:bg-white/[0.06]" />
+            ))}
+          </div>
+        )}
+
+        {isError && !isLoading && (
+          <p className="text-sm text-red-500 dark:text-red-400">Error al cargar ranking.</p>
+        )}
+
+        {!isLoading && !isError && (
+          <div className="flex flex-col gap-1">
+            {top8.map((e) => (
+              <EstadoRow key={e.rank} e={e} maxVal={max} />
+            ))}
+          </div>
+        )}
 
         <button
           className="mt-auto text-[13px] font-semibold text-[#2563eb] dark:text-[#93c5fd] hover:underline cursor-pointer bg-transparent border-none text-center w-full py-1"
@@ -180,12 +201,12 @@ export function RankingEstados() {
           onClick={() => setShowModal(true)}
           data-testid="btn-ver-todos"
         >
-          Ver los 32 estados ↓
+          Ver los {data.length} estados ↓
         </button>
       </div>
 
       {showModal && createPortal(
-        <EstadosModal onClose={() => setShowModal(false)} />,
+        <EstadosModal todos={data} onClose={() => setShowModal(false)} />,
         document.body
       )}
     </>

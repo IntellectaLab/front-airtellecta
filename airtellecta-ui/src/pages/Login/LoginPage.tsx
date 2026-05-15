@@ -55,6 +55,10 @@ export function LoginPage() {
       setError('Por favor completa todos los campos.')
       return
     }
+    if (!auth) {
+      setError('Firebase no está configurado. Agrega las credenciales en .env.local')
+      return
+    }
     setError('')
     setLoading(true)
     try {

@@ -1,26 +1,41 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
-import { LoginPage } from './pages/Login/LoginPage'
+import { LoginPage }       from './pages/Login/LoginPage'
 import { DashboardLayout } from './pages/Dashboard/DashboardLayout'
 import { ResumenNacional } from './pages/Dashboard/ResumenNacional'
 import { MapaCalor }       from './pages/Dashboard/MapaCalor'
+import { Tendencias }      from './pages/Dashboard/Tendencias'
+import { PanelEjecutivo }  from './pages/Dashboard/PanelEjecutivo'
+import { Simulador }       from './pages/Dashboard/Simulador'
+import { Correlaciones }   from './pages/Dashboard/Correlaciones'
 import { ProtectedRoute }  from './components/ProtectedRoute'
+import { useAuth }         from './context/AuthContext'
+
+function PublicRoute({ children }: { children: React.ReactNode }) {
+  const { user, loading } = useAuth()
+  if (loading) return null
+  return user ? <Navigate to="/dashboard" replace /> : <>{children}</>
+}
 
 export default function App() {
   return (
     <Routes>
       <Route path="/" element={<Navigate to="/login" replace />} />
-      <Route path="/login" element={<LoginPage />} />
+
+      <Route path="/login" element={
+        <PublicRoute><LoginPage /></PublicRoute>
+      } />
 
       <Route path="/dashboard" element={
         <ProtectedRoute>
           <DashboardLayout />
         </ProtectedRoute>
       }>
-        <Route index element={<ResumenNacional />} />
-        <Route path="mapa"        element={<MapaCalor />} />
-        <Route path="tendencias"  element={<div />} />
-        <Route path="campanas"    element={<div />} />
-        <Route path="fuentes"     element={<div />} />
+        <Route index                   element={<ResumenNacional />} />
+        <Route path="mapa"             element={<MapaCalor />} />
+        <Route path="tendencias"       element={<Tendencias />} />
+        <Route path="panel-ejecutivo"  element={<PanelEjecutivo />} />
+        <Route path="simulador"        element={<Simulador />} />
+        <Route path="correlaciones"    element={<Correlaciones />} />
       </Route>
     </Routes>
   )
