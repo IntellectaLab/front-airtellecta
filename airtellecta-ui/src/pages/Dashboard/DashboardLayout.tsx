@@ -617,7 +617,7 @@ function UserMenu() {
 const NAV_ITEMS = [
   { label: 'Resumen Nacional', path: '/dashboard',                    end: true  },
   { label: 'Mapa de Calor',    path: '/dashboard/mapa',               end: false },
-  { label: 'Tendencias',       path: '/dashboard/tendencias',         end: false },
+  { label: 'Bases de Datos',   path: '/dashboard/bases-de-datos',     end: false },
   { label: 'Panel Ejecutivo',  path: '/dashboard/panel-ejecutivo',    end: false },
   { label: 'Simulador',        path: '/dashboard/simulador',          end: false },
   { label: 'Correlaciones',   path: '/dashboard/correlaciones',      end: false },

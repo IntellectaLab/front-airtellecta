@@ -68,18 +68,23 @@ const LogoutIcon = () => (
   </svg>
 )
 
-const NAV_ITEMS = [
-  { label: 'Resumen Nacional',  path: '/dashboard',               icon: <GridIcon />,      end: true  },
-  { label: 'Mapa de Calor',     path: '/dashboard/mapa',          icon: <MapIcon />,       end: false },
-  { label: 'Tendencias',        path: '/dashboard/tendencias',    icon: <TrendingIcon />,  end: false },
-  { label: 'Panel Ejecutivo',   path: '/dashboard/panel-ejecutivo', icon: <BriefcaseIcon />, end: false },
-  { label: 'Simulador',         path: '/dashboard/simulador',     icon: <SlidersIcon />,   end: false },
-  { label: 'Correlaciones',    path: '/dashboard/correlaciones', icon: <ScatterIcon />,   end: false },
+const NAV_PUBLIC = [
+  { label: 'Resumen Nacional', path: '/dashboard',                  icon: <GridIcon />,      end: true  },
+  { label: 'Mapa de Calor',    path: '/dashboard/mapa',             icon: <MapIcon />,       end: false },
+  { label: 'Panel Ejecutivo',  path: '/dashboard/panel-ejecutivo',  icon: <BriefcaseIcon />, end: false },
+  { label: 'Simulador',        path: '/dashboard/simulador',        icon: <SlidersIcon />,   end: false },
+  { label: 'Correlaciones',    path: '/dashboard/correlaciones',    icon: <ScatterIcon />,   end: false },
 ]
+
+const DbNavIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <ellipse cx="12" cy="5" rx="9" ry="3" /><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3" /><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5" />
+  </svg>
+)
 
 export function Sidebar() {
   const navigate = useNavigate()
-  const { logout } = useAuth()
+  const { logout, role } = useAuth()
 
   async function handleLogout() {
     await logout()
@@ -98,7 +103,12 @@ export function Sidebar() {
       </div>
 
       <nav className="flex-1 flex flex-col items-stretch gap-1 py-1 pl-2 w-full">
-        {NAV_ITEMS.map((item) => (
+        {[
+          ...NAV_PUBLIC,
+          ...(role === 'ADMIN'
+            ? [{ label: 'Bases de Datos', path: '/dashboard/bases-de-datos', icon: <DbNavIcon />, end: false }]
+            : []),
+        ].map((item) => (
           <NavLink
             key={item.path}
             to={item.path}

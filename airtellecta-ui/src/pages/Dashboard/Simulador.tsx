@@ -318,7 +318,7 @@ export function Simulador() {
       {resultado && (() => {
         const isPositive   = resultado.resumenFinal.reduccionPuntosPct >= 0
         const accentColor  = isPositive ? '#22c55e' : '#ef4444'
-        const absReduccion  = Math.abs(resultado.resumenFinal.reduccionPuntosPct)
+        const absReducción  = Math.abs(resultado.resumenFinal.reduccionPuntosPct)
         const absFumadores  = Math.abs(resultado.resumenFinal.fumadoresEvitadosTotal)
         const absDefunciones = Math.abs(resultado.resumenFinal.defuncionesEvitadasTotal)
         const absAhorro     = Math.abs(resultado.resumenFinal.ahorroAcumuladoMdp)
@@ -467,7 +467,7 @@ export function Simulador() {
                       </linearGradient>
                     </defs>
                     <CartesianGrid strokeDasharray="3 3" stroke="rgba(128,128,128,0.08)" />
-                    <XAxis dataKey="anio" tick={{ fill: '#5580a8', fontSize: 11 }} axisLine={false} tickLine={false} />
+                    <XAxis dataKey="año" tick={{ fill: '#5580a8', fontSize: 11 }} axisLine={false} tickLine={false} />
                     <YAxis yAxisId="left"  tick={{ fill: '#5580a8', fontSize: 11 }} axisLine={false} tickLine={false} unit="%" />
                     <YAxis yAxisId="right" orientation="right" tick={{ fill: '#5580a8', fontSize: 11 }} axisLine={false} tickLine={false} />
                     <Tooltip content={<CustomTooltip isPositive={isPositive} />} />
