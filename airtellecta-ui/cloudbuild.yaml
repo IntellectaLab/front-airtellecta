@@ -2,10 +2,12 @@ steps:
   - name: 'gcr.io/cloud-builders/docker'
     args:
       - 'build'
+      - '-f'
+      - 'airtellecta-ui/Dockerfile'
       - '-t'
       - '${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE}:latest'
       - '--build-arg'
-      - 'VITE_API_URL=${_VITE_API_URL}'
+      - 'VITE_API_BASE_URL=${_VITE_API_BASE_URL}'
       - '--build-arg'
       - 'VITE_FIREBASE_API_KEY=${_VITE_FIREBASE_API_KEY}'
       - '--build-arg'
@@ -20,7 +22,7 @@ steps:
       - 'VITE_FIREBASE_APP_ID=${_VITE_FIREBASE_APP_ID}'
       - '--build-arg'
       - 'VITE_FIREBASE_MEASUREMENT_ID=${_VITE_FIREBASE_MEASUREMENT_ID}'
-      - '.'
+      - 'airtellecta-ui'
 
 images:
   - '${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE}:latest'
@@ -29,7 +31,7 @@ substitutions:
   _REGION: 'us-central1'
   _REPOSITORY: 'airtellecta-front-repo'
   _IMAGE: 'airtellecta-front'
-  _VITE_API_URL: 'https://airtellecta-back-589274708348.us-central1.run.app'
+  _VITE_API_BASE_URL: 'https://airtellecta-back-589274708348.us-central1.run.app'
   _VITE_FIREBASE_API_KEY: ''
   _VITE_FIREBASE_AUTH_DOMAIN: ''
   _VITE_FIREBASE_PROJECT_ID: ''
