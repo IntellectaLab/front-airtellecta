@@ -22,7 +22,7 @@ const CustomTooltip = ({ active, payload, label }: TipProps) => {
   if (!active || !payload?.length) return null
   const entry = DATA.find((d) => d.año === label)
   return (
-    <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/10 rounded-[10px] px-3 py-2 shadow-lg text-[12px]">
+    <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/10 rounded-[10px] px-3 py-2 shadow-lg text-[14px]">
       <p className="font-bold text-slate-700 dark:text-white mb-0.5">
         {label}{entry?.proyectado ? ' (proyectado)' : ''}
       </p>
@@ -37,10 +37,10 @@ export function ConsumoAnualChart() {
   return (
     <div className="metric-card-glass flex flex-col gap-3 p-5 rounded-[18px]" data-testid="consumo-anual-chart">
       <div>
-        <p className="text-[13px] font-bold tracking-[0.8px] uppercase text-[#5580a8] dark:text-white/35">
+        <p className="text-[15px] font-bold tracking-[0.8px] uppercase text-[#5580a8] dark:text-white/35">
           Consumo por año
         </p>
-        <p className="text-[20px] font-semibold text-[#0c1f3f] dark:text-white">
+        <p className="text-[22px] font-semibold text-[#0c1f3f] dark:text-white">
           Evolución nacional 2017–2026
         </p>
       </div>
@@ -59,7 +59,7 @@ export function ConsumoAnualChart() {
         </BarChart>
       </ResponsiveContainer>
 
-      <div className="flex items-center gap-4 text-[11px] text-[#5580a8] dark:text-white/40">
+      <div className="flex items-center gap-4 text-[13px] text-[#5580a8] dark:text-white/40">
         <div className="flex items-center gap-1.5">
           <span className="w-3 h-3 rounded-[3px] bg-[#2563eb] shrink-0" />
           <span>Consumo registrado</span>

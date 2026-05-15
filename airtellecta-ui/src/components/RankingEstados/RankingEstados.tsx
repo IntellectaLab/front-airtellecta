@@ -85,18 +85,18 @@ function EstadoRow({ e, maxVal, compact = false }: { e: EstadoRanking; maxVal: n
   const pct = (e.valor / maxVal) * 100
   return (
     <div className={`flex items-center gap-3 px-2 py-1.5 ${ROW_HL[e.riesgo]}`}>
-      <span className={`text-[12px] w-5 shrink-0 tabular-nums ${e.rank <= 4 ? 'font-bold text-[#0c1f3f] dark:text-white' : 'text-[#5580a8] dark:text-white/30'}`}>
+      <span className={`text-[14px] w-5 shrink-0 tabular-nums ${e.rank <= 4 ? 'font-bold text-[#0c1f3f] dark:text-white' : 'text-[#5580a8] dark:text-white/30'}`}>
         {e.rank}
       </span>
       <div className="flex-1 min-w-0">
-        <p className={`truncate mb-1 ${compact ? 'text-[12px]' : 'text-[13px]'} ${e.rank <= 4 ? 'font-semibold text-[#0c1f3f] dark:text-white' : 'text-[#3a5a80] dark:text-white/60'}`}>
+        <p className={`truncate mb-1 ${compact ? 'text-[14px]' : 'text-[15px]'} ${e.rank <= 4 ? 'font-semibold text-[#0c1f3f] dark:text-white' : 'text-[#3a5a80] dark:text-white/60'}`}>
           {e.nombre}
         </p>
         <div className="h-1.5 rounded-full bg-[rgba(180,210,240,0.20)] dark:bg-white/[0.06] overflow-hidden">
           <div className={`h-full rounded-full ${BAR_COLOR[e.riesgo]}`} style={{ width: `${pct}%` }} />
         </div>
       </div>
-      <span className={`${compact ? 'text-[12px]' : 'text-[13px]'} shrink-0 tabular-nums ${VALUE_COLOR[e.riesgo]}`}>
+      <span className={`${compact ? 'text-[14px]' : 'text-[15px]'} shrink-0 tabular-nums ${VALUE_COLOR[e.riesgo]}`}>
         {e.valor.toFixed(1)}%
       </span>
     </div>
@@ -113,10 +113,10 @@ function EstadosModal({ todos, onClose }: { todos: EstadoRanking[]; onClose: () 
       >
         <div className="flex items-center justify-between px-6 pt-6 pb-4 border-b border-[rgba(180,210,240,0.30)] dark:border-white/[0.07] shrink-0">
           <div>
-            <p className="text-[11px] font-bold tracking-[0.8px] uppercase text-[#5580a8] dark:text-white/35">
+            <p className="text-[13px] font-bold tracking-[0.8px] uppercase text-[#5580a8] dark:text-white/35">
               Ranking completo
             </p>
-            <h2 className="font-display text-[20px] font-extrabold text-[#0c1f3f] dark:text-white">
+            <h2 className="font-display text-[22px] font-extrabold text-[#0c1f3f] dark:text-white">
               Los {todos.length} estados · 2025
             </h2>
           </div>
@@ -132,7 +132,7 @@ function EstadosModal({ todos, onClose }: { todos: EstadoRanking[]; onClose: () 
 
         <div className="flex items-center gap-3 px-6 py-3 shrink-0 border-b border-[rgba(180,210,240,0.20)] dark:border-white/[0.05]">
           {(['critico','alto','medio','bajo'] as const).map((r) => (
-            <span key={r} className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${BADGE[r]}`}>
+            <span key={r} className={`px-2 py-0.5 rounded-full text-[12px] font-bold border ${BADGE[r]}`}>
               {BADGE_LABEL[r]}
             </span>
           ))}
@@ -145,7 +145,7 @@ function EstadosModal({ todos, onClose }: { todos: EstadoRanking[]; onClose: () 
         </div>
 
         <div className="px-6 py-4 border-t border-[rgba(180,210,240,0.25)] dark:border-white/[0.06] shrink-0">
-          <p className="text-[11px] text-[#5580a8] dark:text-white/30 text-center">
+          <p className="text-[13px] text-[#5580a8] dark:text-white/30 text-center">
             Fuente: ENCODAT · Datos actualizados 2025
           </p>
         </div>
@@ -165,14 +165,14 @@ export function RankingEstados({ estados, isLoading, isError }: RankingEstadosPr
       <div className="metric-card-glass flex flex-col gap-4 p-5 rounded-[18px] h-full" data-testid="ranking-estados">
         <div className="flex items-start justify-between">
           <div>
-            <p className="text-[13px] font-bold tracking-[0.8px] uppercase text-[#5580a8] dark:text-white/35">
+            <p className="text-[15px] font-bold tracking-[0.8px] uppercase text-[#5580a8] dark:text-white/35">
               Ranking de Estados
             </p>
-            <p className="text-[20px] font-semibold text-[#0c1f3f] dark:text-white">
+            <p className="text-[22px] font-semibold text-[#0c1f3f] dark:text-white">
               Ordenado por consumo
             </p>
           </div>
-          <span className="text-[12px] text-[#5580a8] dark:text-white/40 mt-1">de {data.length}</span>
+          <span className="text-[14px] text-[#5580a8] dark:text-white/40 mt-1">de {data.length}</span>
         </div>
 
         {isLoading && (
@@ -196,7 +196,7 @@ export function RankingEstados({ estados, isLoading, isError }: RankingEstadosPr
         )}
 
         <button
-          className="mt-auto text-[13px] font-semibold text-[#2563eb] dark:text-[#93c5fd] hover:underline cursor-pointer bg-transparent border-none text-center w-full py-1"
+          className="mt-auto text-[15px] font-semibold text-[#2563eb] dark:text-[#93c5fd] hover:underline cursor-pointer bg-transparent border-none text-center w-full py-1"
           type="button"
           onClick={() => setShowModal(true)}
           data-testid="btn-ver-todos"

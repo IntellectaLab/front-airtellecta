@@ -1,9 +1,9 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
-import { LoginPage }       from './pages/Login/LoginPage'
+import { LoginPage }    from './pages/Login/LoginPage'
 import { DashboardLayout } from './pages/Dashboard/DashboardLayout'
 import { ResumenNacional } from './pages/Dashboard/ResumenNacional'
 import { MapaCalor }       from './pages/Dashboard/MapaCalor'
-import { Tendencias }      from './pages/Dashboard/Tendencias'
+import { BasesDatos }      from './pages/Dashboard/BasesDatos'
 import { PanelEjecutivo }  from './pages/Dashboard/PanelEjecutivo'
 import { Simulador }       from './pages/Dashboard/Simulador'
 import { Correlaciones }   from './pages/Dashboard/Correlaciones'
@@ -30,12 +30,12 @@ export default function App() {
           <DashboardLayout />
         </ProtectedRoute>
       }>
-        <Route index                   element={<ResumenNacional />} />
-        <Route path="mapa"             element={<MapaCalor />} />
-        <Route path="tendencias"       element={<Tendencias />} />
-        <Route path="panel-ejecutivo"  element={<PanelEjecutivo />} />
-        <Route path="simulador"        element={<Simulador />} />
-        <Route path="correlaciones"    element={<Correlaciones />} />
+        <Route index                    element={<ResumenNacional />} />
+        <Route path="mapa"              element={<MapaCalor />} />
+        <Route path="panel-ejecutivo"   element={<PanelEjecutivo />} />
+        <Route path="simulador"         element={<Simulador />} />
+        <Route path="correlaciones"     element={<Correlaciones />} />
+        <Route path="bases-de-datos"    element={<BasesDatos />} />
       </Route>
     </Routes>
   )

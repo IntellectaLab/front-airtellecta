@@ -11,10 +11,10 @@ export function ErrorBanner({ message, actionLabel, onAction }: ErrorBannerProps
       role="alert"
       data-testid="error-banner"
     >
-      <span className="text-[14px] font-semibold">{message}</span>
+      <span className="text-[16px] font-semibold">{message}</span>
       {actionLabel && (
         <button
-          className="bg-transparent border-none text-red-700 dark:text-red-400 font-bold text-[14px] cursor-pointer hover:underline"
+          className="bg-transparent border-none text-red-700 dark:text-red-400 font-bold text-[16px] cursor-pointer hover:underline"
           type="button"
           onClick={onAction}
         >

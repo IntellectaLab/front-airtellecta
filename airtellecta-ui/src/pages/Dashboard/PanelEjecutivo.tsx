@@ -33,13 +33,13 @@ function KpiCard({ label, value, description, accent = 'default', testId }: KpiC
 
   return (
     <div className="metric-card-glass flex flex-col gap-2.5 p-5 rounded-[18px]" data-testid={testId ?? 'kpi-card'}>
-      <p className="text-[13px] font-bold tracking-[0.8px] uppercase text-[#5580a8] dark:text-white/35">
+      <p className="text-[15px] font-bold tracking-[0.8px] uppercase text-[#5580a8] dark:text-white/35">
         {label}
       </p>
-      <p className={`font-display text-[34px] font-extrabold leading-none tracking-[-1.5px] ${valClass}`}>
+      <p className={`font-display text-[39px] font-extrabold leading-none tracking-[-1.5px] ${valClass}`}>
         {value}
       </p>
-      <p className="text-[14px] leading-[1.4] text-[#5580a8] dark:text-white/40">
+      <p className="text-[16px] leading-[1.4] text-[#5580a8] dark:text-white/40">
         {description}
       </p>
     </div>
@@ -66,10 +66,10 @@ export function PanelEjecutivo() {
 
       {/* ── KPIs ── */}
       <div>
-        <p className="text-[13px] font-bold tracking-[0.8px] uppercase text-[#5580a8] dark:text-white/35 mb-1">
+        <p className="text-[15px] font-bold tracking-[0.8px] uppercase text-[#5580a8] dark:text-white/35 mb-1">
           Indicadores clave
         </p>
-        <h2 className="font-display text-[20px] font-extrabold text-[#0c1f3f] dark:text-white mb-4">
+        <h2 className="font-display text-[22px] font-extrabold text-[#0c1f3f] dark:text-white mb-4">
           Resumen ejecutivo nacional
         </h2>
 
@@ -92,7 +92,7 @@ export function PanelEjecutivo() {
               <KpiCard
                 label="Recaudación IEPS"
                 value={fmtMdp(data.recaudacion.iepsMasRecienteMdp)}
-                description={`último dato disponible (${data.recaudacion.anio})`}
+                description={`último dato disponible (${data.recaudacion.año})`}
                 accent="green"
                 testId="kpi-recaudacion"
               />
@@ -111,10 +111,10 @@ export function PanelEjecutivo() {
       {data?.costosPorPatologia && data.costosPorPatologia.length > 0 && (
         <div className="metric-card-glass rounded-[18px] overflow-hidden" data-testid="tabla-costos-patologia">
           <div className="px-5 pt-5 pb-3 border-b border-[rgba(180,210,240,0.25)] dark:border-white/[0.06]">
-            <p className="text-[13px] font-bold tracking-[0.8px] uppercase text-[#5580a8] dark:text-white/35">
+            <p className="text-[15px] font-bold tracking-[0.8px] uppercase text-[#5580a8] dark:text-white/35">
               Desglose económico
             </p>
-            <p className="text-[20px] font-semibold text-[#0c1f3f] dark:text-white">
+            <p className="text-[22px] font-semibold text-[#0c1f3f] dark:text-white">
               Costos por patología atribuible
             </p>
           </div>
@@ -122,10 +122,10 @@ export function PanelEjecutivo() {
             <table className="w-full text-sm" data-testid="costos-table">
               <thead>
                 <tr className="border-b border-[rgba(180,210,240,0.20)] dark:border-white/[0.05]">
-                  <th className="text-left px-5 py-3 text-[11px] font-bold tracking-[0.8px] uppercase text-[#5580a8] dark:text-white/35">Código</th>
-                  <th className="text-left px-5 py-3 text-[11px] font-bold tracking-[0.8px] uppercase text-[#5580a8] dark:text-white/35">Trastorno</th>
-                  <th className="text-right px-5 py-3 text-[11px] font-bold tracking-[0.8px] uppercase text-[#5580a8] dark:text-white/35">Costo 2025</th>
-                  <th className="text-right px-5 py-3 text-[11px] font-bold tracking-[0.8px] uppercase text-[#5580a8] dark:text-white/35">Fuente</th>
+                  <th className="text-left px-5 py-3 text-[13px] font-bold tracking-[0.8px] uppercase text-[#5580a8] dark:text-white/35">Código</th>
+                  <th className="text-left px-5 py-3 text-[13px] font-bold tracking-[0.8px] uppercase text-[#5580a8] dark:text-white/35">Trastorno</th>
+                  <th className="text-right px-5 py-3 text-[13px] font-bold tracking-[0.8px] uppercase text-[#5580a8] dark:text-white/35">Costo 2025</th>
+                  <th className="text-right px-5 py-3 text-[13px] font-bold tracking-[0.8px] uppercase text-[#5580a8] dark:text-white/35">Fuente</th>
                 </tr>
               </thead>
               <tbody>
@@ -134,12 +134,12 @@ export function PanelEjecutivo() {
                     key={c.codigo}
                     className="border-b border-[rgba(180,210,240,0.10)] dark:border-white/[0.04] hover:bg-[rgba(180,210,240,0.10)] dark:hover:bg-white/[0.03] transition-colors"
                   >
-                    <td className="px-5 py-3 font-mono text-[12px] text-[#2563eb] dark:text-[#93c5fd]">{c.codigo}</td>
+                    <td className="px-5 py-3 font-mono text-[14px] text-[#2563eb] dark:text-[#93c5fd]">{c.codigo}</td>
                     <td className="px-5 py-3 text-[#0c1f3f] dark:text-white/80 max-w-[260px]">{c.trastorno}</td>
                     <td className="px-5 py-3 text-right tabular-nums font-semibold text-[#0c1f3f] dark:text-white">
                       ${Number(c.costoAjustado2025).toLocaleString('es-MX')}
                     </td>
-                    <td className="px-5 py-3 text-right text-[12px] text-[#5580a8] dark:text-white/40 max-w-[180px] truncate">
+                    <td className="px-5 py-3 text-right text-[14px] text-[#5580a8] dark:text-white/40 max-w-[180px] truncate">
                       {c.fuente}
                     </td>
                   </tr>
@@ -153,7 +153,7 @@ export function PanelEjecutivo() {
       {/* ── Fuentes de datos ── */}
       {data?.cargaEconomica.fuentes && data.cargaEconomica.fuentes.length > 0 && (
         <div className="metric-card-glass rounded-[18px] p-5">
-          <p className="text-[13px] font-bold tracking-[0.8px] uppercase text-[#5580a8] dark:text-white/35 mb-3">
+          <p className="text-[15px] font-bold tracking-[0.8px] uppercase text-[#5580a8] dark:text-white/35 mb-3">
             Fuentes y verificación
           </p>
           <div className="flex flex-col gap-2">

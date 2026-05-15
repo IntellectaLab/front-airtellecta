@@ -134,7 +134,7 @@ function CrearAlertaModal({ estados, onGuardar, onClose }: CrearAlertaModalProps
   }
 
   const inputCls = 'config-input-glass px-[14px] py-[10px] rounded-[10px] text-sm text-[#0c1f3f] dark:text-white font-sans w-full'
-  const labelCls = 'text-[13px] font-semibold text-[#1e3a5f] dark:text-white/60'
+  const labelCls = 'text-[15px] font-semibold text-[#1e3a5f] dark:text-white/60'
 
   return (
     <div className="modal-overlay-glass fixed inset-0 z-[500] flex items-center justify-center" onClick={onClose}>
@@ -149,7 +149,7 @@ function CrearAlertaModal({ estados, onGuardar, onClose }: CrearAlertaModalProps
 
         <div className="px-[22px] py-[18px] flex flex-col gap-4">
           {error && (
-            <p className="text-[13px] text-[#dc2626] font-semibold">{error}</p>
+            <p className="text-[15px] text-[#dc2626] font-semibold">{error}</p>
           )}
 
           <div className="flex flex-col gap-[6px]">
@@ -198,7 +198,7 @@ function CrearAlertaModal({ estados, onGuardar, onClose }: CrearAlertaModalProps
                   key={s}
                   type="button"
                   onClick={() => setSeveridad(s)}
-                  className={`flex-1 flex items-center justify-center gap-2 py-[9px] rounded-[10px] border text-[13px] font-semibold font-sans cursor-pointer transition-all ${
+                  className={`flex-1 flex items-center justify-center gap-2 py-[9px] rounded-[10px] border text-[15px] font-semibold font-sans cursor-pointer transition-all ${
                     severidad === s
                       ? `${SEV_STYLES[s].bg} ${SEV_STYLES[s].text}`
                       : 'bg-transparent border-[rgba(180,210,240,0.35)] text-[#5580a8] dark:border-white/10 dark:text-white/40'
@@ -263,17 +263,17 @@ function AlertasPanel() {
           <div className="panel-glass absolute top-[calc(100%+10px)] right-0 w-[360px] z-[200] rounded-[20px] overflow-hidden">
             <div className="flex items-center justify-between px-[18px] pt-5 pb-[14px]">
               <div>
-                <h3 className="font-display text-[20px] font-extrabold text-[#0c1f3f] m-0 tracking-[-0.3px] dark:text-white">
+                <h3 className="font-display text-[22px] font-extrabold text-[#0c1f3f] m-0 tracking-[-0.3px] dark:text-white">
                   Alertas
                 </h3>
                 {disparadas.length > 0 && (
-                  <p className="text-[12px] text-[#dc2626] font-semibold mt-0.5">
+                  <p className="text-[14px] text-[#dc2626] font-semibold mt-0.5">
                     {disparadas.length} alerta{disparadas.length > 1 ? 's' : ''} activa{disparadas.length > 1 ? 's' : ''}
                   </p>
                 )}
               </div>
               <button
-                className="btn-primary-glass flex items-center gap-1.5 px-3 py-2 rounded-[9px] border-none cursor-pointer text-[13px] font-semibold font-sans"
+                className="btn-primary-glass flex items-center gap-1.5 px-3 py-2 rounded-[9px] border-none cursor-pointer text-[15px] font-semibold font-sans"
                 type="button"
                 onClick={() => { setOpen(false); setShowCrear(true) }}
                 data-testid="btn-crear-alerta"
@@ -297,7 +297,7 @@ function AlertasPanel() {
                       <div className="flex items-start justify-between gap-2">
                         <div className="flex items-center gap-2">
                           <span className={`w-2.5 h-2.5 rounded-full shrink-0 mt-0.5 ${sev.dot}`} />
-                          <span className={`text-[13px] font-bold ${sev.text}`}>{alerta.nombre}</span>
+                          <span className={`text-[15px] font-bold ${sev.text}`}>{alerta.nombre}</span>
                         </div>
                         <button
                           type="button"
@@ -310,7 +310,7 @@ function AlertasPanel() {
                         </button>
                       </div>
 
-                      <p className="text-[12px] text-[#3a5a80] dark:text-white/50 leading-snug">
+                      <p className="text-[14px] text-[#3a5a80] dark:text-white/50 leading-snug">
                         {alerta.scope === 'cualquier_estado' ? 'Cualquier estado' : alerta.estadoNombre}
                         {' · '}prevalencia {alerta.operador} {alerta.umbral}%
                       </p>
@@ -320,7 +320,7 @@ function AlertasPanel() {
                           {disparadasDeEsta.map((d) => (
                             <span
                               key={d.estadoNombre}
-                              className={`text-[11px] font-semibold px-2 py-0.5 rounded-full ${sev.bg} ${sev.text} border`}
+                              className={`text-[13px] font-semibold px-2 py-0.5 rounded-full ${sev.bg} ${sev.text} border`}
                             >
                               {d.estadoNombre} ({Number(d.valorActual).toFixed(1)}%)
                             </span>
@@ -329,7 +329,7 @@ function AlertasPanel() {
                       )}
 
                       {disparadasDeEsta.length === 0 && (
-                        <p className="text-[11px] text-[#5580a8] dark:text-white/30">Sin estados en esta condición ahora</p>
+                        <p className="text-[13px] text-[#5580a8] dark:text-white/30">Sin estados en esta condición ahora</p>
                       )}
                     </div>
                   )
@@ -382,7 +382,7 @@ function NotificationsPanel() {
       {open && (
         <div className="panel-glass absolute top-[calc(100%+10px)] right-0 w-[340px] z-[200] rounded-[20px] overflow-hidden">
           <div className="flex items-center justify-between px-[18px] pt-5 pb-[14px]">
-            <h3 className="font-display text-[20px] font-extrabold text-[#0c1f3f] m-0 tracking-[-0.3px] dark:text-white">
+            <h3 className="font-display text-[22px] font-extrabold text-[#0c1f3f] m-0 tracking-[-0.3px] dark:text-white">
               Notificaciones
             </h3>
           </div>
@@ -415,11 +415,11 @@ function ConfigModal({ onClose }: { onClose: () => void }) {
 
         <div className="px-[22px] py-[18px] flex flex-col gap-5">
           <div className="flex flex-col gap-3">
-            <h3 className="text-[11px] font-bold tracking-[0.8px] uppercase text-[#7a9ab8] m-0 dark:text-white/30">
+            <h3 className="text-[13px] font-bold tracking-[0.8px] uppercase text-[#7a9ab8] m-0 dark:text-white/30">
               Perfil
             </h3>
             <div className="flex flex-col gap-[6px]">
-              <label className="text-[13px] font-semibold text-[#1e3a5f] dark:text-white/60">Nombre de usuario</label>
+              <label className="text-[15px] font-semibold text-[#1e3a5f] dark:text-white/60">Nombre de usuario</label>
               <input
                 className="config-input-glass px-[14px] py-[10px] rounded-[10px] text-sm text-[#0c1f3f] font-sans w-full"
                 value={displayName}
@@ -429,21 +429,21 @@ function ConfigModal({ onClose }: { onClose: () => void }) {
               />
             </div>
             <div className="flex flex-col gap-[6px]">
-              <label className="text-[13px] font-semibold text-[#1e3a5f] dark:text-white/60">Rol</label>
+              <label className="text-[15px] font-semibold text-[#1e3a5f] dark:text-white/60">Rol</label>
               <input className="config-input-glass px-[14px] py-[10px] rounded-[10px] text-sm font-sans w-full" value="Cargo" readOnly />
-              <span className="text-[11px] text-[#8aaac5] dark:text-white/25">
+              <span className="text-[13px] text-[#8aaac5] dark:text-white/25">
                 Asignado por el administrador del sistema
               </span>
             </div>
           </div>
 
           <div className="flex flex-col gap-3">
-            <h3 className="text-[11px] font-bold tracking-[0.8px] uppercase text-[#7a9ab8] m-0 dark:text-white/30">
+            <h3 className="text-[13px] font-bold tracking-[0.8px] uppercase text-[#7a9ab8] m-0 dark:text-white/30">
               Seguridad
             </h3>
             <div className="flex items-start gap-2.5 px-[14px] py-3 rounded-[10px] bg-[rgba(219,234,254,0.50)] border border-[rgba(147,197,253,0.45)] dark:bg-white/[0.05] dark:border-[rgba(147,197,253,0.20)]">
               <span className="shrink-0 text-[#2563eb] mt-px dark:text-[#60a5fa]"><InfoIcon /></span>
-              <p className="text-[13px] text-[#1e3a5f] leading-[1.5] m-0 dark:text-white/50">
+              <p className="text-[15px] text-[#1e3a5f] leading-[1.5] m-0 dark:text-white/50">
                 El cambio de contraseña en este sistema requiere autorización de un administrador. Contacta al responsable de tu institución para realizar esta solicitud.
               </p>
             </div>
@@ -515,10 +515,10 @@ function UserMenu() {
           data-testid="user-menu-btn"
         >
           <div className="flex flex-col gap-px text-right">
-            <span className="text-[13px] font-bold text-[#0c1f3f] leading-[1.2] dark:text-white">Usuario</span>
-            <span className="text-[11px] text-[#5580a8] leading-[1.2] dark:text-white/45">Cargo</span>
+            <span className="text-[15px] font-bold text-[#0c1f3f] leading-[1.2] dark:text-white">Usuario</span>
+            <span className="text-[13px] text-[#5580a8] leading-[1.2] dark:text-white/45">Cargo</span>
           </div>
-          <div className="avatar-glass w-8 h-8 rounded-full text-white text-[12px] font-bold flex items-center justify-center shrink-0 font-display">
+          <div className="avatar-glass w-8 h-8 rounded-full text-white text-[14px] font-bold flex items-center justify-center shrink-0 font-display">
             US
           </div>
           <ChevronDownIcon />
@@ -531,7 +531,7 @@ function UserMenu() {
                 <span className="flex items-center text-[#1344c4] shrink-0"><CheckIcon /></span>
                 <div>
                   <p className="text-sm font-bold text-[#0c1f3f] m-0 leading-[1.3] dark:text-white">Usuario</p>
-                  <p className="text-[11px] text-[#7a9ab8] m-0 tracking-[0.5px] leading-[1.3] dark:text-white/30">ID-AIRTELLECTA</p>
+                  <p className="text-[13px] text-[#7a9ab8] m-0 tracking-[0.5px] leading-[1.3] dark:text-white/30">ID-AIRTELLECTA</p>
                 </div>
               </div>
             </div>
@@ -555,7 +555,7 @@ function UserMenu() {
               >
                 <AppearanceIcon />
                 Apariencia
-                <span className="ml-auto text-[11px] font-semibold text-[#7a9ab8] bg-[rgba(180,210,240,0.35)] px-2 py-0.5 rounded-[6px] dark:bg-white/[0.08] dark:text-white/40">
+                <span className="ml-auto text-[13px] font-semibold text-[#7a9ab8] bg-[rgba(180,210,240,0.35)] px-2 py-0.5 rounded-[6px] dark:bg-white/[0.08] dark:text-white/40">
                   {THEME_LABELS[theme]}
                 </span>
               </button>
@@ -565,7 +565,7 @@ function UserMenu() {
                   {THEME_OPTIONS.map(({ value, label, icon }) => (
                     <button
                       key={value}
-                      className={`appearance-option-glass flex items-center gap-2.5 px-2.5 py-2 rounded-[8px] border-none bg-transparent text-[13px] cursor-pointer font-sans w-full text-left ${theme === value ? 'appearance-option-glass--active' : ''}`}
+                      className={`appearance-option-glass flex items-center gap-2.5 px-2.5 py-2 rounded-[8px] border-none bg-transparent text-[15px] cursor-pointer font-sans w-full text-left ${theme === value ? 'appearance-option-glass--active' : ''}`}
                       type="button"
                       onClick={() => setTheme(value)}
                     >
@@ -607,7 +607,7 @@ function UserMenu() {
 const NAV_ITEMS = [
   { label: 'Resumen Nacional', path: '/dashboard',                    end: true  },
   { label: 'Mapa de Calor',    path: '/dashboard/mapa',               end: false },
-  { label: 'Tendencias',       path: '/dashboard/tendencias',         end: false },
+  { label: 'Bases de Datos',   path: '/dashboard/bases-de-datos',     end: false },
   { label: 'Panel Ejecutivo',  path: '/dashboard/panel-ejecutivo',    end: false },
   { label: 'Simulador',        path: '/dashboard/simulador',          end: false },
   { label: 'Correlaciones',   path: '/dashboard/correlaciones',      end: false },
@@ -635,10 +635,10 @@ export function DashboardLayout() {
 
         <header className="relative z-10 h-[62px] shrink-0 flex items-center justify-between px-6">
           <div>
-            <p className="text-[11px] font-bold tracking-[0.9px] uppercase text-[#5580a8] leading-none dark:text-white/35">
+            <p className="text-[13px] font-bold tracking-[0.9px] uppercase text-[#5580a8] leading-none dark:text-white/35">
               Airtellecta
             </p>
-            <h1 className="font-display text-[22px] font-extrabold tracking-[-0.3px] text-[#0c1f3f] leading-tight dark:text-white">
+            <h1 className="font-display text-[25px] font-extrabold tracking-[-0.3px] text-[#0c1f3f] leading-tight dark:text-white">
               {pageLabel}
             </h1>
           </div>
