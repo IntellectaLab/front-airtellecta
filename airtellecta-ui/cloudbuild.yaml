@@ -32,12 +32,12 @@ substitutions:
   _REPOSITORY: 'airtellecta-front-repo'
   _IMAGE: 'airtellecta-front'
   _VITE_API_BASE_URL: 'https://airtellecta-back-589274708348.us-central1.run.app'
-  _VITE_FIREBASE_API_KEY: ''
-  _VITE_FIREBASE_AUTH_DOMAIN: ''
-  _VITE_FIREBASE_PROJECT_ID: ''
-  _VITE_FIREBASE_STORAGE_BUCKET: ''
-  _VITE_FIREBASE_MESSAGING_SENDER_ID: ''
-  _VITE_FIREBASE_APP_ID: ''
+  _VITE_FIREBASE_API_KEY: 'AIzaSyCItiUpxYqnQbpZfK9KXfmItUh4GimKrmY'
+  _VITE_FIREBASE_AUTH_DOMAIN: 'airtellecta-1d1ca.firebaseapp.com'
+  _VITE_FIREBASE_PROJECT_ID: 'airtellecta-1d1ca'
+  _VITE_FIREBASE_STORAGE_BUCKET: 'airtellecta-1d1ca.firebasestorage.app'
+  _VITE_FIREBASE_MESSAGING_SENDER_ID: '12963178872'
+  _VITE_FIREBASE_APP_ID: '1:12963178872:web:8c57bea94661675f09c08d'
   _VITE_FIREBASE_MEASUREMENT_ID: ''
 
 options:
