@@ -12,6 +12,45 @@ import type {
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL ?? ''
 
+// Tabla CP850: caracteres Unicode para bytes 0x80–0xFF (en orden)
+const CP850_CHARS =
+  '\xc7\xfc\xe9\xe2\xe4\xe0\xe5\xe7\xea\xeb\xe8\xef\xee\xec\xc4\xc5' +
+  '\xc9\xe6\xc6\xf4\xf6\xf2\xfb\xf9\xff\xd6\xdc\xf8\xa3\xd8\xd7ƒ' +
+  '\xe1\xed\xf3\xfa\xf1\xd1\xaa\xba\xbf\xae\xac\xbd\xbc\xa1\xab\xbb' +
+  '░▒▓│┤\xc1\xc2\xc0\xa9╣║╗╝\xa2\xa5┐' +
+  '└┴┬├─┼\xe3\xc3╚╔╩╦╠═╬\xa4' +
+  '\xf0\xd0\xca\xcb\xc8ı\xcd\xce\xcf┘┌█▄\xa6\xcc▀' +
+  '\xd3\xdf\xd4\xd2\xf5\xd5\xb5\xfe\xde\xda\xdb\xd9\xfd\xdd\xaf\xb4' +
+  '­\xb1‗\xbe\xb6\xa7\xf7\xb8\xb0\xa8\xb7\xb9\xb3\xb2■\xa0'
+
+// Mapa inverso: carácter Unicode → byte CP850
+const cp850Reverse = new Map<string, number>()
+for (let i = 0; i < CP850_CHARS.length; i++) {
+  cp850Reverse.set(CP850_CHARS[i], 0x80 + i)
+}
+
+// Corrige mojibake CP850: bytes UTF-8 del backend interpretados como CP850
+// Ej: "M├®xico" → "México",  "Le├│n" → "León"
+function fixMojibake(s: string): string {
+  if (!s) return s
+  try {
+    const bytes = new Uint8Array(s.length)
+    for (let i = 0; i < s.length; i++) {
+      const code = s.charCodeAt(i)
+      if (code < 0x80) {
+        bytes[i] = code
+      } else {
+        const b = cp850Reverse.get(s[i])
+        if (b === undefined) return s  // Carácter no CP850 → ya es Unicode correcto
+        bytes[i] = b
+      }
+    }
+    return new TextDecoder('utf-8', { fatal: true }).decode(bytes)
+  } catch {
+    return s
+  }
+}
+
 async function authFetch(path: string, options: RequestInit = {}): Promise<Response> {
   const user = auth?.currentUser ?? null
   const token = user ? await user.getIdToken() : null
@@ -55,8 +94,14 @@ export const api = {
 export const apiService = {
   resumenNacional: () => get<ResumenNacional>('/api/resumen-nacional'),
   tendencias:      () => get<Tendencias>('/api/tendencias'),
-  mapaEstatal:     (sexo?: 1 | 2) =>
-    get<EntidadPrevalencia[]>(`/api/mapa-estatal${sexo ? `?sexo=${sexo}` : ''}`),
+  mapaEstatal: async (sexo?: 1 | 2) => {
+    const data = await get<EntidadPrevalencia[]>(`/api/mapa-estatal${sexo ? `?sexo=${sexo}` : ''}`)
+    return data.map(e => ({
+      ...e,
+      nombre:      fixMojibake(e.nombre),
+      abreviatura: fixMojibake(e.abreviatura),
+    }))
+  },
   panelEjecutivo:  () => get<PanelEjecutivo>('/api/panel-ejecutivo'),
   recaudacion:     () => get<RecaudacionAnual[]>('/api/recaudacion'),
   simulacion:      (req: SimulacionRequest) =>
