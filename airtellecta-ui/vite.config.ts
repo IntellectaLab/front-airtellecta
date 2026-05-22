@@ -7,7 +7,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://localhost:8080',
+        target: process.env.VITE_API_PROXY_TARGET ?? 'https://airtellecta-back-589274708348.us-central1.run.app',
         changeOrigin: true,
       },
       '/geojson-mexico': {

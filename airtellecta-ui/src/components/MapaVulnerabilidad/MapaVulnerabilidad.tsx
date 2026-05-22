@@ -297,21 +297,26 @@ export function MapaVulnerabilidad() {
 
   const onMapLoad = useCallback((m: google.maps.Map) => setMap(m), [])
 
-  // Load GeoJSON and bind styles + events when map + data are ready
+  // Refs para valores mutables usados en los event handlers
+  const findEstadoRef = useRef(findEstado)
+  const geoRef        = useRef(geo)
+  const byNombreRef   = useRef(byNombre)
+
+  useEffect(() => { findEstadoRef.current = findEstado }, [findEstado])
+  useEffect(() => { geoRef.current = geo },               [geo])
+  useEffect(() => { byNombreRef.current = byNombre },     [byNombre])
+
+  // Carga el GeoJSON UNA SOLA VEZ cuando el mapa está listo
   useEffect(() => {
     if (!map) return
 
-    dataLayerRef.current?.setMap(null)
-
-    let cancelled = false
     const layer = new google.maps.Data({ map })
     dataLayerRef.current = layer
 
     layer.loadGeoJson(GEOJSON_URL, {}, () => {
-      if (cancelled) return
       layer.setStyle((feature) => {
         const name   = (feature.getProperty('NAME_1') as string) ?? ''
-        const estado = findEstado(name)
+        const estado = findEstadoRef.current(name)
         const prev   = estado ? Number(estado.prevalencia) : 0
         return {
           fillColor:    getColorForPrevalencia(prev),
@@ -326,7 +331,7 @@ export function MapaVulnerabilidad() {
 
     layer.addListener('mouseover', (e: google.maps.Data.MouseEvent) => {
       const name   = (e.feature.getProperty('NAME_1') as string) ?? ''
-      const estado = findEstado(name)
+      const estado = findEstadoRef.current(name)
       layer.overrideStyle(e.feature, { strokeWeight: 2.5, strokeOpacity: 1, fillOpacity: 0.92 })
       setHovered(estado ?? null)
     })
@@ -338,20 +343,36 @@ export function MapaVulnerabilidad() {
 
     layer.addListener('click', (e: google.maps.Data.MouseEvent) => {
       const name   = (e.feature.getProperty('NAME_1') as string) ?? ''
-      const estado = findEstado(name)
-      if (!estado || !geo) return
-      const feature = geo.features.find(
+      const estado = findEstadoRef.current(name)
+      if (!estado || !geoRef.current) return
+      const feature = geoRef.current.features.find(
         f => normalizarNombre(f.properties.NAME_1) === normalizarNombre(name) ||
-             findEstadoByGadmName(f.properties.NAME_1, byNombre)?.cveEntidad === estado.cveEntidad
+             findEstadoByGadmName(f.properties.NAME_1, byNombreRef.current)?.cveEntidad === estado.cveEntidad
       )
       if (feature) setSelected({ feature, estado })
     })
 
-    return () => {
-      cancelled = true
-      layer.setMap(null)
-    }
-  }, [map, findEstado, geo, byNombre])
+    return () => { layer.setMap(null) }
+  }, [map]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Actualiza colores cuando llegan los datos sin re-fetchear el GeoJSON
+  useEffect(() => {
+    const layer = dataLayerRef.current
+    if (!layer) return
+    layer.setStyle((feature) => {
+      const name   = (feature.getProperty('NAME_1') as string) ?? ''
+      const estado = findEstado(name)
+      const prev   = estado ? Number(estado.prevalencia) : 0
+      return {
+        fillColor:    getColorForPrevalencia(prev),
+        fillOpacity:  getOpacityForPrevalencia(prev),
+        strokeColor:  '#1e3a5f',
+        strokeWeight: 0.7,
+        strokeOpacity: 0.6,
+        cursor: estado ? 'pointer' : 'default',
+      }
+    })
+  }, [findEstado])
 
   // ── No API key configured ────────────────────────────────────────────────
   if (!apiKey) {

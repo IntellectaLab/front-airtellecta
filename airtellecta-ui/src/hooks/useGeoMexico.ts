@@ -11,13 +11,17 @@ export interface GeoCollection {
   features: GeoFeature[]
 }
 
+const GEOJSON_URL: string =
+  import.meta.env.VITE_MEXICO_GEOJSON_URL ??
+  (import.meta.env.DEV ? '/geojson-mexico' : 'https://geodata.ucdavis.edu/gadm/gadm4.1/json/gadm41_MEX_1.json')
+
 let cache: GeoCollection | null = null
 let promise: Promise<GeoCollection> | null = null
 
 function fetchGeo(): Promise<GeoCollection> {
   if (cache) return Promise.resolve(cache)
   if (!promise) {
-    promise = fetch('/geojson-mexico')
+    promise = fetch(GEOJSON_URL)
       .then(r => r.json())
       .then(data => { cache = data; return data })
   }
