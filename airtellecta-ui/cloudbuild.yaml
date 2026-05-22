@@ -24,6 +24,8 @@ steps:
       - 'VITE_FIREBASE_MEASUREMENT_ID=${_VITE_FIREBASE_MEASUREMENT_ID}'
       - '--build-arg'
       - 'VITE_GOOGLE_MAPS_API_KEY=${_VITE_GOOGLE_MAPS_API_KEY}'
+      - '--build-arg'
+      - 'VITE_RECAPTCHA_SITE_KEY=${_VITE_RECAPTCHA_SITE_KEY}'
       - 'airtellecta-ui'
 
 images:
@@ -42,6 +44,7 @@ substitutions:
   _VITE_FIREBASE_APP_ID: '1:12963178872:web:8c57bea94661675f09c08d'
   _VITE_FIREBASE_MEASUREMENT_ID: ''
   _VITE_GOOGLE_MAPS_API_KEY: 'AIzaSyAkO6BtPL4wS8_jXalxyV3btNVMO3ySXC0'
+  _VITE_RECAPTCHA_SITE_KEY: '6LfS-PcsAAAAAM0L6kwhgRhhNdN3Nr1qoNrnu2Ue'
 
 options:
   logging: CLOUD_LOGGING_ONLY

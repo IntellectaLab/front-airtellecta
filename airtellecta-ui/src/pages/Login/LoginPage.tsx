@@ -1,7 +1,10 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { signInWithEmailAndPassword } from 'firebase/auth'
+import ReCAPTCHA from 'react-google-recaptcha'
 import { auth } from '../../firebase'
+
+const RECAPTCHA_SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY || ''
 
 const UserIcon = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -46,6 +49,8 @@ export function LoginPage() {
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null)
+  const recaptchaRef = useRef<ReCAPTCHA>(null)
 
   const titulo = useTypewriter('AIRTELLECTA', 75, 350)
 
@@ -53,6 +58,10 @@ export function LoginPage() {
     e.preventDefault()
     if (!usuario.trim() || !password) {
       setError('Por favor completa todos los campos.')
+      return
+    }
+    if (RECAPTCHA_SITE_KEY && !captchaToken) {
+      setError('Por favor completa el captcha.')
       return
     }
     if (!auth) {
@@ -75,6 +84,8 @@ export function LoginPage() {
       }
     } finally {
       setLoading(false)
+      recaptchaRef.current?.reset()
+      setCaptchaToken(null)
     }
   }
 
@@ -146,6 +157,17 @@ export function LoginPage() {
             />
           </div>
         </div>
+
+        {RECAPTCHA_SITE_KEY && (
+          <div className="flex justify-center">
+            <ReCAPTCHA
+              ref={recaptchaRef}
+              sitekey={RECAPTCHA_SITE_KEY}
+              onChange={(token) => setCaptchaToken(token)}
+              onExpired={() => setCaptchaToken(null)}
+            />
+          </div>
+        )}
 
         <button
           type="submit"
