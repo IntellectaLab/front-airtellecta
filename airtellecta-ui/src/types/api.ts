@@ -140,3 +140,37 @@ export interface SimulacionResultado {
   politicasAplicadas: PoliticaAplicada[]
   elasticidadesAplicadas: ElasticidadesAplicadas
 }
+
+// === Admin Usuarios ===
+
+export interface UsuarioDto {
+  id: number
+  email: string
+  nombreCompleto: string
+  cargo: string | null
+  institucion: string | null
+  rol: string
+  entidadId: number | null
+  activo: boolean
+  activationLink: string | null
+  ultimoAcceso: string | null
+  createdAt: string
+}
+
+export interface CrearUsuarioRequest {
+  email: string
+  nombreCompleto: string
+  cargo?: string
+  institucion?: string
+  rol: 'admin' | 'user'
+  entidadId?: number
+}
+
+export interface ActualizarUsuarioRequest {
+  nombreCompleto?: string
+  cargo?: string
+  institucion?: string
+  rol?: 'admin' | 'user'
+  entidadId?: number
+  activo?: boolean
+}

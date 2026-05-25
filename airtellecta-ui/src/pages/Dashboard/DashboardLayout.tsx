@@ -398,7 +398,8 @@ function NotificationsPanel() {
 // ── Config Modal ───────────────────────────────────────────────────────────
 
 function ConfigModal({ onClose }: { onClose: () => void }) {
-  const [displayName, setDisplayName] = useState('Usuario')
+  const { user, role } = useAuth()
+  const [displayName, setDisplayName] = useState(user?.displayName || 'Usuario')
 
   return (
     <div className="modal-overlay-glass fixed inset-0 z-[500] flex items-center justify-center" onClick={onClose}>
@@ -430,7 +431,7 @@ function ConfigModal({ onClose }: { onClose: () => void }) {
             </div>
             <div className="flex flex-col gap-[6px]">
               <label className="text-[15px] font-semibold text-[#1e3a5f] dark:text-white/60">Rol</label>
-              <input className="config-input-glass px-[14px] py-[10px] rounded-[10px] text-sm font-sans w-full" value="Cargo" readOnly />
+              <input className="config-input-glass px-[14px] py-[10px] rounded-[10px] text-sm font-sans w-full" value={role === 'ADMIN' ? 'Administrador' : 'Usuario'} readOnly />
               <span className="text-[13px] text-[#8aaac5] dark:text-white/25">
                 Asignado por el administrador del sistema
               </span>
