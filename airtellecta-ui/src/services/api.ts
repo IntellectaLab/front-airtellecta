@@ -142,6 +142,8 @@ export const apiService = {
   recaudacion:     () => get<RecaudacionAnual[]>('/api/recaudacion'),
   simulacion:      (req: SimulacionRequest) =>
     post<SimulacionResultado>('/api/simulacion', req),
+
+  // Admin usuarios
   listarUsuarios:     () => get<UsuarioDto[]>('/api/admin/usuarios'),
   crearUsuario:       (req: CrearUsuarioRequest) => post<UsuarioDto>('/api/admin/usuarios', req),
   actualizarUsuario:  (id: number, req: ActualizarUsuarioRequest) => put<UsuarioDto>(`/api/admin/usuarios/${id}`, req),

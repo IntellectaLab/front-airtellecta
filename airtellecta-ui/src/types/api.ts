@@ -141,6 +141,8 @@ export interface SimulacionResultado {
   elasticidadesAplicadas: ElasticidadesAplicadas
 }
 
+// === Admin Usuarios ===
+
 export interface UsuarioDto {
   id: number
   email: string
