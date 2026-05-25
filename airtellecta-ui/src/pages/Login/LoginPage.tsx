@@ -135,12 +135,18 @@ export function LoginPage() {
       }
       navigate('/dashboard')
     } catch (err: unknown) {
+      console.error('Login error:', err)
       const code = (err as { code?: string })?.code
       if (code === 'auth/multi-factor-auth-required') {
-        const resolver = getMultiFactorResolver(auth!, err as never)
-        setMfaResolver(resolver)
-        setMfaStep('challenge')
-        setError('')
+        try {
+          const resolver = getMultiFactorResolver(auth!, err as never)
+          setMfaResolver(resolver)
+          setMfaStep('challenge')
+          setError('')
+        } catch (mfaErr) {
+          console.error('MFA resolver error:', mfaErr)
+          setError('Error al iniciar el desafío MFA. Intenta de nuevo.')
+        }
       } else if (code === 'auth/invalid-credential' || code === 'auth/user-not-found' || code === 'auth/wrong-password') {
         setError('Credenciales incorrectas. Verifica tu usuario y contraseña.')
       } else if (code === 'auth/too-many-requests') {
