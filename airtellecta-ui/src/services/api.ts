@@ -8,6 +8,9 @@ import type {
   RecaudacionAnual,
   SimulacionRequest,
   SimulacionResultado,
+  UsuarioDto,
+  CrearUsuarioRequest,
+  ActualizarUsuarioRequest,
 } from '../types/api'
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL ?? ''
@@ -85,6 +88,13 @@ async function post<T>(path: string, body: unknown): Promise<T> {
   return json.data
 }
 
+async function put<T>(path: string, body: unknown): Promise<T> {
+  const res = await authFetch(path, { method: 'PUT', body: JSON.stringify(body) })
+  const json = (await res.json()) as ApiResponse<T>
+  if (!json.success) throw new Error(json.error ?? 'Error del servidor')
+  return json.data
+}
+
 export const api = {
   get:  (path: string) => authFetch(path),
   post: (path: string, body: unknown) =>
@@ -106,4 +116,9 @@ export const apiService = {
   recaudacion:     () => get<RecaudacionAnual[]>('/api/recaudacion'),
   simulacion:      (req: SimulacionRequest) =>
     post<SimulacionResultado>('/api/simulacion', req),
+
+  // Admin usuarios
+  listarUsuarios:     () => get<UsuarioDto[]>('/api/admin/usuarios'),
+  crearUsuario:       (req: CrearUsuarioRequest) => post<UsuarioDto>('/api/admin/usuarios', req),
+  actualizarUsuario:  (id: number, req: ActualizarUsuarioRequest) => put<UsuarioDto>(`/api/admin/usuarios/${id}`, req),
 }
