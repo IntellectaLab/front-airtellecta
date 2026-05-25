@@ -2,6 +2,9 @@ import { ErrorBanner }        from '../../components/ErrorBanner/ErrorBanner'
 import { EmptyState }         from '../../components/EmptyState/EmptyState'
 import { usePanelEjecutivo }  from '../../hooks/usePanelEjecutivo'
 import { VerificationBadge }  from '../../components/VerificationBadge/VerificationBadge'
+import { ExportButtons }      from '../../components/reports/ExportButtons'
+import { PanelEjecutivoReport } from '../../components/reports/PanelEjecutivoReport'
+import { useAuth }            from '../../context/AuthContext'
 
 function fmtMdp(n: number): string {
   return `$${Number(n).toLocaleString('es-MX', { minimumFractionDigits: 0, maximumFractionDigits: 0 })} Mdp`
@@ -48,6 +51,7 @@ function KpiCard({ label, value, description, accent = 'default', testId }: KpiC
 
 export function PanelEjecutivo() {
   const { data, isLoading, isError, refetch } = usePanelEjecutivo()
+  const { user } = useAuth()
 
   return (
     <div className="flex flex-col gap-6" data-testid="panel-ejecutivo">
@@ -72,6 +76,24 @@ export function PanelEjecutivo() {
         <h2 className="font-display text-[22px] font-extrabold text-[#0c1f3f] dark:text-white mb-4">
           Resumen ejecutivo nacional
         </h2>
+
+        {data && (
+          <div className="flex justify-end mb-4">
+            <ExportButtons
+              pdfDocument={
+                <PanelEjecutivoReport
+                  data={data}
+                  userName={user?.displayName || user?.email || 'Usuario'}
+                />
+              }
+              pdfFileName={`panel-ejecutivo-airtellecta-${new Date().toISOString().slice(0, 10)}.pdf`}
+              onExcelDownload={async () => {
+                const { apiService } = await import('../../services/api')
+                await apiService.exportPanelEjecutivoExcel()
+              }}
+            />
+          </div>
+        )}
 
         <div className="grid grid-cols-3 gap-4">
           {isLoading ? (
