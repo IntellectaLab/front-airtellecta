@@ -147,7 +147,8 @@ export function PdfChart({
             />
             <SvgText
               x={marginLeft - 6} y={y + 3}
-              fill={CHART.labelColor} fontSize={7} textAnchor="end"
+              fill={CHART.labelColor}
+              style={{ fontSize: 7, textAnchor: 'end' } as any}
             >
               {v.toFixed(1)}%
             </SvgText>
@@ -162,7 +163,8 @@ export function PdfChart({
           <SvgText
             key={`def-label-${i}`}
             x={marginLeft + plotW + 6} y={y + 3}
-            fill={defColor} fontSize={7} textAnchor="start"
+            fill={defColor}
+            style={{ fontSize: 7, textAnchor: 'start' } as any}
           >
             {fmt(v)}
           </SvgText>
@@ -177,7 +179,8 @@ export function PdfChart({
       />
       <SvgText
         x={marginLeft + plotW + 6} y={baselineY - 5}
-        fill={CHART.baselineColor} fontSize={6} textAnchor="start"
+        fill={CHART.baselineColor}
+        style={{ fontSize: 6, textAnchor: 'start' } as any}
       >
         Base
       </SvgText>
@@ -206,7 +209,8 @@ export function PdfChart({
         <SvgText
           key={`x-${i}`}
           x={xPositions[i]} y={marginTop + plotH + 14}
-          fill={CHART.labelColor} fontSize={7} textAnchor="middle"
+          fill={CHART.labelColor}
+          style={{ fontSize: 7, textAnchor: 'middle' } as any}
         >
           Ano {d.anio}
         </SvgText>
@@ -218,20 +222,20 @@ export function PdfChart({
       <Line x1={marginLeft + plotW} y1={marginTop} x2={marginLeft + plotW} y2={marginTop + plotH} stroke={defColor} strokeWidth={0.5} />
 
       {/* Axis titles */}
-      <SvgText x={12} y={marginTop + plotH / 2} fill={CHART.prevalenciaStroke} fontSize={7} textAnchor="middle" transform={`rotate(-90, 12, ${marginTop + plotH / 2})`}>
+      <SvgText x={12} y={marginTop + plotH / 2} fill={CHART.prevalenciaStroke} style={{ fontSize: 7, textAnchor: 'middle' } as any} transform={`rotate(-90, 12, ${marginTop + plotH / 2})`}>
         Prevalencia (%)
       </SvgText>
-      <SvgText x={width - 8} y={marginTop + plotH / 2} fill={defColor} fontSize={7} textAnchor="middle" transform={`rotate(90, ${width - 8}, ${marginTop + plotH / 2})`}>
+      <SvgText x={width - 8} y={marginTop + plotH / 2} fill={defColor} style={{ fontSize: 7, textAnchor: 'middle' } as any} transform={`rotate(90, ${width - 8}, ${marginTop + plotH / 2})`}>
         Muertes evitadas
       </SvgText>
 
       {/* Legend */}
       <Line x1={marginLeft + 10} y1={height - 8} x2={marginLeft + 30} y2={height - 8} stroke={CHART.prevalenciaStroke} strokeWidth={2} />
-      <SvgText x={marginLeft + 34} y={height - 5} fill={CHART.labelColor} fontSize={6}>Prevalencia %</SvgText>
+      <SvgText x={marginLeft + 34} y={height - 5} fill={CHART.labelColor} style={{ fontSize: 6 } as any}>Prevalencia %</SvgText>
       <Line x1={marginLeft + 110} y1={height - 8} x2={marginLeft + 130} y2={height - 8} stroke={defColor} strokeWidth={1.5} strokeDasharray="5,3" />
-      <SvgText x={marginLeft + 134} y={height - 5} fill={CHART.labelColor} fontSize={6}>{isPositive ? 'Muertes evitadas' : 'Muertes adicionales'}</SvgText>
+      <SvgText x={marginLeft + 134} y={height - 5} fill={CHART.labelColor} style={{ fontSize: 6 } as any}>{isPositive ? 'Muertes evitadas' : 'Muertes adicionales'}</SvgText>
       <Line x1={marginLeft + 260} y1={height - 8} x2={marginLeft + 280} y2={height - 8} stroke={CHART.baselineColor} strokeWidth={1} strokeDasharray="4,3" />
-      <SvgText x={marginLeft + 284} y={height - 5} fill={CHART.labelColor} fontSize={6}>Linea base</SvgText>
+      <SvgText x={marginLeft + 284} y={height - 5} fill={CHART.labelColor} style={{ fontSize: 6 } as any}>Linea base</SvgText>
     </Svg>
   )
 }

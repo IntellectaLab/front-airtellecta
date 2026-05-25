@@ -204,7 +204,7 @@ function PageExecutiveSummary({ resultado, horizonte, impuesto }: {
   const accent = isPositive ? COLORS.green : COLORS.red
   const accentLight = isPositive ? COLORS.greenLight : COLORS.redLight
   const accentDark = isPositive ? COLORS.greenDark : COLORS.redDark
-  const arrow = isPositive ? '\u2193' : '\u2191' // down or up arrow
+
 
   const narrativa = isPositive
     ? `Con las politicas seleccionadas, el modelo SimSmoke proyecta una reduccion de ${fmt(rf.reduccionPuntosPct, 2)} puntos porcentuales en la prevalencia de tabaquismo en un horizonte de ${horizonte} anos. Esto equivale a ${fmt(rf.fumadoresEvitadosTotal)} fumadores evitados y ${fmt(rf.defuncionesEvitadasTotal)} muertes prevenidas, generando un ahorro acumulado de $${fmt(rf.ahorroAcumuladoMdp, 1)} MDP para el sistema de salud publico.`
