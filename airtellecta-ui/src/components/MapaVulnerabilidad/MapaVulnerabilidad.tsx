@@ -196,13 +196,21 @@ function normalizeNombre(s: string): string {
     .trim()
 }
 
-// GADM 4.1 puede usar nombres históricos o cortos que difieren de los del API (INEGI)
+// GADM 4.1 usa CamelCase sin espacios para estados multi-palabra y algunos nombres históricos
 const GADM_ALIASES: Record<string, string> = {
-  'distrito federal':             'ciudad de mexico',   // nombre pre-2016
-  'mexico city':                  'ciudad de mexico',
-  'coahuila':                     'coahuila de zaragoza',
-  'michoacan':                    'michoacan de ocampo',
-  'veracruz':                     'veracruz de ignacio de la llave',
+  // CamelCase sin espacios → nombre con espacios (normalizado)
+  'bajacalifornia':    'baja california',
+  'bajacaliforniasur': 'baja california sur',
+  'distritofederal':   'ciudad de mexico',
+  'nuevoleon':         'nuevo leon',
+  'quintanaroo':       'quintana roo',
+  'sanluispotosi':     'san luis potosi',
+  // Nombres históricos o variantes
+  'distrito federal':  'ciudad de mexico',
+  'mexico city':       'ciudad de mexico',
+  'coahuila':          'coahuila de zaragoza',
+  'michoacan':         'michoacan de ocampo',
+  'veracruz':          'veracruz de ignacio de la llave',
 }
 
 function findEstadoByGadmName(
