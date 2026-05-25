@@ -103,6 +103,32 @@ export const apiService = {
     }))
   },
   panelEjecutivo:  () => get<PanelEjecutivo>('/api/panel-ejecutivo'),
+  exportSimulacionExcel: async (req: SimulacionRequest) => {
+    const res = await authFetch('/api/export/simulacion/excel', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(req),
+    })
+    if (!res.ok) throw new Error('Error al exportar Excel')
+    const blob = await res.blob()
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `simulacion-airtellecta-${new Date().toISOString().slice(0, 10)}.xlsx`
+    a.click()
+    URL.revokeObjectURL(url)
+  },
+  exportPanelEjecutivoExcel: async () => {
+    const res = await authFetch('/api/export/panel-ejecutivo/excel')
+    if (!res.ok) throw new Error('Error al exportar Excel')
+    const blob = await res.blob()
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `panel-ejecutivo-airtellecta-${new Date().toISOString().slice(0, 10)}.xlsx`
+    a.click()
+    URL.revokeObjectURL(url)
+  },
   recaudacion:     () => get<RecaudacionAnual[]>('/api/recaudacion'),
   simulacion:      (req: SimulacionRequest) =>
     post<SimulacionResultado>('/api/simulacion', req),

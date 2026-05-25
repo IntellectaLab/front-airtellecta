@@ -5,6 +5,9 @@ import {
 } from 'recharts'
 import { apiService } from '../../services/api'
 import type { SimulacionRequest, SimulacionResultado, RecaudacionAnual } from '../../types/api'
+import { useAuth } from '../../context/AuthContext'
+import { ExportButtons } from '../../components/reports/ExportButtons'
+import { SimuladorReport } from '../../components/reports/SimuladorReport'
 
 const POLICY_GROUPS = [
   {
@@ -45,6 +48,9 @@ const POLICY_GROUPS = [
   },
 ]
 
+const POLICY_LABELS: Record<string, string> = {}
+POLICY_GROUPS.forEach(g => g.policies.forEach(p => { POLICY_LABELS[p.key] = p.label }))
+
 const HORIZONTE_OPTIONS = [1, 5, 10, 20, 40]
 
 const COUNTRY_TAX = [
@@ -55,21 +61,25 @@ const COUNTRY_TAX = [
 ]
 
 export function Simulador() {
+  const { user } = useAuth()
   const [selectedPolicies, setSelectedPolicies] = useState<Set<string>>(new Set())
   const [impuesto,   setImpuesto]   = useState(67.57)
   const [horizonte,  setHorizonte]  = useState(5)
   const [resultado,  setResultado]  = useState<SimulacionResultado | null>(null)
+  const [lastRequest, setLastRequest] = useState<SimulacionRequest | null>(null)
   const [loading,    setLoading]    = useState(false)
   const [error,      setError]      = useState<string | null>(null)
   const [showTable,  setShowTable]  = useState(false)
   const [recaudacion, setRecaudacion] = useState<RecaudacionAnual[] | null>(null)
   const resultRef = useRef<HTMLDivElement>(null)
+  const [showMetodologia, setShowMetodologia] = useState(false)
 
   useEffect(() => {
     apiService.recaudacion()
       .then(data => setRecaudacion(data))
       .catch(() => {})
   }, [])
+
 
   const togglePolicy = (key: string) => {
     setSelectedPolicies(prev => {
@@ -101,6 +111,7 @@ export function Simulador() {
     try {
       const data = await apiService.simulacion(body)
       setResultado(data)
+      setLastRequest(body)
       setTimeout(() => resultRef.current?.scrollIntoView({ behavior: 'smooth' }), 100)
     } catch (err: unknown) {
       setError((err as Error)?.message ?? 'Error en la simulación')
@@ -129,15 +140,93 @@ export function Simulador() {
         </p>
       </div>
 
+      {/* Transparencia Metodológica */}
+      <div className="mb-8">
+        <button
+          onClick={() => setShowMetodologia(!showMetodologia)}
+          className="w-full flex items-center gap-3.5 px-5 py-3.5 rounded-[14px] cursor-pointer transition-all border-none text-left metric-card-glass"
+          style={{ borderLeft: '4px solid #6366f1' }}
+        >
+          <div className="w-9 h-9 rounded-[10px] flex items-center justify-center shrink-0" style={{ background: 'rgba(99,102,241,0.10)' }}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#818cf8" strokeWidth="2"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>
+          </div>
+          <div className="flex-1">
+            <p className="text-[13px] font-bold text-[#0c1f3f] dark:text-white/75">¿De dónde vienen estos datos?</p>
+            <p className="text-[11px] text-[#5580a8] dark:text-white/30 mt-0.5">Metodología SimSmoke, fuentes científicas verificables y validación internacional</p>
+          </div>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#5580a8" strokeWidth="2.5" className={`transition-transform ${showMetodologia ? 'rotate-180' : ''}`}><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+
+        {showMetodologia && (
+          <div className="metric-card-glass rounded-b-[14px] rounded-t-none -mt-3 pt-6 px-6 pb-5 border-t-0 animate-fade-up">
+            <div className="grid grid-cols-3 gap-5">
+
+              {/* El Modelo */}
+              <div className="p-4 rounded-[12px]" style={{ background: 'rgba(99,102,241,0.04)', border: '1px solid rgba(99,102,241,0.10)' }}>
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="w-6 h-6 rounded-md flex items-center justify-center" style={{ background: 'rgba(99,102,241,0.12)' }}>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#818cf8" strokeWidth="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+                  </div>
+                  <p className="text-[11px] font-bold uppercase tracking-[0.5px] text-indigo-600 dark:text-indigo-400">El Modelo</p>
+                </div>
+                <p className="text-[12px] text-[#5580a8] dark:text-white/45 leading-relaxed">
+                  <strong className="text-[#0c1f3f] dark:text-white/65">SimSmoke</strong> fue desarrollado por <strong className="text-[#0c1f3f] dark:text-white/65">David T. Levy</strong> en Georgetown University. Es el estándar de la OMS para proyectar impacto de políticas de control del tabaco, utilizado en <strong className="text-[#0c1f3f] dark:text-white/65">más de 30 países</strong>.
+                </p>
+                <p className="text-[10px] text-indigo-500/50 dark:text-indigo-400/30 mt-2.5 italic leading-relaxed">
+                  Levy DT et al. "SimSmoke: The Effects of Tobacco Control Policies on Smoking Rates." Tobacco Control, 2004.
+                </p>
+              </div>
+
+              {/* Fuentes de Datos */}
+              <div className="p-4 rounded-[12px]" style={{ background: 'rgba(34,197,94,0.04)', border: '1px solid rgba(34,197,94,0.10)' }}>
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="w-6 h-6 rounded-md flex items-center justify-center" style={{ background: 'rgba(34,197,94,0.12)' }}>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#4ade80" strokeWidth="2.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>
+                  </div>
+                  <p className="text-[11px] font-bold uppercase tracking-[0.5px] text-green-600 dark:text-green-400">Fuentes de Datos</p>
+                </div>
+                <div className="space-y-1.5">
+                  <SourceBadge label="Prevalencia" value="ENCODAT 2025 — Secretaría de Salud" />
+                  <SourceBadge label="Población" value="CONAPO Proyecciones 2025" />
+                  <SourceBadge label="Mortalidad" value="GBD 2023 (6.35%) + INEGI EDR 2023" />
+                  <SourceBadge label="Costos" value="Reynales-Shigematsu 2005 · Sáenz-de-Miera 2024" />
+                  <SourceBadge label="Impuesto" value="SHCP — Ley del IEPS vigente" />
+                  <SourceBadge label="Elasticidades" value="SimSmoke Table 1 — 5 grupos edad" />
+                </div>
+              </div>
+
+              {/* Validación */}
+              <div className="p-4 rounded-[12px]" style={{ background: 'rgba(245,158,11,0.04)', border: '1px solid rgba(245,158,11,0.10)' }}>
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="w-6 h-6 rounded-md flex items-center justify-center" style={{ background: 'rgba(245,158,11,0.12)' }}>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" strokeWidth="2.5"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg>
+                  </div>
+                  <p className="text-[11px] font-bold uppercase tracking-[0.5px] text-amber-600 dark:text-amber-400">Validación Internacional</p>
+                </div>
+                <p className="text-[12px] text-[#5580a8] dark:text-white/45 leading-relaxed">
+                  SimSmoke ha sido validado comparando predicciones vs. datos observados. Error típico <strong className="text-[#0c1f3f] dark:text-white/65">&lt;15%</strong> a 10 años en países con datos longitudinales disponibles.
+                </p>
+                <div className="flex flex-wrap gap-1 mt-2.5">
+                  {['EE.UU.','Brasil','Turquía','Corea del Sur','P.Bajos','Finlandia','Argentina'].map(c => (
+                    <span key={c} className="text-[9px] font-semibold px-1.5 py-0.5 rounded-full" style={{ background: 'rgba(245,158,11,0.10)', color: '#d97706' }}>{c}</span>
+                  ))}
+                </div>
+              </div>
+
+            </div>
+          </div>
+        )}
+      </div>
+
       {/* Baseline strip */}
       <SectionLabel text="Punto de Partida — México Hoy" />
       <div className="flex gap-px mb-9 rounded-[14px] overflow-hidden">
         {[
-          { label: 'Prevalencia actual',   value: '15.06', unit: '%',     icon: <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2" /></svg> },
-          { label: 'Población 18+',        value: '88.5',  unit: 'M',     icon: <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" /><circle cx="9" cy="7" r="4" /></svg> },
-          { label: 'Fumadores',            value: '13.3',  unit: 'M',     icon: <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><circle cx="12" cy="12" r="10" /><path d="M12 8v4M12 16h.01" /></svg> },
-          { label: 'Muertes atrib./año',   value: '50,792',unit: '',      icon: <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" /></svg> },
-          { label: 'Impuesto actual',      value: '67.57', unit: '%',     icon: <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6" /></svg> },
+          { label: 'Prevalencia actual',   value: '15.06', unit: '%',     source: 'ENCODAT 2025', icon: <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2" /></svg> },
+          { label: 'Población 18+',        value: '88.5',  unit: 'M',     source: 'CONAPO 2025',  icon: <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" /><circle cx="9" cy="7" r="4" /></svg> },
+          { label: 'Fumadores',            value: '13.3',  unit: 'M',     source: 'Calculado',    icon: <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><circle cx="12" cy="12" r="10" /><path d="M12 8v4M12 16h.01" /></svg> },
+          { label: 'Muertes atrib./año',   value: '50,792',unit: '',      source: 'GBD + INEGI',  icon: <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" /></svg> },
+          { label: 'Impuesto actual',      value: '67.57', unit: '%',     source: 'SHCP/IEPS',    icon: <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6" /></svg> },
         ].map((b, i) => (
           <div key={i} className="dark-panel-strip flex-1 py-3.5 px-4">
             <div className="flex items-center gap-1.5 mb-1.5">
@@ -147,6 +236,7 @@ export function Simulador() {
             <p className="font-display text-[18px] font-extrabold tracking-[-0.5px] text-[#0c1f3f] dark:text-white/75">
               {b.value}<span className="text-[11px] font-medium text-[#5580a8] dark:text-white/30 ml-0.5">{b.unit}</span>
             </p>
+            <p className="text-[8px] font-semibold text-indigo-400/50 dark:text-indigo-300/25 mt-1 tracking-wide uppercase">{b.source}</p>
           </div>
         ))}
       </div>
@@ -348,6 +438,24 @@ export function Simulador() {
               </div>
             </div>
 
+            {/* Export Buttons */}
+            <div className="flex justify-end mb-4">
+              <ExportButtons
+                pdfDocument={
+                  <SimuladorReport
+                    resultado={resultado}
+                    horizonte={horizonte}
+                    impuesto={impuesto}
+                    userName={user?.displayName || user?.email || 'Usuario'}
+                  />
+                }
+                pdfFileName={`simulacion-airtellecta-${new Date().toISOString().slice(0, 10)}.pdf`}
+                onExcelDownload={async () => {
+                  if (lastRequest) await apiService.exportSimulacionExcel(lastRequest)
+                }}
+              />
+            </div>
+
             {/* Narrative */}
             <div className="metric-card-glass rounded-[18px] p-6 mb-6" style={{ borderLeft: `4px solid ${accentColor}` }}>
               <p className="text-[15px] text-[#5580a8] dark:text-white/55 leading-relaxed">
@@ -401,6 +509,102 @@ export function Simulador() {
                 color={isPositive ? '#34d399' : '#ef4444'}
                 context="Al sistema de salud"
               />
+            </div>
+
+            {/* Radiografía del Cálculo */}
+            <SectionLabel text="Radiografía del Cálculo — Trazabilidad Completa" />
+            <div className="metric-card-glass rounded-[18px] p-6 mb-7" style={{ borderLeft: '4px solid #8b5cf6' }}>
+              <div className="flex items-center gap-2.5 mb-5">
+                <div className="w-8 h-8 rounded-[10px] flex items-center justify-center shrink-0" style={{ background: 'rgba(139,92,246,0.12)' }}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" strokeWidth="2.5"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+                </div>
+                <div>
+                  <p className="text-[13px] font-bold text-[#0c1f3f] dark:text-white/70">Así se construyó tu escenario</p>
+                  <p className="text-[10px] text-[#5580a8] dark:text-white/25">Cada número es derivado de una fuente científica verificable</p>
+                </div>
+              </div>
+
+              <div className="relative pl-8 space-y-1">
+                {/* Timeline line */}
+                <div className="absolute left-[11px] top-3 bottom-3 w-0.5 bg-gradient-to-b from-indigo-500/30 via-green-500/30 via-amber-500/30 to-emerald-500/30" />
+
+                {/* Step 1: Base */}
+                <div className="relative pb-4">
+                  <div className="absolute -left-8 w-6 h-6 rounded-full bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center">
+                    <span className="text-[9px] font-extrabold text-indigo-500">1</span>
+                  </div>
+                  <p className="text-[11px] font-bold text-[#0c1f3f] dark:text-white/55 mb-0.5">Dato de entrada — Prevalencia base</p>
+                  <p className="font-display text-[22px] font-extrabold text-indigo-500 tracking-[-0.5px]">{baselinePrev.toFixed(2)}%</p>
+                  <p className="text-[10px] text-indigo-400/60 dark:text-indigo-300/30 font-medium mt-0.5">
+                    Fuente: ENCODAT 2025 — Encuesta Nacional de Consumo de Drogas, Alcohol y Tabaco · Secretaría de Salud
+                  </p>
+                </div>
+
+                {/* Step 2: Policies */}
+                {resultado.politicasAplicadas.length > 0 && (
+                  <div className="relative pb-4">
+                    <div className="absolute -left-8 w-6 h-6 rounded-full bg-green-500/10 border border-green-500/30 flex items-center justify-center">
+                      <span className="text-[9px] font-extrabold text-green-500">2</span>
+                    </div>
+                    <p className="text-[11px] font-bold text-[#0c1f3f] dark:text-white/55 mb-1.5">Efecto de políticas — Multiplicativo sobre prevalencia</p>
+                    <div className="flex flex-wrap gap-1.5 mb-1.5">
+                      {resultado.politicasAplicadas.map(p => (
+                        <span key={p.clave} className="inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-md bg-green-500/8 text-green-600 dark:text-green-400 border border-green-500/15">
+                          {POLICY_LABELS[p.clave] || p.nombre} <strong>{p.efectoPct}%</strong>
+                        </span>
+                      ))}
+                    </div>
+                    <p className="text-[10px] text-[#5580a8] dark:text-white/35">
+                      Fórmula: prevalencia × (1 + efecto₁/100) × (1 + efecto₂/100) × ...
+                    </p>
+                    <p className="text-[10px] text-green-500/50 dark:text-green-400/25 font-medium mt-0.5">
+                      Fuente: Levy DT et al., SimSmoke model parameters — calibrado con datos observados en 30+ países
+                    </p>
+                  </div>
+                )}
+
+                {/* Step 3: Price elasticity */}
+                {hasElasticidades && (
+                  <div className="relative pb-4">
+                    <div className="absolute -left-8 w-6 h-6 rounded-full bg-amber-500/10 border border-amber-500/30 flex items-center justify-center">
+                      <span className="text-[9px] font-extrabold text-amber-500">{resultado.politicasAplicadas.length > 0 ? 3 : 2}</span>
+                    </div>
+                    <p className="text-[11px] font-bold text-[#0c1f3f] dark:text-white/55 mb-1">Efecto precio — Elasticidad de demanda</p>
+                    <div className="flex items-center gap-3 text-[13px] mb-1">
+                      <span className="text-[#5580a8] dark:text-white/40">Impuesto:</span>
+                      <strong className="text-amber-500">{resultado.elasticidadesAplicadas.impuestoNuevoPctPrecio}%</strong>
+                      <span className="text-[#5580a8] dark:text-white/20">→</span>
+                      <span className="text-[#5580a8] dark:text-white/40">Δ precio:</span>
+                      <strong className="text-amber-500">{resultado.elasticidadesAplicadas.incrementoPrecioPct > 0 ? '+' : ''}{Number(resultado.elasticidadesAplicadas.incrementoPrecioPct).toFixed(1)}%</strong>
+                      <span className="text-[#5580a8] dark:text-white/20">→</span>
+                      <span className="text-[#5580a8] dark:text-white/40">Efecto:</span>
+                      <strong className="text-amber-500">{Number(resultado.elasticidadesAplicadas.efectoPromedioPct).toFixed(1)}%</strong>
+                    </div>
+                    <p className="text-[10px] text-amber-500/50 dark:text-amber-400/25 font-medium">
+                      Fuente: SimSmoke Table 1 — promedio ponderado de elasticidades por grupo de edad (15-17, 18-24, 25-34, 35-44, 45+)
+                    </p>
+                  </div>
+                )}
+
+                {/* Step Final: Result */}
+                <div className="relative pb-1">
+                  <div className="absolute -left-8 w-6 h-6 rounded-full flex items-center justify-center" style={{ background: `${accentColor}15`, border: `1px solid ${accentColor}35` }}>
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke={accentColor} strokeWidth="3"><path d="M20 6L9 17l-5-5"/></svg>
+                  </div>
+                  <p className="text-[11px] font-bold text-[#0c1f3f] dark:text-white/55 mb-0.5">Resultado proyectado</p>
+                  <div className="flex items-baseline gap-3 mb-1">
+                    <p className="font-display text-[24px] font-extrabold tracking-[-0.5px]" style={{ color: accentColor }}>{resultado.resumenFinal.prevalenciaFinalPct.toFixed(2)}%</p>
+                    <span className="text-[12px] text-[#5580a8] dark:text-white/30">prevalencia con convergencia gradual en 5 años</span>
+                  </div>
+                  <div className="flex gap-4 text-[11px] text-[#5580a8] dark:text-white/40">
+                    <span>→ <strong style={{ color: accentColor }}>{formatNumber(absDefunciones)}</strong> muertes {isPositive ? 'evitadas' : 'adicionales'} <span className="text-[9px] opacity-60">(GBD 2023 × INEGI EDR 2023)</span></span>
+                    <span>→ <strong className="text-blue-400">${formatNumber(absAhorro)} MDP</strong> {isPositive ? 'ahorrados' : 'costo adicional'} <span className="text-[9px] opacity-60">(Reynales-Shigematsu 2005)</span></span>
+                  </div>
+                  <p className="text-[9px] text-[#5580a8] dark:text-white/15 mt-1.5">
+                    Población 18+: CONAPO 2025 · Fracción mortalidad tabaco: GBD 2023 (6.35%) · Defunciones totales: INEGI EDR 2023 (799,869)
+                  </p>
+                </div>
+              </div>
             </div>
 
             {/* Chart / Table toggle */}
@@ -467,7 +671,7 @@ export function Simulador() {
                       </linearGradient>
                     </defs>
                     <CartesianGrid strokeDasharray="3 3" stroke="rgba(128,128,128,0.08)" />
-                    <XAxis dataKey="año" tick={{ fill: '#5580a8', fontSize: 11 }} axisLine={false} tickLine={false} />
+                    <XAxis dataKey="anio" tick={{ fill: '#5580a8', fontSize: 11 }} axisLine={false} tickLine={false} />
                     <YAxis yAxisId="left"  tick={{ fill: '#5580a8', fontSize: 11 }} axisLine={false} tickLine={false} unit="%" />
                     <YAxis yAxisId="right" orientation="right" tick={{ fill: '#5580a8', fontSize: 11 }} axisLine={false} tickLine={false} />
                     <Tooltip content={<CustomTooltip isPositive={isPositive} />} />
@@ -490,7 +694,7 @@ export function Simulador() {
                     {resultado.politicasAplicadas.map(p => (
                       <div key={p.clave} className="flex items-center justify-between py-2.5 border-b border-black/[0.04] dark:border-white/[0.03] last:border-b-0">
                         <span className="text-[13px] text-[#5580a8] dark:text-white/55 flex items-center gap-2">
-                          <span className="w-1.5 h-1.5 rounded-full bg-green-500 shrink-0" />{p.nombre}
+                          <span className="w-1.5 h-1.5 rounded-full bg-green-500 shrink-0" />{POLICY_LABELS[p.clave] || p.nombre}
                         </span>
                         <span className="font-display text-[13px] font-bold text-green-400">{p.efectoPct}%</span>
                       </div>
@@ -535,7 +739,8 @@ export function Simulador() {
                 <SourceLine label="Costos atención"  value="Reynales-Shigematsu 2005 + Saenz-de-Miera 2024" />
               </div>
               <p className="text-[10px] text-[#5580a8] dark:text-white/15 mt-2 leading-relaxed">
-                Efectos de políticas son multiplicativos sobre prevalencia base. Convergencia gradual en 5 años. Parámetros calibrados para México con datos ENCODAT 2016/2025.
+                Efectos de políticas son multiplicativos sobre prevalencia base. Convergencia gradual en 5 años (SimSmoke standard). Parámetros calibrados para México con datos ENCODAT 2016/2025.
+                Todos los datos son públicos y verificables en las fuentes citadas. Para auditoría completa, consulte la sección "Radiografía del Cálculo" arriba.
               </p>
             </div>
           </div>
@@ -642,6 +847,15 @@ function CustomTooltip({ active, payload, label, isPositive }: { active?: boolea
           {isPositive ? 'Evitadas' : 'Adicionales'}: <strong className="text-white/90">{formatNumber(Math.abs(Number(deaths.value)))}</strong>
         </p>
       )}
+    </div>
+  )
+}
+
+function SourceBadge({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex items-start gap-1.5 text-[11px]">
+      <span className="font-bold text-green-600/70 dark:text-green-400/40 shrink-0 w-[72px]">{label}</span>
+      <span className="text-[#5580a8] dark:text-white/35 leading-snug">{value}</span>
     </div>
   )
 }
