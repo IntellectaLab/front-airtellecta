@@ -4,7 +4,9 @@ import {
   signInWithEmailAndPassword,
   getMultiFactorResolver,
   TotpMultiFactorGenerator,
+  TotpSecret,
   multiFactor,
+  type MultiFactorError,
   type MultiFactorResolver,
 } from 'firebase/auth'
 import ReCAPTCHA from 'react-google-recaptcha'
@@ -64,7 +66,7 @@ export function LoginPage() {
   const [totpCode, setTotpCode] = useState('')
   const [mfaResolver, setMfaResolver] = useState<MultiFactorResolver | null>(null)
   const [qrUri, setQrUri] = useState('')
-  const [totpSecret, setTotpSecret] = useState<unknown>(null)
+  const [totpSecret, setTotpSecret] = useState<TotpSecret | null>(null)
 
   const titulo = useTypewriter('AIRTELLECTA', 75, 350)
 
@@ -94,11 +96,11 @@ export function LoginPage() {
 
   const handleEnrollVerify = async (e: React.SyntheticEvent) => {
     e.preventDefault()
-    if (!totpCode.trim() || !totpSecret || !auth?.currentUser) return
+    if (!totpCode.trim() || totpSecret === null || !auth?.currentUser) return
     setLoading(true)
     setError('')
     try {
-      const assertion = TotpMultiFactorGenerator.assertionForEnrollment(totpSecret as never, totpCode)
+      const assertion = TotpMultiFactorGenerator.assertionForEnrollment(totpSecret, totpCode)
       await multiFactor(auth.currentUser).enroll(assertion, 'App de autenticación')
       refreshMfaStatus()
       navigate('/dashboard')
@@ -139,7 +141,7 @@ export function LoginPage() {
       const code = (err as { code?: string })?.code
       if (code === 'auth/multi-factor-auth-required') {
         try {
-          const resolver = getMultiFactorResolver(auth!, err as never)
+          const resolver = getMultiFactorResolver(auth, err as MultiFactorError)
           setMfaResolver(resolver)
           setMfaStep('challenge')
           setError('')
