@@ -2,7 +2,6 @@ import { createContext, useContext, useEffect, useState } from 'react'
 import { onAuthStateChanged, signOut, multiFactor, type User } from 'firebase/auth'
 import { auth } from '../firebase'
 import { apiService } from '../services/api'
-import type { UsuarioDto } from '../types/api'
 
 export type UserRole = 'ADMIN' | 'USER'
 
