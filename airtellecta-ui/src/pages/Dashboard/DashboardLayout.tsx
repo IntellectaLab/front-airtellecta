@@ -484,7 +484,11 @@ function UserMenu() {
   const [theme, setTheme] = useState<Theme>(() => (localStorage.getItem('airtellecta-theme') as Theme) ?? 'auto')
   const ref = useRef<HTMLDivElement>(null)
   const navigate = useNavigate()
-  const { logout } = useAuth()
+  const { logout, user, role, profile } = useAuth()
+
+  const displayName = profile?.nombreCompleto || user?.displayName || user?.email?.split('@')[0] || 'Usuario'
+  const subtitle = profile?.cargo || (role === 'ADMIN' ? 'Administrador' : 'Usuario')
+  const initials = displayName.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)
 
   useEffect(() => {
     applyTheme(theme)
@@ -516,11 +520,11 @@ function UserMenu() {
           data-testid="user-menu-btn"
         >
           <div className="flex flex-col gap-px text-right">
-            <span className="text-[15px] font-bold text-[#0c1f3f] leading-[1.2] dark:text-white">Usuario</span>
-            <span className="text-[13px] text-[#5580a8] leading-[1.2] dark:text-white/45">Cargo</span>
+            <span className="text-[15px] font-bold text-[#0c1f3f] leading-[1.2] dark:text-white">{displayName}</span>
+            <span className="text-[13px] text-[#5580a8] leading-[1.2] dark:text-white/45">{subtitle}</span>
           </div>
           <div className="avatar-glass w-8 h-8 rounded-full text-white text-[14px] font-bold flex items-center justify-center shrink-0 font-display">
-            US
+            {initials}
           </div>
           <ChevronDownIcon />
         </button>
@@ -531,8 +535,8 @@ function UserMenu() {
               <div className="flex items-center gap-2.5 py-2.5 px-2 rounded-[10px]">
                 <span className="flex items-center text-[#1344c4] shrink-0"><CheckIcon /></span>
                 <div>
-                  <p className="text-sm font-bold text-[#0c1f3f] m-0 leading-[1.3] dark:text-white">Usuario</p>
-                  <p className="text-[13px] text-[#7a9ab8] m-0 tracking-[0.5px] leading-[1.3] dark:text-white/30">ID-AIRTELLECTA</p>
+                  <p className="text-sm font-bold text-[#0c1f3f] m-0 leading-[1.3] dark:text-white">{displayName}</p>
+                  <p className="text-[13px] text-[#7a9ab8] m-0 tracking-[0.5px] leading-[1.3] dark:text-white/30">{user?.email ?? ''}</p>
                 </div>
               </div>
             </div>

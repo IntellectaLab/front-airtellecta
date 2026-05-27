@@ -42,10 +42,10 @@ function RolBadge({ rol }: { rol: string }) {
   const isAdmin = rol.toUpperCase() === 'ADMIN'
   return (
     <span
-      className={`inline-block px-2 py-0.5 rounded text-xs font-semibold ${
+      className={`inline-block px-2.5 py-1 rounded-full text-xs font-bold tracking-wide ${
         isAdmin
-          ? 'bg-amber-500/20 text-amber-300'
-          : 'bg-blue-500/20 text-blue-300'
+          ? 'bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-300'
+          : 'bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-300'
       }`}
     >
       {isAdmin ? 'ADMIN' : 'USER'}
@@ -55,19 +55,31 @@ function RolBadge({ rol }: { rol: string }) {
 
 function EstadoBadge({ activo, ultimoAcceso }: { activo: boolean; ultimoAcceso: string | null }) {
   if (!activo) {
-    return <span className="inline-block px-2 py-0.5 rounded text-xs font-semibold bg-red-500/20 text-red-300">Inactivo</span>
+    return (
+      <span className="inline-block px-2.5 py-1 rounded-full text-xs font-bold tracking-wide bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-300">
+        Inactivo
+      </span>
+    )
   }
   if (!ultimoAcceso) {
-    return <span className="inline-block px-2 py-0.5 rounded text-xs font-semibold bg-yellow-500/20 text-yellow-300">Pendiente</span>
+    return (
+      <span className="inline-block px-2.5 py-1 rounded-full text-xs font-bold tracking-wide bg-yellow-100 text-yellow-700 dark:bg-yellow-500/20 dark:text-yellow-300">
+        Pendiente
+      </span>
+    )
   }
-  return <span className="inline-block px-2 py-0.5 rounded text-xs font-semibold bg-green-500/20 text-green-300">Activo</span>
+  return (
+    <span className="inline-block px-2.5 py-1 rounded-full text-xs font-bold tracking-wide bg-emerald-100 text-emerald-700 dark:bg-green-500/20 dark:text-green-300">
+      Activo
+    </span>
+  )
 }
 
 // ── Shared input classes ───────────────────────────────────────────────────────
 const inputCls =
-  'w-full rounded-lg border border-white/10 bg-white/10 px-3 py-2 text-sm text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-white/20'
+  'config-input-glass w-full rounded-[10px] px-[14px] py-[10px] text-sm text-[#0c1f3f] dark:text-white font-sans focus:outline-none focus:ring-2 focus:ring-blue-400/40'
 
-const labelCls = 'block text-xs font-medium text-white/60 mb-1'
+const labelCls = 'block text-[13px] font-semibold text-[#1e3a5f] dark:text-white/60 mb-1'
 
 // ── Modal component ────────────────────────────────────────────────────────────
 interface ModalProps {
@@ -102,14 +114,25 @@ function UsuarioModal({ modal, onClose, onSubmit, submitting }: ModalProps) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-      <div className="w-full max-w-md rounded-2xl border border-white/10 bg-[#0f1117] p-6 shadow-2xl">
-        <h2 className="mb-5 text-lg font-semibold text-white">
-          {isEdit ? 'Editar usuario' : 'Nuevo usuario'}
-        </h2>
+    <div className="modal-overlay-glass fixed inset-0 z-50 flex items-center justify-center" onClick={onClose}>
+      <div className="config-modal-glass w-full max-w-md rounded-[22px] overflow-hidden mx-4" onClick={e => e.stopPropagation()}>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Email — only shown and required on create */}
+        <div className="flex items-center justify-between px-[22px] pt-[22px] pb-4 border-b border-[rgba(180,210,240,0.30)] dark:border-white/[0.07]">
+          <h2 className="font-display text-[18px] font-extrabold text-[#0c1f3f] m-0 dark:text-white">
+            {isEdit ? 'Editar usuario' : 'Nuevo usuario'}
+          </h2>
+          <button
+            type="button"
+            onClick={onClose}
+            className="btn-modal-close-glass w-[30px] h-[30px] flex items-center justify-center rounded-[8px]"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </div>
+
+        <form onSubmit={handleSubmit} className="px-[22px] py-[18px] flex flex-col gap-4">
           {!isEdit && (
             <div>
               <label className={labelCls}>Email *</label>
@@ -124,7 +147,6 @@ function UsuarioModal({ modal, onClose, onSubmit, submitting }: ModalProps) {
             </div>
           )}
 
-          {/* Nombre completo */}
           <div>
             <label className={labelCls}>Nombre completo *</label>
             <input
@@ -137,31 +159,28 @@ function UsuarioModal({ modal, onClose, onSubmit, submitting }: ModalProps) {
             />
           </div>
 
-          {/* Cargo */}
           <div>
             <label className={labelCls}>Cargo</label>
             <input
               type="text"
               className={inputCls}
-              placeholder="Director, Analista…"
+              placeholder="Director, Analista..."
               value={form.cargo}
               onChange={e => set('cargo', e.target.value)}
             />
           </div>
 
-          {/* Institución */}
           <div>
-            <label className={labelCls}>Institución</label>
+            <label className={labelCls}>Institucion</label>
             <input
               type="text"
               className={inputCls}
-              placeholder="IMSS, SSA…"
+              placeholder="IMSS, SSA..."
               value={form.institucion}
               onChange={e => set('institucion', e.target.value)}
             />
           </div>
 
-          {/* Rol */}
           <div>
             <label className={labelCls}>Rol</label>
             <select
@@ -174,21 +193,20 @@ function UsuarioModal({ modal, onClose, onSubmit, submitting }: ModalProps) {
             </select>
           </div>
 
-          {/* Actions */}
-          <div className="flex justify-end gap-2 pt-2">
+          <div className="flex justify-end gap-2.5 pt-2 border-t border-[rgba(180,210,240,0.25)] dark:border-white/[0.06]">
             <button
               type="button"
               onClick={onClose}
-              className="rounded-lg border border-white/10 px-4 py-2 text-sm text-white/70 transition hover:bg-white/5"
+              className="btn-cancel-glass px-[18px] py-[9px] rounded-[10px] text-sm font-semibold font-sans border-none"
             >
               Cancelar
             </button>
             <button
               type="submit"
               disabled={submitting}
-              className="rounded-lg bg-white/10 px-4 py-2 text-sm font-medium text-white transition hover:bg-white/20 disabled:opacity-50"
+              className="btn-primary-glass px-[18px] py-[9px] rounded-[10px] text-sm font-semibold font-sans border-none disabled:opacity-50"
             >
-              {submitting ? 'Guardando…' : isEdit ? 'Guardar cambios' : 'Crear usuario'}
+              {submitting ? 'Guardando...' : isEdit ? 'Guardar cambios' : 'Crear usuario'}
             </button>
           </div>
         </form>
@@ -210,30 +228,30 @@ function SuccessModal({ usuario, onClose }: { usuario: UsuarioDto; onClose: () =
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-      <div className="w-full max-w-md rounded-2xl border border-white/10 bg-[#0f1117] p-6 shadow-2xl">
-        <div className="text-center mb-4">
+    <div className="modal-overlay-glass fixed inset-0 z-50 flex items-center justify-center" onClick={onClose}>
+      <div className="config-modal-glass w-full max-w-md rounded-[22px] overflow-hidden mx-4" onClick={e => e.stopPropagation()}>
+        <div className="text-center px-[22px] pt-[22px] pb-4">
           <div className="text-4xl mb-2">✅</div>
-          <h2 className="text-lg font-semibold text-white">Usuario creado</h2>
-          <p className="text-sm text-white/60 mt-1">
-            Se envio un email de activacion a <strong className="text-white">{usuario.email}</strong>
+          <h2 className="text-lg font-extrabold text-[#0c1f3f] dark:text-white font-display">Usuario creado</h2>
+          <p className="text-sm text-[#5580a8] dark:text-white/60 mt-1">
+            Se envio un email de activacion a <strong className="text-[#0c1f3f] dark:text-white">{usuario.email}</strong>
           </p>
         </div>
 
         {usuario.activationLink && (
-          <div className="mt-4 space-y-2">
-            <p className="text-xs text-white/50">
+          <div className="px-[22px] space-y-2">
+            <p className="text-xs text-[#7a9ab8] dark:text-white/50">
               Si el email no llega, comparte este link de activacion:
             </p>
-            <div className="flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 p-3">
+            <div className="flex items-center gap-2 config-input-glass rounded-[10px] px-3 py-2.5">
               <input
                 readOnly
                 value={usuario.activationLink}
-                className="flex-1 bg-transparent text-xs text-white/70 outline-none truncate"
+                className="flex-1 bg-transparent text-xs text-[#3a5a80] dark:text-white/70 outline-none truncate"
               />
               <button
                 onClick={handleCopy}
-                className="shrink-0 rounded-md bg-white/10 px-3 py-1.5 text-xs font-medium text-white transition hover:bg-white/20"
+                className="btn-primary-glass shrink-0 rounded-md px-3 py-1.5 text-xs font-semibold font-sans border-none"
               >
                 {copied ? 'Copiado' : 'Copiar'}
               </button>
@@ -241,10 +259,10 @@ function SuccessModal({ usuario, onClose }: { usuario: UsuarioDto; onClose: () =
           </div>
         )}
 
-        <div className="mt-6 flex justify-center">
+        <div className="flex justify-center px-[22px] py-5">
           <button
             onClick={onClose}
-            className="rounded-lg bg-white/10 px-6 py-2 text-sm font-medium text-white transition hover:bg-white/20"
+            className="btn-primary-glass px-6 py-2 rounded-[10px] text-sm font-semibold font-sans border-none"
           >
             Cerrar
           </button>
@@ -268,7 +286,7 @@ export function AdminUsuarios() {
   if (role !== 'ADMIN') {
     return (
       <div className="flex items-center justify-center h-64">
-        <p className="text-red-400 text-lg font-medium">Acceso denegado</p>
+        <p className="text-red-600 text-lg font-medium">Acceso denegado</p>
       </div>
     )
   }
@@ -360,22 +378,25 @@ export function AdminUsuarios() {
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold text-white">Usuarios</h1>
+        <h1 className="font-display text-xl font-extrabold text-[#0c1f3f] dark:text-white">Usuarios</h1>
         <button
           onClick={() => setModal({ type: 'create' })}
-          className="rounded-lg bg-white/10 px-4 py-2 text-sm font-medium text-white transition hover:bg-white/20"
+          className="btn-primary-glass flex items-center gap-1.5 px-4 py-2 rounded-[10px] text-sm font-semibold font-sans border-none cursor-pointer"
         >
-          + Nuevo Usuario
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
+          </svg>
+          Nuevo Usuario
         </button>
       </div>
 
       {/* Error banner */}
       {error && (
-        <div className="flex items-center justify-between rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3">
-          <span className="text-sm text-red-300">{error}</span>
+        <div className="flex items-center justify-between rounded-[14px] border border-red-200 bg-red-50 px-4 py-3 dark:border-red-500/30 dark:bg-red-500/10">
+          <span className="text-sm font-medium text-red-700 dark:text-red-300">{error}</span>
           <button
             onClick={() => setError(null)}
-            className="ml-4 text-red-400 hover:text-red-200 transition"
+            className="ml-4 text-red-400 hover:text-red-600 dark:hover:text-red-200 transition"
             aria-label="Cerrar"
           >
             ✕
@@ -385,26 +406,26 @@ export function AdminUsuarios() {
 
       {/* Loading */}
       {loading ? (
-        <p className="text-sm text-white/50">Cargando...</p>
+        <p className="text-sm text-[#5580a8] dark:text-white/50">Cargando...</p>
       ) : (
         /* Table */
-        <div className="overflow-x-auto rounded-2xl border border-white/10 bg-white/5">
-          <table className="w-full text-sm text-white/80">
+        <div className="panel-glass overflow-x-auto rounded-[20px]">
+          <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-white/10 text-left text-xs font-medium uppercase tracking-wider text-white/40">
-                <th className="px-4 py-3">Nombre</th>
-                <th className="px-4 py-3">Email</th>
-                <th className="px-4 py-3">Rol</th>
-                <th className="px-4 py-3">Institución</th>
-                <th className="px-4 py-3">Estado</th>
-                <th className="px-4 py-3">Último acceso</th>
-                <th className="px-4 py-3">Acciones</th>
+              <tr className="border-b border-[rgba(180,210,240,0.35)] dark:border-white/10 text-left text-[11px] font-bold uppercase tracking-[0.8px] text-[#7a9ab8] dark:text-white/40">
+                <th className="px-5 py-3.5">Nombre</th>
+                <th className="px-5 py-3.5">Email</th>
+                <th className="px-5 py-3.5">Rol</th>
+                <th className="px-5 py-3.5">Institucion</th>
+                <th className="px-5 py-3.5">Estado</th>
+                <th className="px-5 py-3.5">Ultimo acceso</th>
+                <th className="px-5 py-3.5">Acciones</th>
               </tr>
             </thead>
             <tbody>
               {usuarios.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="px-4 py-8 text-center text-white/40">
+                  <td colSpan={7} className="px-5 py-10 text-center text-[#7a9ab8] dark:text-white/40">
                     Sin usuarios registrados
                   </td>
                 </tr>
@@ -412,26 +433,26 @@ export function AdminUsuarios() {
                 usuarios.map(u => (
                   <tr
                     key={u.id}
-                    className="border-b border-white/5 transition hover:bg-white/5 last:border-0"
+                    className="border-b border-[rgba(180,210,240,0.20)] dark:border-white/5 transition hover:bg-[rgba(26,86,219,0.04)] dark:hover:bg-white/5 last:border-0"
                   >
-                    <td className="px-4 py-3 font-medium text-white">
+                    <td className="px-5 py-3.5 font-semibold text-[#0c1f3f] dark:text-white">
                       {u.nombreCompleto}
                     </td>
-                    <td className="px-4 py-3 text-white/60">{u.email}</td>
-                    <td className="px-4 py-3">
+                    <td className="px-5 py-3.5 text-[#3a5a80] dark:text-white/60">{u.email}</td>
+                    <td className="px-5 py-3.5">
                       <RolBadge rol={u.rol} />
                     </td>
-                    <td className="px-4 py-3 text-white/60">
+                    <td className="px-5 py-3.5 text-[#3a5a80] dark:text-white/60">
                       {u.institucion ?? '—'}
                     </td>
-                    <td className="px-4 py-3">
+                    <td className="px-5 py-3.5">
                       <div className="flex items-center gap-2">
                         <EstadoBadge activo={u.activo} ultimoAcceso={u.ultimoAcceso} />
                         {u.activo && !u.ultimoAcceso && u.activationLink && (
                           <button
                             title="Copiar link de activacion"
                             onClick={() => void navigator.clipboard.writeText(u.activationLink!)}
-                            className="text-yellow-400/70 hover:text-yellow-300 transition"
+                            className="text-amber-500/70 hover:text-amber-600 dark:text-yellow-400/70 dark:hover:text-yellow-300 transition"
                           >
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                               <rect x="9" y="9" width="13" height="13" rx="2" /><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
@@ -440,23 +461,23 @@ export function AdminUsuarios() {
                         )}
                       </div>
                     </td>
-                    <td className="px-4 py-3 text-white/60">
+                    <td className="px-5 py-3.5 text-[#3a5a80] dark:text-white/60">
                       {formatDate(u.ultimoAcceso)}
                     </td>
-                    <td className="px-4 py-3">
+                    <td className="px-5 py-3.5">
                       <div className="flex items-center gap-2">
                         <button
                           onClick={() => setModal({ type: 'edit', usuario: u })}
-                          className="rounded-md border border-white/10 px-3 py-1 text-xs text-white/70 transition hover:bg-white/10"
+                          className="rounded-[8px] border border-[rgba(180,210,240,0.45)] dark:border-white/10 px-3 py-1.5 text-xs font-semibold text-[#1e3a5f] dark:text-white/70 transition hover:bg-[rgba(26,86,219,0.08)] hover:text-[#1344c4] dark:hover:bg-white/10"
                         >
                           Editar
                         </button>
                         <button
                           onClick={() => void handleToggleActivo(u)}
-                          className={`rounded-md border px-3 py-1 text-xs transition ${
+                          className={`rounded-[8px] border px-3 py-1.5 text-xs font-semibold transition ${
                             u.activo
-                              ? 'border-red-500/30 text-red-300 hover:bg-red-500/10'
-                              : 'border-green-500/30 text-green-300 hover:bg-green-500/10'
+                              ? 'border-red-200 text-red-600 hover:bg-red-50 dark:border-red-500/30 dark:text-red-300 dark:hover:bg-red-500/10'
+                              : 'border-emerald-200 text-emerald-600 hover:bg-emerald-50 dark:border-green-500/30 dark:text-green-300 dark:hover:bg-green-500/10'
                           }`}
                         >
                           {u.activo ? 'Desactivar' : 'Activar'}
