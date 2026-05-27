@@ -1,14 +1,24 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 import { onAuthStateChanged, signOut, multiFactor, type User } from 'firebase/auth'
 import { auth } from '../firebase'
+import { apiService } from '../services/api'
+import type { UsuarioDto } from '../types/api'
 
 export type UserRole = 'ADMIN' | 'USER'
+
+export interface UserProfile {
+  nombreCompleto: string
+  cargo: string | null
+  institucion: string | null
+  email: string
+}
 
 interface AuthContextType {
   user:    User | null
   role:    UserRole
   loading: boolean
   mfaEnrolled: boolean
+  profile: UserProfile | null
   logout:    () => Promise<void>
   getToken:  () => Promise<string | null>
   refreshMfaStatus: () => void
@@ -21,6 +31,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [role,    setRole]    = useState<UserRole>('USER')
   const [loading, setLoading] = useState(true)
   const [mfaEnrolled, setMfaEnrolled] = useState(false)
+  const [profile, setProfile] = useState<UserProfile | null>(null)
 
   useEffect(() => {
     if (!auth) {
@@ -38,9 +49,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           setRole('USER')
         }
         setMfaEnrolled(multiFactor(firebaseUser).enrolledFactors.length > 0)
+
+        // Fetch backend profile (also updates ultimo_acceso)
+        try {
+          const me = await apiService.me()
+          if (me) {
+            setProfile({
+              nombreCompleto: me.nombreCompleto,
+              cargo: me.cargo,
+              institucion: me.institucion,
+              email: me.email,
+            })
+          }
+        } catch {
+          // Profile fetch is best-effort
+        }
       } else {
         setRole('USER')
         setMfaEnrolled(false)
+        setProfile(null)
       }
       setLoading(false)
     })
@@ -63,7 +90,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, role, loading, mfaEnrolled, logout, getToken, refreshMfaStatus }}>
+    <AuthContext.Provider value={{ user, role, loading, mfaEnrolled, profile, logout, getToken, refreshMfaStatus }}>
       {children}
     </AuthContext.Provider>
   )

@@ -143,6 +143,9 @@ export const apiService = {
   simulacion:      (req: SimulacionRequest) =>
     post<SimulacionResultado>('/api/simulacion', req),
 
+  // Current user profile
+  me: () => get<UsuarioDto>('/api/me'),
+
   // Admin usuarios
   listarUsuarios:     () => get<UsuarioDto[]>('/api/admin/usuarios'),
   crearUsuario:       (req: CrearUsuarioRequest) => post<UsuarioDto>('/api/admin/usuarios', req),
