@@ -9,7 +9,12 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "test":          "vitest",
+    "test:run":      "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "cypress:open":  "cypress open",
+    "cypress:run":   "cypress run"
   },
   "dependencies": {
     "@react-google-maps/api": "^2.20.8",
