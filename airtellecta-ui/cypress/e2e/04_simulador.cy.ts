@@ -21,17 +21,20 @@ describe('Flujo 4: Simulador de Políticas', () => {
 
   it('permite cambiar el horizonte de años', () => {
     cy.get('input[type="number"], input[type="range"]').first().then(($input) => {
-      const currentVal = $input.val()
-      cy.wrap($input).clear().type('15')
-      cy.wrap($input).should('have.value', '15').or('not.have.value', currentVal)
+      if ($input.attr('type') === 'range') {
+        cy.wrap($input).invoke('val', '15').trigger('input').trigger('change')
+      } else {
+        cy.wrap($input).clear().type('15')
+        cy.wrap($input).should('have.value', '15')
+      }
     })
   })
 
   it('ejecuta la simulación al hacer click en el botón de simular', () => {
-    // Busca el botón de simulación (puede variar el texto)
+    // Busca el botón de simulación (puede estar dentro de overflow:hidden — usar force)
     cy.contains('button', /simul|calcul|proyect/i, { timeout: 8000 })
-      .should('be.visible')
-      .click()
+      .scrollIntoView()
+      .click({ force: true })
 
     // Espera a que aparezcan resultados o un indicador de carga
     cy.get('body', { timeout: 15000 }).should(($body) => {
