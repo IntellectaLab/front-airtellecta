@@ -1,3 +1,4 @@
+import axios from 'axios'
 import { auth } from '../firebase'
 import type {
   ApiResponse,
@@ -54,51 +55,49 @@ function fixMojibake(s: string): string {
   }
 }
 
-async function authFetch(path: string, options: RequestInit = {}): Promise<Response> {
+const axiosInstance = axios.create({
+  baseURL: BASE_URL,
+  headers: { 'Content-Type': 'application/json' },
+})
+
+// Inject Firebase auth token into every request
+axiosInstance.interceptors.request.use(async (config) => {
   const user = auth?.currentUser ?? null
-  const token = user ? await user.getIdToken() : null
-
-  const headers: HeadersInit = {
-    'Content-Type': 'application/json',
-    ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    ...options.headers,
+  if (user) {
+    const token = await user.getIdToken()
+    config.headers.Authorization = `Bearer ${token}`
   }
+  return config
+})
 
-  const response = await fetch(`${BASE_URL}${path}`, { ...options, headers })
-
-  if (response.status === 401 && auth) {
-    await auth.signOut()
-    window.location.href = '/login'
+// Sign out and redirect on 401
+axiosInstance.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    if (error.response?.status === 401 && auth) {
+      await auth.signOut()
+      window.location.href = '/login'
+    }
+    return Promise.reject(error)
   }
-
-  return response
-}
+)
 
 async function get<T>(path: string): Promise<T> {
-  const res = await authFetch(path)
-  const json = (await res.json()) as ApiResponse<T>
-  if (!json.success) throw new Error(json.error ?? 'Error del servidor')
-  return json.data
+  const res = await axiosInstance.get<ApiResponse<T>>(path)
+  if (!res.data.success) throw new Error(res.data.error ?? 'Error del servidor')
+  return res.data.data
 }
 
 async function post<T>(path: string, body: unknown): Promise<T> {
-  const res = await authFetch(path, { method: 'POST', body: JSON.stringify(body) })
-  const json = (await res.json()) as ApiResponse<T>
-  if (!json.success) throw new Error(json.error ?? 'Error del servidor')
-  return json.data
+  const res = await axiosInstance.post<ApiResponse<T>>(path, body)
+  if (!res.data.success) throw new Error(res.data.error ?? 'Error del servidor')
+  return res.data.data
 }
 
 async function put<T>(path: string, body: unknown): Promise<T> {
-  const res = await authFetch(path, { method: 'PUT', body: JSON.stringify(body) })
-  const json = (await res.json()) as ApiResponse<T>
-  if (!json.success) throw new Error(json.error ?? 'Error del servidor')
-  return json.data
-}
-
-export const api = {
-  get:  (path: string) => authFetch(path),
-  post: (path: string, body: unknown) =>
-    authFetch(path, { method: 'POST', body: JSON.stringify(body) }),
+  const res = await axiosInstance.put<ApiResponse<T>>(path, body)
+  if (!res.data.success) throw new Error(res.data.error ?? 'Error del servidor')
+  return res.data.data
 }
 
 export const apiService = {
@@ -114,14 +113,10 @@ export const apiService = {
   },
   panelEjecutivo:  () => get<PanelEjecutivo>('/api/panel-ejecutivo'),
   exportSimulacionExcel: async (req: SimulacionRequest) => {
-    const res = await authFetch('/api/export/simulacion/excel', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(req),
+    const res = await axiosInstance.post('/api/export/simulacion/excel', req, {
+      responseType: 'blob',
     })
-    if (!res.ok) throw new Error('Error al exportar Excel')
-    const blob = await res.blob()
-    const url = URL.createObjectURL(blob)
+    const url = URL.createObjectURL(res.data as Blob)
     const a = document.createElement('a')
     a.href = url
     a.download = `simulacion-airtellecta-${new Date().toISOString().slice(0, 10)}.xlsx`
@@ -129,25 +124,24 @@ export const apiService = {
     URL.revokeObjectURL(url)
   },
   exportPanelEjecutivoExcel: async () => {
-    const res = await authFetch('/api/export/panel-ejecutivo/excel')
-    if (!res.ok) throw new Error('Error al exportar Excel')
-    const blob = await res.blob()
-    const url = URL.createObjectURL(blob)
+    const res = await axiosInstance.get('/api/export/panel-ejecutivo/excel', {
+      responseType: 'blob',
+    })
+    const url = URL.createObjectURL(res.data as Blob)
     const a = document.createElement('a')
     a.href = url
     a.download = `panel-ejecutivo-airtellecta-${new Date().toISOString().slice(0, 10)}.xlsx`
     a.click()
     URL.revokeObjectURL(url)
   },
-  recaudacion:     () => get<RecaudacionAnual[]>('/api/recaudacion'),
-  simulacion:      (req: SimulacionRequest) =>
+  recaudacion: () => get<RecaudacionAnual[]>('/api/recaudacion'),
+  simulacion:  (req: SimulacionRequest) =>
     post<SimulacionResultado>('/api/simulacion', req),
 
-  // Current user profile
   me: () => get<UsuarioDto>('/api/me'),
 
-  // Admin usuarios
-  listarUsuarios:     () => get<UsuarioDto[]>('/api/admin/usuarios'),
-  crearUsuario:       (req: CrearUsuarioRequest) => post<UsuarioDto>('/api/admin/usuarios', req),
-  actualizarUsuario:  (id: number, req: ActualizarUsuarioRequest) => put<UsuarioDto>(`/api/admin/usuarios/${id}`, req),
+  listarUsuarios:    () => get<UsuarioDto[]>('/api/admin/usuarios'),
+  crearUsuario:      (req: CrearUsuarioRequest) => post<UsuarioDto>('/api/admin/usuarios', req),
+  actualizarUsuario: (id: number, req: ActualizarUsuarioRequest) =>
+    put<UsuarioDto>(`/api/admin/usuarios/${id}`, req),
 }

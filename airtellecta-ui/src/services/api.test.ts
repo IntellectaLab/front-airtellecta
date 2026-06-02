@@ -1,6 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 
-// Mocks must be declared before imports that use them
 vi.mock('../firebase', () => ({
   auth: {
     currentUser: {
@@ -10,26 +9,40 @@ vi.mock('../firebase', () => ({
   },
 }))
 
-const mockFetch = vi.fn()
-vi.stubGlobal('fetch', mockFetch)
+// Hoist mock functions so they're available inside vi.mock factory
+const { mockGet, mockPost, mockPut } = vi.hoisted(() => ({
+  mockGet: vi.fn(),
+  mockPost: vi.fn(),
+  mockPut: vi.fn(),
+}))
 
-// Import AFTER mocks are set up
+vi.mock('axios', () => ({
+  default: {
+    create: vi.fn(() => ({
+      interceptors: {
+        request:  { use: vi.fn() },
+        response: { use: vi.fn() },
+      },
+      get:  mockGet,
+      post: mockPost,
+      put:  mockPut,
+    })),
+  },
+}))
+
 import { apiService } from './api'
 
-function mockJsonResponse(data: unknown, status = 200) {
-  mockFetch.mockResolvedValueOnce({
-    ok: status >= 200 && status < 300,
-    status,
-    json: () => Promise.resolve(data),
-    blob: () => Promise.resolve(new Blob()),
-  })
+function mockGetResponse(data: unknown) {
+  mockGet.mockResolvedValueOnce({ data })
+}
+
+function mockPostResponse(data: unknown) {
+  mockPost.mockResolvedValueOnce({ data })
 }
 
 describe('apiService', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    // Re-stub fetch after clearAllMocks
-    vi.stubGlobal('fetch', mockFetch)
   })
 
   describe('resumenNacional', () => {
@@ -40,20 +53,15 @@ describe('apiService', () => {
         usuariosVapeo: 1200000,
         urgenciasF17: 30000,
       }
-      mockJsonResponse({ success: true, data: payload })
+      mockGetResponse({ success: true, data: payload })
 
       const result = await apiService.resumenNacional()
       expect(result).toEqual(payload)
-      expect(mockFetch).toHaveBeenCalledWith(
-        expect.stringContaining('/api/resumen-nacional'),
-        expect.objectContaining({
-          headers: expect.objectContaining({ Authorization: 'Bearer fake-token' }),
-        })
-      )
+      expect(mockGet).toHaveBeenCalledWith(expect.stringContaining('/api/resumen-nacional'))
     })
 
     it('lanza error cuando success=false', async () => {
-      mockJsonResponse({ success: false, error: 'Error del servidor' })
+      mockGetResponse({ success: false, error: 'Error del servidor' })
       await expect(apiService.resumenNacional()).rejects.toThrow('Error del servidor')
     })
   })
@@ -61,7 +69,7 @@ describe('apiService', () => {
   describe('panelEjecutivo', () => {
     it('hace GET /api/panel-ejecutivo y retorna data', async () => {
       const payload = { totalFumadores: 15000000 }
-      mockJsonResponse({ success: true, data: payload })
+      mockGetResponse({ success: true, data: payload })
       const result = await apiService.panelEjecutivo()
       expect(result).toEqual(payload)
     })
@@ -70,7 +78,7 @@ describe('apiService', () => {
   describe('recaudacion', () => {
     it('hace GET /api/recaudacion y retorna array', async () => {
       const payload = [{ anio: 2023, totalMdp: 45000 }]
-      mockJsonResponse({ success: true, data: payload })
+      mockGetResponse({ success: true, data: payload })
       const result = await apiService.recaudacion()
       expect(result).toEqual(payload)
     })
@@ -79,15 +87,12 @@ describe('apiService', () => {
   describe('simulacion', () => {
     it('hace POST /api/simulacion con el body correcto', async () => {
       const payload = { proyeccionAnual: [] }
-      mockJsonResponse({ success: true, data: payload })
+      mockPostResponse({ success: true, data: payload })
       const req = { impuestoPctPrecio: 75, horizonteAnios: 10 }
       await apiService.simulacion(req as any)
-      expect(mockFetch).toHaveBeenCalledWith(
+      expect(mockPost).toHaveBeenCalledWith(
         expect.stringContaining('/api/simulacion'),
-        expect.objectContaining({
-          method: 'POST',
-          body: JSON.stringify(req),
-        })
+        req
       )
     })
   })
