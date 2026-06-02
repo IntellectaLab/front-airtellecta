@@ -111,6 +111,9 @@ export interface ProyeccionAnual {
   fumadoresAbsolutos: number
   defuncionesEvitadas: number
   ahorroMdp: number
+  // v2 fields
+  prevalenciaBaselinePct?: number
+  defuncionesEvitadasAcumuladas?: number
 }
 
 export interface ResumenFinal {
@@ -125,6 +128,8 @@ export interface PoliticaAplicada {
   clave: string
   nombre: string
   efectoPct: number
+  efectoInicioPct?: number
+  efectoCesacionPct?: number
 }
 
 export interface ElasticidadesAplicadas {
@@ -139,6 +144,7 @@ export interface SimulacionResultado {
   resumenFinal: ResumenFinal
   politicasAplicadas: PoliticaAplicada[]
   elasticidadesAplicadas: ElasticidadesAplicadas
+  metodoVersion?: string
 }
 
 // === Admin Usuarios ===

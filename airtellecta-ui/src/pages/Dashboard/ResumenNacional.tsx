@@ -1,68 +1,106 @@
-import { EmptyState }         from '../../components/EmptyState/EmptyState'
-import { ErrorBanner }        from '../../components/ErrorBanner/ErrorBanner'
-import { MapaVulnerabilidad } from '../../components/MapaVulnerabilidad/MapaVulnerabilidad'
-import { TendenciaChart }     from '../../components/TendenciaChart/TendenciaChart'
-import { GastoCampanasCard }  from '../../components/GastoCampanasCard/GastoCampanasCard'
-import { DemograficoChart }   from '../../components/DemograficoChart/DemograficoChart'
-import { useResumenNacional } from '../../hooks/useResumenNacional'
+import { EmptyState }          from '../../components/EmptyState/EmptyState'
+import { ErrorBanner }         from '../../components/ErrorBanner/ErrorBanner'
+import { MapaVulnerabilidad }  from '../../components/MapaVulnerabilidad/MapaVulnerabilidad'
+import { TendenciaChart }      from '../../components/TendenciaChart/TendenciaChart'
+import { BalanceFiscalCard }   from '../../components/BalanceFiscalCard/BalanceFiscalCard'
+import { DemograficoChart }    from '../../components/DemograficoChart/DemograficoChart'
+import { useDashboardData }    from '../../hooks/useDashboardData'
 
-function fmtMillones(n: number): string {
-  if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`
-  if (n >= 1_000) return `${(n / 1_000).toFixed(0)}K`
-  return n.toLocaleString('es-MX')
+function fmtMdp(n: number): string {
+  if (n >= 1_000) return `$${(n / 1_000).toFixed(0)},000`
+  return `$${n.toLocaleString('es-MX')}`
 }
 
 function fmtNumero(n: number): string {
   return n.toLocaleString('es-MX')
 }
 
-const SparkleIcon = () => (
-  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z" />
-  </svg>
-)
-
-const TrendUpIcon = () => (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-    <polyline points="23,6 13.5,15.5 8.5,10.5 1,18" /><polyline points="17,6 23,6 23,12" />
-  </svg>
-)
+// ── KPI Card ─────────────────────────────────────────────────
 
 interface KpiCardProps {
   label:       string
   value:       string
   description: string
   descColor?:  string
-  highlight?:  boolean
-  icon?:       React.ReactNode
+  variant?:    'default' | 'critical' | 'warning'
+  valueColor?: string
+  source?:     string
   testId?:     string
 }
 
-function KpiCard({ label, value, description, descColor, highlight, icon, testId }: KpiCardProps) {
+function KpiCard({ label, value, description, descColor, variant = 'default', valueColor, source, testId }: KpiCardProps) {
+  const variantClass = variant === 'critical'
+    ? 'metric-card-glass--critical'
+    : variant === 'warning'
+      ? 'metric-card-glass--warning'
+      : ''
+
   return (
     <div
-      className={`metric-card-glass flex flex-col gap-2.5 p-5 rounded-[18px] ${highlight ? 'metric-card-glass--highlight' : ''}`}
+      className={`metric-card-glass flex flex-col gap-2.5 p-5 rounded-[18px] ${variantClass}`}
       data-testid={testId ?? 'kpi-card'}
     >
-      <div className="flex items-center gap-1.5">
-        {icon && (
-          <span className={highlight ? 'text-green-600 dark:text-green-400' : 'text-[#5580a8] dark:text-white/35'}>
-            {icon}
-          </span>
-        )}
-        <p className={`text-[15px] font-bold tracking-[0.8px] uppercase ${highlight ? 'text-green-700 dark:text-green-400' : 'text-[#5580a8] dark:text-white/35'}`}>
-          {label}
-        </p>
-      </div>
-      <p className={`font-display text-[43px] font-extrabold leading-none tracking-[-1.5px] ${highlight ? 'text-green-700 dark:text-green-400' : 'text-[#0c1f3f] dark:text-white'}`}>
+      <p className="text-[15px] font-bold tracking-[0.8px] uppercase text-[#5580a8] dark:text-white/35">
+        {label}
+      </p>
+      <p className={`font-display text-[43px] font-extrabold leading-none tracking-[-1.5px] ${valueColor ?? 'text-[#0c1f3f] dark:text-white'}`}>
         {value}
       </p>
       <p className={`text-[16px] leading-[1.4] ${descColor ?? 'text-[#5580a8] dark:text-white/40'}`}>
         {description}
       </p>
+      {source && (
+        <p className="text-[10px] text-[#5580a8]/50 dark:text-white/15 mt-0.5">{source}</p>
+      )}
     </div>
   )
 }
+
+// ── Deficit Card (special two-line layout) ────────────────────
+
+interface DeficitCardProps {
+  ieps: number
+  costo: number
+  anioIeps: number
+}
+
+function DeficitCard({ ieps, costo, anioIeps }: DeficitCardProps) {
+  const deficit = costo - ieps
+
+  return (
+    <div
+      className="metric-card-glass metric-card-glass--warning flex flex-col gap-2 p-5 rounded-[18px]"
+      data-testid="kpi-deficit"
+    >
+      <p className="text-[15px] font-bold tracking-[0.8px] uppercase text-amber-600 dark:text-amber-400">
+        Balance Fiscal Tabaco
+      </p>
+      <div className="flex flex-col gap-1">
+        <div className="flex items-baseline gap-2">
+          <span className="text-[13px] text-[#5580a8] dark:text-white/40">Recauda</span>
+          <span className="font-display text-[22px] font-extrabold text-green-600 dark:text-green-400">
+            {fmtMdp(ieps)} MDP
+          </span>
+          <span className="text-[10px] text-[#5580a8]/50 dark:text-white/20">IEPS {anioIeps}</span>
+        </div>
+        <div className="flex items-baseline gap-2">
+          <span className="text-[13px] text-[#5580a8] dark:text-white/40">Gasta</span>
+          <span className="font-display text-[22px] font-extrabold text-red-500 dark:text-red-400">
+            {fmtMdp(costo)} MDP
+          </span>
+          <span className="text-[10px] text-[#5580a8]/50 dark:text-white/20">salud directa</span>
+        </div>
+      </div>
+      {deficit > 0 && (
+        <span className="self-start px-2.5 py-1 rounded-full bg-red-100 dark:bg-red-500/15 text-red-700 dark:text-red-400 text-[13px] font-bold border border-red-200 dark:border-red-500/25">
+          −{fmtMdp(deficit)} MDP déficit
+        </span>
+      )}
+    </div>
+  )
+}
+
+// ── Skeleton ──────────────────────────────────────────────────
 
 function KpiSkeleton() {
   return (
@@ -74,8 +112,10 @@ function KpiSkeleton() {
   )
 }
 
+// ── Page ──────────────────────────────────────────────────────
+
 export function ResumenNacional() {
-  const { data, isLoading, isError, refetch } = useResumenNacional()
+  const { data, isLoading, isError, refetch } = useDashboardData()
 
   return (
     <div className="flex flex-col gap-4" data-testid="resumen-nacional">
@@ -89,10 +129,10 @@ export function ResumenNacional() {
       )}
 
       {!data && !isLoading && !isError && (
-        <EmptyState title="Sin datos disponibles" description="No hay información de consumo para el período seleccionado." />
+        <EmptyState title="Sin datos disponibles" description="No hay información disponible para el período seleccionado." />
       )}
 
-      {/* ── Fila 1 — 4 KPI cards ── */}
+      {/* ── Row 1 — 4 KPI cards ── */}
       <div className="grid grid-cols-4 gap-4">
         {isLoading ? (
           <>
@@ -104,38 +144,38 @@ export function ResumenNacional() {
         ) : data ? (
           <>
             <KpiCard
-              label="Prevalencia fumadores"
-              value={`${Number(data.prevalenciaFumadores).toFixed(1)}%`}
-              description="de la población adulta"
+              label="Prevalencia Fumadores"
+              value={`${Number(data.resumen.prevalenciaFumadores).toFixed(1)}%`}
+              description={`${fmtNumero(data.resumen.poblacionFumadores)} fumadores adultos`}
+              source="ENCODAT 2025"
               testId="kpi-prevalencia"
             />
             <KpiCard
-              label="Costo en salud pública"
-              value={`$${fmtMillones(data.defuncionesF17)}`}
-              description="↑ defunciones F17"
+              label="Costo en Salud Pública"
+              value={`${fmtMdp(Number(data.panel.cargaEconomica.costoDirectoAnualMdp))} MDP`}
+              description="costo directo anual en atención médica"
               descColor="text-red-500 dark:text-red-400 font-medium"
-              testId="kpi-salud"
+              variant="critical"
+              testId="kpi-costo"
+            />
+            <DeficitCard
+              ieps={Number(data.panel.recaudacion.iepsMasRecienteMdp)}
+              costo={Number(data.panel.cargaEconomica.costoDirectoAnualMdp)}
+              anioIeps={data.panel.recaudacion.anio}
             />
             <KpiCard
-              label="Vapeadores activos"
-              value={fmtMillones(data.usuariosVapeo)}
-              description="usuarios de vapeo estimados"
-              highlight
-              icon={<SparkleIcon />}
-              testId="kpi-vapeadores"
-            />
-            <KpiCard
-              label="Urgencias relacionadas"
-              value={fmtNumero(data.urgenciasF17)}
-              description="urgencias F17 registradas"
-              icon={<TrendUpIcon />}
-              testId="kpi-urgencias"
+              label="Muertes por Tabaco"
+              value={fmtNumero(data.panel.epidemiologia.defuncionesAtribuiblesAnual)}
+              description="muertes atribuibles al tabaco por año"
+              valueColor="text-red-600 dark:text-red-400"
+              source="GBD 2023 × INEGI EDR 2023"
+              testId="kpi-muertes"
             />
           </>
         ) : null}
       </div>
 
-      {/* ── Fila 2 — Mapa (3/5) + Consumo por edad (2/5) ── */}
+      {/* ── Row 2 — Map (3/5) + Demographics (2/5) ── */}
       <div className="grid grid-cols-5 gap-4">
         <div className="col-span-3">
           <MapaVulnerabilidad />
@@ -145,10 +185,20 @@ export function ResumenNacional() {
         </div>
       </div>
 
-      {/* ── Fila 3 — Gasto campañas (3/5) + Consumo anual (2/5) ── */}
+      {/* ── Row 3 — Fiscal Balance (3/5) + Trends (2/5) ── */}
       <div className="grid grid-cols-5 gap-4">
         <div className="col-span-3">
-          <GastoCampanasCard />
+          {data ? (
+            <BalanceFiscalCard
+              iepsRecaudado={Number(data.panel.recaudacion.iepsMasRecienteMdp)}
+              costoDirecto={Number(data.panel.cargaEconomica.costoDirectoAnualMdp)}
+              costoSocial={Number(data.panel.cargaEconomica.costoSocialAnualMdp)}
+              inversionPrevencion={Number(data.panel.cargaEconomica.inversionPrevencionMdp)}
+              anioIeps={data.panel.recaudacion.anio}
+            />
+          ) : (
+            <div className="metric-card-glass rounded-[18px] p-5 h-64 animate-pulse" />
+          )}
         </div>
         <div className="col-span-2">
           <TendenciaChart />
