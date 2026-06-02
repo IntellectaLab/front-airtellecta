@@ -14,13 +14,13 @@ describe('Flujo 5: Administración de Usuarios', () => {
   })
 
   it('la página de usuarios carga contenido', () => {
-    cy.get('body').should('not.be.empty')
-    // Puede mostrar tabla de usuarios o un mensaje de "sin permisos" si el usuario no es admin
-    cy.get('body').then(($body) => {
+    // El usuario de prueba no es admin — la página muestra "Acceso denegado"
+    cy.get('body', { timeout: 8000 }).should(($body) => {
       const text = $body.text()
       expect(
         text.includes('usuario') || text.includes('Usuario') ||
-        text.includes('acceso') || text.includes('permisos')
+        text.includes('Acceso') || text.includes('denegado') ||
+        text.includes('permisos')
       ).to.be.true
     })
   })
@@ -31,8 +31,11 @@ describe('Flujo 5: Administración de Usuarios', () => {
         cy.get('table').should('be.visible')
         cy.get('table tbody tr').should('have.length.greaterThan', 0)
       } else {
-        cy.log('Usuario no es admin o tabla renderizada como lista')
-        cy.get('body').should('contain.text', 'usu')
+        // Usuario no es admin — se espera mensaje de acceso denegado
+        cy.get('body').should(($b) => {
+          const t = $b.text()
+          expect(t.includes('Acceso') || t.includes('denegado') || t.includes('Usuario')).to.be.true
+        })
       }
     })
   })
