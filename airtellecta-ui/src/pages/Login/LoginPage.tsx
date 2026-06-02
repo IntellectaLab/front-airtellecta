@@ -13,7 +13,7 @@ import ReCAPTCHA from 'react-google-recaptcha'
 import { auth } from '../../firebase'
 import { useAuth } from '../../context/AuthContext'
 
-const isCypress = typeof window !== 'undefined' && !!(window as Record<string, unknown>).Cypress
+const isCypress = typeof window !== 'undefined' && 'Cypress' in window
 const RECAPTCHA_SITE_KEY = isCypress ? '' : (import.meta.env.VITE_RECAPTCHA_SITE_KEY || '')
 
 const UserIcon = () => (
