@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import {
   ComposedChart, Line, XAxis, YAxis, CartesianGrid, Tooltip,
-  ResponsiveContainer, Area, ReferenceLine,
+  ResponsiveContainer, Area,
 } from 'recharts'
 import { apiService } from '../../services/api'
 import type { SimulacionRequest, SimulacionResultado, RecaudacionAnual } from '../../types/api'
@@ -613,11 +613,15 @@ export function Simulador() {
                 <span className="text-[14px] font-bold text-[#0c1f3f] dark:text-white/65">Proyección Anual</span>
                 <div className="flex items-center gap-4">
                   <span className="flex items-center gap-1.5 text-[11px] text-[#5580a8] dark:text-white/35">
-                    <span className="w-4 h-[3px] rounded bg-blue-500" />Prevalencia %
+                    <span className="w-4 h-[3px] rounded bg-blue-500" />Con intervención %
+                  </span>
+                  <span className="flex items-center gap-1.5">
+                    <span className="w-5 h-0 border-t-2 border-dashed border-[#94a3b8]" />
+                    <span className="text-[11px] font-semibold text-[#94a3b8]">Sin intervención %</span>
                   </span>
                   <span className="flex items-center gap-1.5 text-[11px] text-[#5580a8] dark:text-white/35">
                     <span className="w-4 h-[3px] rounded" style={{ background: isPositive ? '#22c55e' : '#ef4444' }} />
-                    {isPositive ? 'Muertes evitadas' : 'Muertes adic.'}
+                    {isPositive ? 'Muertes evitadas (acum.)' : 'Muertes adic. (acum.)'}
                   </span>
                   <button
                     onClick={() => setShowTable(!showTable)}
@@ -638,9 +642,10 @@ export function Simulador() {
                     <thead>
                       <tr className="text-[#5580a8] dark:text-white/30 text-left border-b border-black/[0.06] dark:border-white/[0.06]">
                         <th className="pb-2.5 pr-4 font-semibold">Año</th>
-                        <th className="pb-2.5 pr-4 font-semibold text-right">Prevalencia</th>
+                        <th className="pb-2.5 pr-4 font-semibold text-right">Sin interv.</th>
+                        <th className="pb-2.5 pr-4 font-semibold text-right">Con interv.</th>
                         <th className="pb-2.5 pr-4 font-semibold text-right">Fumadores</th>
-                        <th className="pb-2.5 pr-4 font-semibold text-right">{isPositive ? 'Muertes evitadas' : 'Muertes adic.'}</th>
+                        <th className="pb-2.5 pr-4 font-semibold text-right">{isPositive ? 'Evitadas (acum.)' : 'Adic. (acum.)'}</th>
                         <th className="pb-2.5 font-semibold text-right">{isPositive ? 'Ahorro MDP' : 'Costo adic. MDP'}</th>
                       </tr>
                     </thead>
@@ -648,9 +653,10 @@ export function Simulador() {
                       {resultado.proyeccion.map(row => (
                         <tr key={row.anio} className="border-b border-black/[0.03] dark:border-white/[0.02]">
                           <td className="py-2 pr-4 font-semibold text-[#0c1f3f] dark:text-white/55">{row.anio}</td>
+                          <td className="py-2 pr-4 text-right text-[#94a3b8] font-medium">{row.prevalenciaBaselinePct != null ? `${Number(row.prevalenciaBaselinePct).toFixed(2)}%` : '—'}</td>
                           <td className="py-2 pr-4 text-right text-blue-600 dark:text-blue-400 font-medium">{Number(row.prevalenciaPct).toFixed(2)}%</td>
                           <td className="py-2 pr-4 text-right text-[#5580a8] dark:text-white/45">{formatNumber(row.fumadoresAbsolutos)}</td>
-                          <td className="py-2 pr-4 text-right" style={{ color: isPositive ? '#22c55e' : '#ef4444' }}>{formatNumber(Math.abs(row.defuncionesEvitadas))}</td>
+                          <td className="py-2 pr-4 text-right" style={{ color: isPositive ? '#22c55e' : '#ef4444' }}>{formatNumber(Math.abs(row.defuncionesEvitadasAcumuladas ?? row.defuncionesEvitadas))}</td>
                           <td className="py-2 text-right text-[#5580a8] dark:text-white/45">${formatNumber(Math.abs(row.ahorroMdp))}</td>
                         </tr>
                       ))}
@@ -675,11 +681,14 @@ export function Simulador() {
                     <YAxis yAxisId="left"  tick={{ fill: '#5580a8', fontSize: 11 }} axisLine={false} tickLine={false} unit="%" />
                     <YAxis yAxisId="right" orientation="right" tick={{ fill: '#5580a8', fontSize: 11 }} axisLine={false} tickLine={false} />
                     <Tooltip content={<CustomTooltip isPositive={isPositive} />} />
-                    <ReferenceLine yAxisId="left" y={baselinePrev} stroke="#f59e0b" strokeDasharray="6 3" strokeWidth={1.5} />
                     <Area yAxisId="left"  type="monotone" dataKey="prevalenciaPct"      fill="url(#prevGradient)"  stroke="none" />
-                    <Area yAxisId="right" type="monotone" dataKey="defuncionesEvitadas" fill="url(#deathGradient)" stroke="none" />
-                    <Line yAxisId="left"  type="monotone" dataKey="prevalenciaPct"      stroke="#3b82f6" strokeWidth={2.5} dot={{ r: 4, fill: '#3b82f6', stroke: '#fff', strokeWidth: 1.5 }} activeDot={{ r: 6 }} name="Prevalencia %" />
-                    <Line yAxisId="right" type="monotone" dataKey="defuncionesEvitadas" stroke={isPositive ? '#22c55e' : '#ef4444'} strokeWidth={2} strokeDasharray="6 4" dot={{ r: 3, fill: isPositive ? '#22c55e' : '#ef4444' }} name={isPositive ? 'Muertes evitadas' : 'Muertes adicionales'} />
+                    <Area yAxisId="right" type="monotone" dataKey="defuncionesEvitadasAcumuladas" fill="url(#deathGradient)" stroke="none" />
+                    {/* Baseline prevalence — dashed gray line (no intervention) */}
+                    <Line yAxisId="left" type="monotone" dataKey="prevalenciaBaselinePct" stroke="#94a3b8" strokeWidth={1.5} strokeDasharray="6 4" dot={false} name="Sin intervención %" />
+                    {/* Intervention prevalence — solid blue */}
+                    <Line yAxisId="left"  type="monotone" dataKey="prevalenciaPct" stroke="#3b82f6" strokeWidth={2.5} dot={{ r: 4, fill: '#3b82f6', stroke: '#fff', strokeWidth: 1.5 }} activeDot={{ r: 6 }} name="Con intervención %" />
+                    {/* Cumulative deaths avoided — growing green curve */}
+                    <Line yAxisId="right" type="monotone" dataKey="defuncionesEvitadasAcumuladas" stroke={isPositive ? '#22c55e' : '#ef4444'} strokeWidth={2} dot={{ r: 3, fill: isPositive ? '#22c55e' : '#ef4444' }} name={isPositive ? 'Muertes evitadas (acum.)' : 'Muertes adicionales (acum.)'} />
                   </ComposedChart>
                 </ResponsiveContainer>
               )}
