@@ -5,9 +5,10 @@ interface ExportButtonsProps {
   pdfDocument: React.ReactElement
   pdfFileName: string
   onExcelDownload: () => Promise<void>
+  onPdfDownload?: () => void
 }
 
-export function ExportButtons({ pdfDocument, pdfFileName, onExcelDownload }: ExportButtonsProps) {
+export function ExportButtons({ pdfDocument, pdfFileName, onExcelDownload, onPdfDownload }: ExportButtonsProps) {
   const [excelLoading, setExcelLoading] = useState(false)
 
   const handleExcel = async () => {
@@ -26,6 +27,7 @@ export function ExportButtons({ pdfDocument, pdfFileName, onExcelDownload }: Exp
       <PDFDownloadLink
         document={pdfDocument as any}
         fileName={pdfFileName}
+        onClick={() => onPdfDownload?.()}
         className="flex items-center gap-2 px-5 py-2.5 rounded-[10px] text-[13px] font-semibold cursor-pointer transition-all duration-200 no-underline hover:shadow-md"
         style={{
           background: 'linear-gradient(135deg, rgba(220,38,38,0.12), rgba(220,38,38,0.06))',

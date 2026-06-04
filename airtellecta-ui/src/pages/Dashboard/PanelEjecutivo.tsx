@@ -91,6 +91,9 @@ export function PanelEjecutivo() {
                 const { apiService } = await import('../../services/api')
                 await apiService.exportPanelEjecutivoExcel()
               }}
+              onPdfDownload={() => {
+                import('../../services/api').then(({ apiService }) => apiService.logPanelEjecutivoPdf())
+              }}
             />
           </div>
         )}

@@ -180,3 +180,35 @@ export interface ActualizarUsuarioRequest {
   entidadId?: number
   activo?: boolean
 }
+
+// === Audit Log ===
+
+export interface AuditLogItem {
+  id:               number
+  usuarioId:        number | null
+  usuarioEmail:     string | null
+  accion:           string
+  entidadAfectada:  string | null
+  registroId:       string | null
+  detalle:          string | null  // JSON string
+  ipAddress:        string | null
+  createdAt:        string         // ISO-8601
+}
+
+export interface AuditLogPage {
+  items:       AuditLogItem[]
+  totalItems:  number
+  totalPages:  number
+  page:        number
+  size:        number
+}
+
+export interface AuditLogParams {
+  page?:           number
+  size?:           number
+  accion?:         string
+  usuarioId?:      number
+  fechaInicio?:    string
+  fechaFin?:       string
+  emailBusqueda?:  string
+}

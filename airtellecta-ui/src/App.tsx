@@ -8,6 +8,7 @@ import { PanelEjecutivo }  from './pages/Dashboard/PanelEjecutivo'
 import { Simulador }       from './pages/Dashboard/Simulador'
 import { Correlaciones }   from './pages/Dashboard/Correlaciones'
 import { AdminUsuarios }   from './pages/Dashboard/AdminUsuarios'
+import { AdminAuditLog }   from './pages/Dashboard/AdminAuditLog'
 import { ProtectedRoute }  from './components/ProtectedRoute'
 import { useAuth }         from './context/AuthContext'
 
@@ -39,6 +40,7 @@ export default function App() {
         <Route path="correlaciones"     element={<Correlaciones />} />
         <Route path="bases-de-datos"    element={<BasesDatos />} />
         <Route path="usuarios"          element={<AdminUsuarios />} />
+        <Route path="audit-log"         element={<AdminAuditLog />} />
       </Route>
     </Routes>
   )
