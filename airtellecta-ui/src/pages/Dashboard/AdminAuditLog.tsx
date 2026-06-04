@@ -329,7 +329,7 @@ export function AdminAuditLog() {
   const [emailBusqueda,  setEmailBusqueda]  = useState<string | undefined>()
 
   // Debounce email 400ms
-  const debounceRef = useRef<ReturnType<typeof setTimeout>>()
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
   const handleEmailChange = useCallback((v: string) => {
     setEmailInput(v)
     clearTimeout(debounceRef.current)
