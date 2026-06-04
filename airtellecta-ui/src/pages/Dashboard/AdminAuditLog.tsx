@@ -47,22 +47,25 @@ const DownloadIcon = () => (
 
 // ── Colores por prefijo de acción ─────────────────────────────
 const ACCION_ESTILOS: Record<string, { pill: string; dot: string }> = {
-  CREAR:      { pill: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/25', dot: 'bg-emerald-400' },
-  ACTIVAR:    { pill: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/25', dot: 'bg-emerald-400' },
-  CONSULTAR:  { pill: 'bg-sky-500/10 text-sky-400 border-sky-500/20',            dot: 'bg-sky-400'     },
-  LISTAR:     { pill: 'bg-sky-500/10 text-sky-400 border-sky-500/20',            dot: 'bg-sky-400'     },
-  ACTUALIZAR: { pill: 'bg-amber-500/15 text-amber-400 border-amber-500/25',      dot: 'bg-amber-400'  },
-  CAMBIAR:    { pill: 'bg-amber-500/15 text-amber-400 border-amber-500/25',      dot: 'bg-amber-400'  },
-  EXPORTAR:   { pill: 'bg-violet-500/15 text-violet-400 border-violet-500/25',   dot: 'bg-violet-400' },
-  EJECUTAR:   { pill: 'bg-indigo-500/15 text-indigo-400 border-indigo-500/25',   dot: 'bg-indigo-400' },
-  ELIMINAR:   { pill: 'bg-red-500/15 text-red-400 border-red-500/25',            dot: 'bg-red-400'    },
-  DESACTIVAR: { pill: 'bg-red-500/15 text-red-400 border-red-500/25',            dot: 'bg-red-400'    },
-  CARGA:      { pill: 'bg-teal-500/15 text-teal-400 border-teal-500/25',         dot: 'bg-teal-400'   },
+  CREAR:      { pill: 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border-emerald-500/25', dot: 'bg-emerald-500 dark:bg-emerald-400' },
+  ACTIVAR:    { pill: 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border-emerald-500/25', dot: 'bg-emerald-500 dark:bg-emerald-400' },
+  CONSULTAR:  { pill: 'bg-sky-500/10 text-sky-600 dark:text-sky-400 border-sky-500/20',                dot: 'bg-sky-500 dark:bg-sky-400'         },
+  LISTAR:     { pill: 'bg-sky-500/10 text-sky-600 dark:text-sky-400 border-sky-500/20',                dot: 'bg-sky-500 dark:bg-sky-400'         },
+  ACTUALIZAR: { pill: 'bg-amber-500/15 text-amber-600 dark:text-amber-400 border-amber-500/25',        dot: 'bg-amber-500 dark:bg-amber-400'     },
+  CAMBIAR:    { pill: 'bg-amber-500/15 text-amber-600 dark:text-amber-400 border-amber-500/25',        dot: 'bg-amber-500 dark:bg-amber-400'     },
+  EXPORTAR:   { pill: 'bg-violet-500/15 text-violet-600 dark:text-violet-400 border-violet-500/25',    dot: 'bg-violet-500 dark:bg-violet-400'   },
+  EJECUTAR:   { pill: 'bg-indigo-500/15 text-indigo-600 dark:text-indigo-400 border-indigo-500/25',    dot: 'bg-indigo-500 dark:bg-indigo-400'   },
+  ELIMINAR:   { pill: 'bg-red-500/15 text-red-600 dark:text-red-400 border-red-500/25',                dot: 'bg-red-500 dark:bg-red-400'         },
+  DESACTIVAR: { pill: 'bg-red-500/15 text-red-600 dark:text-red-400 border-red-500/25',                dot: 'bg-red-500 dark:bg-red-400'         },
+  CARGA:      { pill: 'bg-teal-500/15 text-teal-600 dark:text-teal-400 border-teal-500/25',            dot: 'bg-teal-500 dark:bg-teal-400'       },
 }
 
 function accionEstilo(accion: string) {
   const prefijo = accion.split('_')[0]
-  return ACCION_ESTILOS[prefijo] ?? { pill: 'bg-white/10 text-white/45 border-white/10', dot: 'bg-white/30' }
+  return ACCION_ESTILOS[prefijo] ?? {
+    pill: 'bg-[rgba(180,210,240,0.2)] text-[#5580a8] dark:bg-white/10 dark:text-white/45 border-[rgba(180,210,240,0.3)] dark:border-white/10',
+    dot:  'bg-[#5580a8] dark:bg-white/30',
+  }
 }
 
 function accionLabel(accion: string): string {
@@ -141,24 +144,22 @@ function esFuenteTrigger(detalle: string | null): boolean {
 // ── Dropdown personalizado ────────────────────────────────────
 const ACCIONES_OPCIONES: { value: string; label: string }[] = [
   { value: '', label: 'Todas las acciones' },
-  { value: 'EJECUTAR_SIMULACION',    label: 'Ejecutar simulación' },
-  { value: 'EXPORTAR_DATOS',         label: 'Exportar datos' },
-  { value: 'CONSULTAR_PERFIL',       label: 'Inicio de sesión' },
-  { value: 'CREAR_USUARIO',          label: 'Crear usuario' },
-  { value: 'ACTUALIZAR_USUARIO',     label: 'Actualizar usuario' },
-  { value: 'CAMBIAR_ROL_USUARIO',    label: 'Cambiar rol' },
-  { value: 'DESACTIVAR_USUARIO',     label: 'Suspender usuario' },
-  { value: 'ACTIVAR_USUARIO',        label: 'Reactivar usuario' },
-  { value: 'LISTAR_USUARIOS',        label: 'Listar usuarios' },
-  { value: 'CARGA_COMPLETADA',       label: 'Carga completada' },
-  { value: 'CARGA_ERROR',            label: 'Error de carga' },
+  { value: 'EJECUTAR_SIMULACION',       label: 'Ejecutar simulación' },
+  { value: 'EXPORTAR_DATOS',            label: 'Exportar datos' },
+  { value: 'CONSULTAR_PERFIL',          label: 'Inicio de sesión' },
+  { value: 'CREAR_USUARIO',             label: 'Crear usuario' },
+  { value: 'ACTUALIZAR_USUARIO',        label: 'Actualizar usuario' },
+  { value: 'CAMBIAR_ROL_USUARIO',       label: 'Cambiar rol' },
+  { value: 'DESACTIVAR_USUARIO',        label: 'Suspender usuario' },
+  { value: 'ACTIVAR_USUARIO',           label: 'Reactivar usuario' },
+  { value: 'LISTAR_USUARIOS',           label: 'Listar usuarios' },
+  { value: 'CARGA_COMPLETADA',          label: 'Carga completada' },
+  { value: 'CARGA_ERROR',               label: 'Error de carga' },
   { value: 'CONSULTAR_PANEL_EJECUTIVO', label: 'Panel ejecutivo' },
-  { value: 'CONSULTAR_AUDIT_LOG',    label: 'Audit log' },
+  { value: 'CONSULTAR_AUDIT_LOG',       label: 'Audit log' },
 ]
 
-function CustomSelect({
-  value, onChange, id,
-}: Readonly<{ value: string; onChange: (v: string) => void; id?: string }>) {
+function CustomSelect({ value, onChange }: { value: string; onChange: (v: string) => void }) {
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
 
@@ -178,20 +179,25 @@ function CustomSelect({
         id={id}
         type="button"
         className="w-full flex items-center justify-between gap-2 px-3 py-2 rounded-[10px] text-[13px] font-medium
-          bg-white/[0.06] border border-white/[0.12] text-white hover:bg-white/[0.10] hover:border-white/20
+          bg-[rgba(180,210,240,0.15)] dark:bg-white/[0.06]
+          border border-[rgba(180,210,240,0.35)] dark:border-white/[0.12]
+          text-[#0c1f3f] dark:text-white
+          hover:bg-[rgba(180,210,240,0.25)] dark:hover:bg-white/[0.10]
           transition-colors focus:outline-none"
         onClick={() => setOpen(o => !o)}
       >
         <span className="truncate">{selected.label}</span>
-        <span className={`shrink-0 transition-transform duration-200 text-white/40 ${open ? 'rotate-180' : ''}`}>
+        <span className={`shrink-0 transition-transform duration-200 text-[#5580a8] dark:text-white/40 ${open ? 'rotate-180' : ''}`}>
           <ChevronDownIcon />
         </span>
       </button>
 
       {open && (
         <div className="absolute top-[calc(100%+6px)] left-0 w-full z-50 rounded-[12px] overflow-hidden
-          border border-white/[0.12] shadow-[0_8px_32px_rgba(0,0,0,0.45)]"
-          style={{ background: 'rgba(10,20,48,0.97)', backdropFilter: 'blur(16px)' }}
+          border border-[rgba(180,210,240,0.35)] dark:border-white/[0.12]
+          bg-white dark:bg-[rgba(10,20,48,0.97)]
+          shadow-[0_8px_32px_rgba(0,0,0,0.18)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.45)]"
+          style={{ backdropFilter: 'blur(16px)' }}
         >
           {ACCIONES_OPCIONES.map(opt => (
             <button
@@ -199,8 +205,8 @@ function CustomSelect({
               type="button"
               className={`w-full text-left px-3.5 py-2.5 text-[13px] transition-colors
                 ${opt.value === value
-                  ? 'bg-white/[0.12] text-white font-semibold'
-                  : 'text-white/70 hover:bg-white/[0.07] hover:text-white'
+                  ? 'bg-[rgba(180,210,240,0.25)] dark:bg-white/[0.12] text-[#0c1f3f] dark:text-white font-semibold'
+                  : 'text-[#5580a8] dark:text-white/70 hover:bg-[rgba(180,210,240,0.15)] dark:hover:bg-white/[0.07] hover:text-[#0c1f3f] dark:hover:text-white'
                 }`}
               onClick={() => { onChange(opt.value); setOpen(false) }}
             >
@@ -218,13 +224,13 @@ function TableSkeleton() {
   return (
     <div className="flex flex-col">
       {Array.from({ length: 10 }).map((_, i) => (
-        <div key={`skeleton-${i}`} className="flex items-center gap-4 px-4 py-3 border-b border-white/[0.05] animate-pulse">
-          <div className="w-[110px] h-3 rounded bg-white/[0.08]" />
-          <div className="w-9 h-9 rounded-full bg-white/[0.08] shrink-0" />
-          <div className="w-[140px] h-3 rounded bg-white/[0.06]" />
-          <div className="w-[120px] h-5 rounded-full bg-white/[0.08]" />
-          <div className="flex-1 h-3 rounded bg-white/[0.05]" />
-          <div className="w-[80px] h-3 rounded bg-white/[0.05]" />
+        <div key={i} className="flex items-center gap-4 px-4 py-3 border-b border-[rgba(180,210,240,0.2)] dark:border-white/[0.05] animate-pulse">
+          <div className="w-[110px] h-3 rounded bg-[rgba(180,210,240,0.3)] dark:bg-white/[0.08]" />
+          <div className="w-9 h-9 rounded-full bg-[rgba(180,210,240,0.3)] dark:bg-white/[0.08] shrink-0" />
+          <div className="w-[140px] h-3 rounded bg-[rgba(180,210,240,0.2)] dark:bg-white/[0.06]" />
+          <div className="w-[120px] h-5 rounded-full bg-[rgba(180,210,240,0.3)] dark:bg-white/[0.08]" />
+          <div className="flex-1 h-3 rounded bg-[rgba(180,210,240,0.15)] dark:bg-white/[0.05]" />
+          <div className="w-[80px] h-3 rounded bg-[rgba(180,210,240,0.15)] dark:bg-white/[0.05]" />
         </div>
       ))}
     </div>
@@ -239,14 +245,14 @@ function KpiCard({ label, value, icon, color, sublabel }: Readonly<{
   return (
     <div className="metric-card-glass rounded-[16px] p-5 flex flex-col gap-3">
       <div className="flex items-center justify-between">
-        <p className="text-[11px] font-bold tracking-[0.7px] uppercase text-white/35">{label}</p>
+        <p className="text-[11px] font-bold tracking-[0.7px] uppercase text-[#5580a8] dark:text-white/35">{label}</p>
         <span className={`p-2 rounded-[10px] ${color}`}>{icon}</span>
       </div>
       <div>
-        <p className="font-display text-[32px] font-extrabold leading-none tracking-[-1px] text-white">
+        <p className="font-display text-[32px] font-extrabold leading-none tracking-[-1px] text-[#0c1f3f] dark:text-white">
           {typeof value === 'number' ? value.toLocaleString('es-MX') : value}
         </p>
-        {sublabel && <p className="text-[12px] text-white/30 mt-1">{sublabel}</p>}
+        {sublabel && <p className="text-[12px] text-[#5580a8] dark:text-white/30 mt-1">{sublabel}</p>}
       </div>
     </div>
   )
@@ -260,23 +266,26 @@ function AuditTableRow({ item }: Readonly<{ item: AuditLogItem }>) {
   const desc    = parsearDetalle(item)
 
   return (
-    <div className="grid items-center gap-3 px-5 py-3.5 border-b border-white/[0.04] hover:bg-white/[0.03] transition-colors"
+    <div
+      className="grid items-center gap-3 px-5 py-3.5
+        border-b border-[rgba(180,210,240,0.2)] dark:border-white/[0.04]
+        hover:bg-[rgba(180,210,240,0.08)] dark:hover:bg-white/[0.03] transition-colors"
       style={{ gridTemplateColumns: '130px 180px 160px 1fr 80px 90px' }}
     >
       {/* Fecha/hora */}
       <div className="flex flex-col gap-0.5">
-        <span className="text-[12px] font-semibold text-white/70">{hora}</span>
-        <span className="text-[11px] text-white/25">{fecha}</span>
+        <span className="text-[12px] font-semibold text-[#1e3a5f] dark:text-white/70">{hora}</span>
+        <span className="text-[11px] text-[#5580a8] dark:text-white/25">{fecha}</span>
       </div>
 
       {/* Usuario */}
       <div className="flex items-center gap-2.5 min-w-0">
         <div className="w-8 h-8 rounded-full bg-[rgba(100,160,220,0.2)] flex items-center justify-center shrink-0">
-          <span className="text-[11px] font-bold text-[#93c5fd]">
+          <span className="text-[11px] font-bold text-[#2563eb] dark:text-[#93c5fd]">
             {avatarLetras(item.usuarioEmail)}
           </span>
         </div>
-        <span className="text-[12px] text-white/60 truncate">{item.usuarioEmail ?? 'sistema'}</span>
+        <span className="text-[12px] text-[#5580a8] dark:text-white/60 truncate">{item.usuarioEmail ?? 'sistema'}</span>
       </div>
 
       {/* Acción */}
@@ -288,17 +297,17 @@ function AuditTableRow({ item }: Readonly<{ item: AuditLogItem }>) {
       </div>
 
       {/* Descripción */}
-      <span className="text-[12.5px] text-white/55 truncate">{desc}</span>
+      <span className="text-[12.5px] text-[#5580a8] dark:text-white/55 truncate">{desc}</span>
 
       {/* IP */}
-      <span className="text-[11px] text-white/30 font-mono truncate">{item.ipAddress ?? '—'}</span>
+      <span className="text-[11px] text-[#5580a8]/70 dark:text-white/30 font-mono truncate">{item.ipAddress ?? '—'}</span>
 
       {/* Fuente */}
       <div className="flex justify-end">
         <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold border
           ${trigger
-            ? 'bg-blue-900/40 text-blue-400 border-blue-500/20'
-            : 'bg-slate-800/60 text-slate-400 border-slate-600/20'
+            ? 'bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 border-blue-300 dark:border-blue-500/20'
+            : 'bg-slate-100 dark:bg-slate-800/60 text-slate-500 dark:text-slate-400 border-slate-300 dark:border-slate-600/20'
           }`}
         >
           {trigger ? <DatabaseIcon /> : <ApiIcon />}
@@ -311,14 +320,13 @@ function AuditTableRow({ item }: Readonly<{ item: AuditLogItem }>) {
 
 // ── Página principal ──────────────────────────────────────────
 export function AdminAuditLog() {
-  const [page,           setPage]           = useState(0)
-  const [accionFiltro,   setAccionFiltro]   = useState('')
-  const [fechaInicio,    setFechaInicio]    = useState<string | undefined>()
-  const [fechaFin,       setFechaFin]       = useState<string | undefined>()
-  const [emailInput,     setEmailInput]     = useState('')
-  const [emailBusqueda,  setEmailBusqueda]  = useState<string | undefined>()
+  const [page,          setPage]          = useState(0)
+  const [accionFiltro,  setAccionFiltro]  = useState('')
+  const [fechaInicio,   setFechaInicio]   = useState<string | undefined>()
+  const [fechaFin,      setFechaFin]      = useState<string | undefined>()
+  const [emailInput,    setEmailInput]    = useState('')
+  const [emailBusqueda, setEmailBusqueda] = useState<string | undefined>()
 
-  // Debounce email 400ms
   const debounceRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
   const handleEmailChange = useCallback((v: string) => {
     setEmailInput(v)
@@ -340,8 +348,7 @@ export function AdminAuditLog() {
 
   const items = data?.items ?? []
 
-  // KPIs calculados sobre la página actual
-  const usuariosUnicos = new Set(items.map(i => i.usuarioEmail).filter(Boolean)).size
+  const usuariosUnicos  = new Set(items.map(i => i.usuarioEmail).filter(Boolean)).size
   const eventosCriticos = items.filter(i =>
     ['CREAR_USUARIO', 'CAMBIAR_ROL_USUARIO', 'DESACTIVAR_USUARIO', 'ACTIVAR_USUARIO', 'CARGA_ERROR'].includes(i.accion)
   ).length
@@ -354,71 +361,50 @@ export function AdminAuditLog() {
     <div className="flex flex-col gap-5" data-testid="admin-audit-log">
 
       {/* ── Encabezado ── */}
-      <div className="flex items-start justify-between">
-        <div>
-          <div className="flex items-center gap-2.5 mb-1">
-            <span className="p-1.5 rounded-[9px] bg-indigo-500/15 text-indigo-400">
-              <ShieldIcon />
-            </span>
-            <p className="text-[12px] font-semibold text-white/30 uppercase tracking-[0.8px]">AIRTELLECTA · ADMIN</p>
-          </div>
-          <h1 className="text-[28px] font-extrabold text-white tracking-[-0.5px]">
-            Registro de Auditoría
-          </h1>
-          <p className="text-[13px] text-white/35 mt-0.5">
-            Trazabilidad completa de acciones del sistema
-            {data ? ` · ${data.totalItems.toLocaleString('es-MX')} eventos registrados` : ''}
-          </p>
+      <div>
+        <div className="flex items-center gap-2.5 mb-1">
+          <span className="p-1.5 rounded-[9px] bg-indigo-500/15 text-indigo-500 dark:text-indigo-400">
+            <ShieldIcon />
+          </span>
+          <p className="text-[12px] font-semibold text-[#5580a8] dark:text-white/30 uppercase tracking-[0.8px]">AIRTELLECTA · ADMIN</p>
         </div>
+        <h1 className="text-[28px] font-extrabold text-[#0c1f3f] dark:text-white tracking-[-0.5px]">
+          Registro de Auditoría
+        </h1>
+        <p className="text-[13px] text-[#5580a8] dark:text-white/35 mt-0.5">
+          Trazabilidad completa de acciones del sistema
+          {data ? ` · ${data.totalItems.toLocaleString('es-MX')} eventos registrados` : ''}
+        </p>
       </div>
 
       {/* ── KPIs ── */}
       <div className="grid grid-cols-4 gap-4">
-        <KpiCard
-          label="Total eventos"
-          value={data?.totalItems ?? 0}
-          sublabel={`${items.length} en esta página`}
-          icon={<ActivityIcon />}
-          color="bg-indigo-500/15 text-indigo-400"
-        />
-        <KpiCard
-          label="Usuarios activos"
-          value={usuariosUnicos}
-          sublabel="usuarios distintos"
-          icon={<UsersIcon />}
-          color="bg-sky-500/15 text-sky-400"
-        />
-        <KpiCard
-          label="Eventos críticos"
-          value={eventosCriticos}
-          sublabel="creaciones, roles, suspensiones"
-          icon={<ShieldIcon />}
-          color="bg-amber-500/15 text-amber-400"
-        />
-        <KpiCard
-          label="Exportaciones"
-          value={exportaciones + simulaciones}
-          sublabel={`${simulaciones} simulaciones · ${exportaciones} reportes`}
-          icon={<DownloadIcon />}
-          color="bg-violet-500/15 text-violet-400"
-        />
+        <KpiCard label="Total eventos"    value={data?.totalItems ?? 0}       sublabel={`${items.length} en esta página`}                   icon={<ActivityIcon />} color="bg-indigo-500/15 text-indigo-500 dark:text-indigo-400" />
+        <KpiCard label="Usuarios activos" value={usuariosUnicos}              sublabel="usuarios distintos"                                 icon={<UsersIcon />}    color="bg-sky-500/15 text-sky-500 dark:text-sky-400"         />
+        <KpiCard label="Eventos críticos" value={eventosCriticos}             sublabel="creaciones, roles, suspensiones"                    icon={<ShieldIcon />}   color="bg-amber-500/15 text-amber-500 dark:text-amber-400"   />
+        <KpiCard label="Exportaciones"    value={exportaciones + simulaciones} sublabel={`${simulaciones} simulaciones · ${exportaciones} reportes`} icon={<DownloadIcon />} color="bg-violet-500/15 text-violet-500 dark:text-violet-400" />
       </div>
 
       {/* ── Filtros ── */}
       <div className="metric-card-glass rounded-[16px] px-5 py-4 flex flex-wrap gap-4 items-end relative z-[60]">
         {/* Búsqueda por email */}
         <div className="flex flex-col gap-1.5">
-          <label htmlFor="filter-email" className="text-[11px] font-bold text-white/30 uppercase tracking-[0.6px]">Usuario</label>
+          <label className="text-[11px] font-bold text-[#5580a8] dark:text-white/30 uppercase tracking-[0.6px]">Usuario</label>
           <div className="relative">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-white/25 pointer-events-none">
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#5580a8]/50 dark:text-white/25 pointer-events-none">
               <SearchIcon />
             </span>
             <input
               id="filter-email"
               type="text"
               placeholder="Buscar por correo..."
-              className="bg-white/[0.06] border border-white/[0.12] rounded-[10px] pl-8 pr-3 py-2 text-[13px] text-white
-                placeholder:text-white/20 focus:outline-none focus:border-white/25 transition-colors w-[210px]"
+              className="bg-[rgba(180,210,240,0.15)] dark:bg-white/[0.06]
+                border border-[rgba(180,210,240,0.35)] dark:border-white/[0.12]
+                rounded-[10px] pl-8 pr-3 py-2 text-[13px]
+                text-[#0c1f3f] dark:text-white
+                placeholder:text-[#5580a8]/50 dark:placeholder:text-white/20
+                focus:outline-none focus:border-[rgba(100,160,220,0.5)] dark:focus:border-white/25
+                transition-colors w-[210px]"
               value={emailInput}
               onChange={e => handleEmailChange(e.target.value)}
             />
@@ -426,29 +412,37 @@ export function AdminAuditLog() {
         </div>
 
         <div className="flex flex-col gap-1.5">
-          <label htmlFor="filter-accion" className="text-[11px] font-bold text-white/30 uppercase tracking-[0.6px]">Acción</label>
-          <CustomSelect id="filter-accion" value={accionFiltro} onChange={v => { setAccionFiltro(v); setPage(0) }} />
+          <label className="text-[11px] font-bold text-[#5580a8] dark:text-white/30 uppercase tracking-[0.6px]">Acción</label>
+          <CustomSelect value={accionFiltro} onChange={v => { setAccionFiltro(v); setPage(0) }} />
         </div>
 
         <div className="flex flex-col gap-1.5">
-          <label htmlFor="filter-desde" className="text-[11px] font-bold text-white/30 uppercase tracking-[0.6px]">Desde</label>
+          <label className="text-[11px] font-bold text-[#5580a8] dark:text-white/30 uppercase tracking-[0.6px]">Desde</label>
           <input
             id="filter-desde"
             type="date"
-            className="bg-white/[0.06] border border-white/[0.12] rounded-[10px] px-3 py-2 text-[13px] text-white
-              focus:outline-none focus:border-white/25 transition-colors [color-scheme:dark]"
+            className="bg-[rgba(180,210,240,0.15)] dark:bg-white/[0.06]
+              border border-[rgba(180,210,240,0.35)] dark:border-white/[0.12]
+              rounded-[10px] px-3 py-2 text-[13px]
+              text-[#0c1f3f] dark:text-white
+              focus:outline-none focus:border-[rgba(100,160,220,0.5)] dark:focus:border-white/25
+              transition-colors [color-scheme:light] dark:[color-scheme:dark]"
             value={fechaInicio ?? ''}
             onChange={e => { setFechaInicio(e.target.value || undefined); setPage(0) }}
           />
         </div>
 
         <div className="flex flex-col gap-1.5">
-          <label htmlFor="filter-hasta" className="text-[11px] font-bold text-white/30 uppercase tracking-[0.6px]">Hasta</label>
+          <label className="text-[11px] font-bold text-[#5580a8] dark:text-white/30 uppercase tracking-[0.6px]">Hasta</label>
           <input
             id="filter-hasta"
             type="date"
-            className="bg-white/[0.06] border border-white/[0.12] rounded-[10px] px-3 py-2 text-[13px] text-white
-              focus:outline-none focus:border-white/25 transition-colors [color-scheme:dark]"
+            className="bg-[rgba(180,210,240,0.15)] dark:bg-white/[0.06]
+              border border-[rgba(180,210,240,0.35)] dark:border-white/[0.12]
+              rounded-[10px] px-3 py-2 text-[13px]
+              text-[#0c1f3f] dark:text-white
+              focus:outline-none focus:border-[rgba(100,160,220,0.5)] dark:focus:border-white/25
+              transition-colors [color-scheme:light] dark:[color-scheme:dark]"
             value={fechaFin ?? ''}
             onChange={e => { setFechaFin(e.target.value || undefined); setPage(0) }}
           />
@@ -456,9 +450,17 @@ export function AdminAuditLog() {
 
         {hayFiltros && (
           <button
-            className="px-4 py-2 rounded-[10px] text-[13px] font-medium text-white/50 bg-white/[0.05]
-              border border-white/[0.10] hover:bg-white/[0.09] hover:text-white/70 transition-colors"
-            onClick={() => { setAccionFiltro(''); setFechaInicio(undefined); setFechaFin(undefined); setEmailInput(''); setEmailBusqueda(undefined); setPage(0) }}
+            className="px-4 py-2 rounded-[10px] text-[13px] font-medium
+              text-[#5580a8] dark:text-white/50
+              bg-[rgba(180,210,240,0.15)] dark:bg-white/[0.05]
+              border border-[rgba(180,210,240,0.3)] dark:border-white/[0.10]
+              hover:bg-[rgba(180,210,240,0.25)] dark:hover:bg-white/[0.09]
+              hover:text-[#0c1f3f] dark:hover:text-white/70
+              transition-colors"
+            onClick={() => {
+              setAccionFiltro(''); setFechaInicio(undefined); setFechaFin(undefined)
+              setEmailInput(''); setEmailBusqueda(undefined); setPage(0)
+            }}
           >
             Limpiar filtros
           </button>
@@ -467,28 +469,26 @@ export function AdminAuditLog() {
 
       {/* ── Tabla ── */}
       <div className="metric-card-glass rounded-[18px] overflow-hidden">
-
-        {/* Header de columnas */}
-        <div className="grid gap-3 px-5 py-3 border-b border-white/[0.08]"
+        {/* Header */}
+        <div className="grid gap-3 px-5 py-3 border-b border-[rgba(180,210,240,0.3)] dark:border-white/[0.08]"
           style={{ gridTemplateColumns: '130px 180px 160px 1fr 80px 90px' }}
         >
           {['Hora', 'Usuario', 'Acción', 'Descripción', 'IP', 'Origen'].map(col => (
-            <span key={col} className="text-[11px] font-bold text-white/25 uppercase tracking-[0.6px]">{col}</span>
+            <span key={col} className="text-[11px] font-bold text-[#5580a8]/60 dark:text-white/25 uppercase tracking-[0.6px]">{col}</span>
           ))}
         </div>
 
-        {/* Filas */}
         {isLoading && <TableSkeleton />}
 
         {isError && (
-          <div className="p-10 text-center text-red-400 text-[14px]">
+          <div className="p-10 text-center text-red-500 dark:text-red-400 text-[14px]">
             No se pudo cargar el registro de auditoría.
           </div>
         )}
 
         {!isLoading && !isError && items.length === 0 && (
           <div className="p-12 text-center">
-            <p className="text-[14px] text-white/25">Sin eventos para los filtros seleccionados</p>
+            <p className="text-[14px] text-[#5580a8] dark:text-white/25">Sin eventos para los filtros seleccionados</p>
           </div>
         )}
 
@@ -498,23 +498,31 @@ export function AdminAuditLog() {
       {/* ── Paginación ── */}
       {data && data.totalPages > 1 && (
         <div className="flex items-center justify-between">
-          <span className="text-[13px] text-white/25">
+          <span className="text-[13px] text-[#5580a8] dark:text-white/25">
             Página {data.page + 1} de {data.totalPages} · {data.totalItems.toLocaleString('es-MX')} registros totales
           </span>
           <div className="flex gap-2">
             <button
               disabled={page === 0}
               onClick={() => setPage(p => p - 1)}
-              className="px-4 py-2 rounded-[10px] text-[13px] font-medium bg-white/[0.06] border border-white/[0.10]
-                disabled:opacity-25 hover:bg-white/[0.10] transition-colors text-white"
+              className="px-4 py-2 rounded-[10px] text-[13px] font-medium
+                bg-[rgba(180,210,240,0.15)] dark:bg-white/[0.06]
+                border border-[rgba(180,210,240,0.3)] dark:border-white/[0.10]
+                text-[#0c1f3f] dark:text-white
+                disabled:opacity-30 hover:bg-[rgba(180,210,240,0.25)] dark:hover:bg-white/[0.10]
+                transition-colors"
             >
               ← Anterior
             </button>
             <button
               disabled={page >= data.totalPages - 1}
               onClick={() => setPage(p => p + 1)}
-              className="px-4 py-2 rounded-[10px] text-[13px] font-medium bg-white/[0.06] border border-white/[0.10]
-                disabled:opacity-25 hover:bg-white/[0.10] transition-colors text-white"
+              className="px-4 py-2 rounded-[10px] text-[13px] font-medium
+                bg-[rgba(180,210,240,0.15)] dark:bg-white/[0.06]
+                border border-[rgba(180,210,240,0.3)] dark:border-white/[0.10]
+                text-[#0c1f3f] dark:text-white
+                disabled:opacity-30 hover:bg-[rgba(180,210,240,0.25)] dark:hover:bg-white/[0.10]
+                transition-colors"
             >
               Siguiente →
             </button>
