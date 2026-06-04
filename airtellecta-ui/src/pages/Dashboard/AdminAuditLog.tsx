@@ -176,7 +176,6 @@ function CustomSelect({ value, onChange }: { value: string; onChange: (v: string
   return (
     <div ref={ref} className="relative w-[220px]">
       <button
-        id={id}
         type="button"
         className="w-full flex items-center justify-between gap-2 px-3 py-2 rounded-[10px] text-[13px] font-medium
           bg-[rgba(180,210,240,0.15)] dark:bg-white/[0.06]
