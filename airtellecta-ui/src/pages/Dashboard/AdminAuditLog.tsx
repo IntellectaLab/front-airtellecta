@@ -69,7 +69,7 @@ function accionEstilo(accion: string) {
 }
 
 function accionLabel(accion: string): string {
-  return accion.replace(/_/g, ' ').toLowerCase()
+  return accion.replaceAll('_', ' ').toLowerCase()
 }
 
 function avatarLetras(email: string | null): string {
@@ -88,58 +88,47 @@ function formatFechaCorta(iso: string): { fecha: string; hora: string } {
 }
 
 // ── Parser de detalle → texto legible ─────────────────────────
+const DETALLE_FIJO: Record<string, string> = {
+  EJECUTAR_SIMULACION:       'Simulación de política fiscal ejecutada',
+  CONSULTAR_SIMULACION:      'Consulta de resultados de simulación',
+  CONSULTAR_PANEL_EJECUTIVO: 'Panel ejecutivo nacional consultado',
+  CONSULTAR_RESUMEN_NACIONAL:'Resumen nacional consultado',
+  CONSULTAR_MAPA_ESTATAL:    'Mapa de calor estatal consultado',
+  CONSULTAR_PERFIL:          'Inicio de sesión · perfil verificado',
+  LISTAR_USUARIOS:           'Directorio de usuarios consultado',
+  CONSULTAR_AUDIT_LOG:       'Registro de auditoría consultado',
+}
+
+function parsearDetalleActualizar(d: Record<string, unknown>): string {
+  if (d.fuente !== 'trigger') return 'Actualización de perfil'
+  if (d.activo_anterior === 1 && d.activo_nuevo === 0) return `Cuenta suspendida · ${d.email}`
+  if (d.activo_anterior === 0 && d.activo_nuevo === 1) return `Cuenta reactivada · ${d.email}`
+  return `Perfil actualizado · ${d.email}`
+}
+
 function parsearDetalle(item: AuditLogItem): string {
   if (!item.detalle) return '—'
   try {
-    const d = JSON.parse(item.detalle)
+    const d = JSON.parse(item.detalle) as Record<string, unknown>
+    if (DETALLE_FIJO[item.accion]) return DETALLE_FIJO[item.accion]
     switch (item.accion) {
       case 'CREAR_USUARIO':
-        if (d.fuente === 'trigger') return `Registro en sistema · ${d.email} · Rol inicial: ${d.rol}`
-        return `Usuario creado: ${d.email}`
-      case 'ACTUALIZAR_USUARIO':
-        if (d.fuente === 'trigger') {
-          if (d.activo_anterior === 1 && d.activo_nuevo === 0) return `Cuenta suspendida · ${d.email}`
-          if (d.activo_anterior === 0 && d.activo_nuevo === 1) return `Cuenta reactivada · ${d.email}`
-          return `Perfil actualizado · ${d.email}`
-        }
-        return 'Actualización de perfil'
-      case 'CAMBIAR_ROL_USUARIO':
-        return `Cambio de rol: ${d.rol_anterior} → ${d.rol_nuevo} · ${d.email}`
-      case 'DESACTIVAR_USUARIO':
-        return `Cuenta suspendida · ${d.email ?? ''}`
-      case 'ACTIVAR_USUARIO':
-        return `Cuenta reactivada · ${d.email ?? ''}`
-      case 'EJECUTAR_SIMULACION':
-        return 'Simulación de política fiscal ejecutada'
-      case 'CONSULTAR_SIMULACION':
-        return 'Consulta de resultados de simulación'
+        return d.fuente === 'trigger'
+          ? `Registro en sistema · ${d.email} · Rol inicial: ${d.rol}`
+          : `Usuario creado: ${d.email}`
+      case 'ACTUALIZAR_USUARIO':  return parsearDetalleActualizar(d)
+      case 'CAMBIAR_ROL_USUARIO': return `Cambio de rol: ${d.rol_anterior} → ${d.rol_nuevo} · ${d.email}`
+      case 'DESACTIVAR_USUARIO':  return `Cuenta suspendida · ${d.email ?? ''}`
+      case 'ACTIVAR_USUARIO':     return `Cuenta reactivada · ${d.email ?? ''}`
       case 'EXPORTAR_DATOS':
-        if (d.path?.includes('/pdf')) return 'Reporte PDF generado y descargado'
-        if (d.path?.includes('/excel')) return 'Reporte Excel exportado'
+        if (String(d.path ?? '').includes('/pdf'))   return 'Reporte PDF generado y descargado'
+        if (String(d.path ?? '').includes('/excel')) return 'Reporte Excel exportado'
         return 'Exportación de datos'
-      case 'CONSULTAR_PANEL_EJECUTIVO':
-        return 'Panel ejecutivo nacional consultado'
-      case 'CONSULTAR_RESUMEN_NACIONAL':
-        return 'Resumen nacional consultado'
-      case 'CONSULTAR_MAPA_ESTATAL':
-        return 'Mapa de calor estatal consultado'
-      case 'CONSULTAR_PERFIL':
-        return 'Inicio de sesión · perfil verificado'
-      case 'LISTAR_USUARIOS':
-        return 'Directorio de usuarios consultado'
-      case 'CONSULTAR_AUDIT_LOG':
-        return 'Registro de auditoría consultado'
-      case 'CARGA_COMPLETADA':
-        return `Carga exitosa · ${d.nombre_archivo} · ${d.registros_insertados} registros insertados`
-      case 'CARGA_ERROR':
-        return `Error en carga · ${d.nombre_archivo}`
+      case 'CARGA_COMPLETADA': return `Carga exitosa · ${d.nombre_archivo} · ${d.registros_insertados} registros insertados`
+      case 'CARGA_ERROR':      return `Error en carga · ${d.nombre_archivo}`
       default: {
         if (d.path) return `${d.method ?? ''} ${d.path}`
-        const vals = Object.entries(d)
-          .filter(([k]) => k !== 'fuente')
-          .map(([, v]) => String(v))
-          .join(' · ')
-        return vals.slice(0, 80) || '—'
+        return Object.entries(d).filter(([k]) => k !== 'fuente').map(([, v]) => String(v)).join(' · ').slice(0, 80) || '—'
       }
     }
   } catch {
@@ -187,6 +176,7 @@ function CustomSelect({ value, onChange }: { value: string; onChange: (v: string
   return (
     <div ref={ref} className="relative w-[220px]">
       <button
+        id={id}
         type="button"
         className="w-full flex items-center justify-between gap-2 px-3 py-2 rounded-[10px] text-[13px] font-medium
           bg-[rgba(180,210,240,0.15)] dark:bg-white/[0.06]
@@ -248,10 +238,10 @@ function TableSkeleton() {
 }
 
 // ── Stat card ─────────────────────────────────────────────────
-function KpiCard({ label, value, icon, color, sublabel }: {
+function KpiCard({ label, value, icon, color, sublabel }: Readonly<{
   label: string; value: string | number; icon: React.ReactNode
   color: string; sublabel?: string
-}) {
+}>) {
   return (
     <div className="metric-card-glass rounded-[16px] p-5 flex flex-col gap-3">
       <div className="flex items-center justify-between">
@@ -269,7 +259,7 @@ function KpiCard({ label, value, icon, color, sublabel }: {
 }
 
 // ── Fila de tabla ─────────────────────────────────────────────
-function AuditTableRow({ item }: { item: AuditLogItem }) {
+function AuditTableRow({ item }: Readonly<{ item: AuditLogItem }>) {
   const { fecha, hora } = formatFechaCorta(item.createdAt)
   const estilo  = accionEstilo(item.accion)
   const trigger = esFuenteTrigger(item.detalle)
@@ -405,6 +395,7 @@ export function AdminAuditLog() {
               <SearchIcon />
             </span>
             <input
+              id="filter-email"
               type="text"
               placeholder="Buscar por correo..."
               className="bg-[rgba(180,210,240,0.15)] dark:bg-white/[0.06]
@@ -428,6 +419,7 @@ export function AdminAuditLog() {
         <div className="flex flex-col gap-1.5">
           <label className="text-[11px] font-bold text-[#5580a8] dark:text-white/30 uppercase tracking-[0.6px]">Desde</label>
           <input
+            id="filter-desde"
             type="date"
             className="bg-[rgba(180,210,240,0.15)] dark:bg-white/[0.06]
               border border-[rgba(180,210,240,0.35)] dark:border-white/[0.12]
@@ -443,6 +435,7 @@ export function AdminAuditLog() {
         <div className="flex flex-col gap-1.5">
           <label className="text-[11px] font-bold text-[#5580a8] dark:text-white/30 uppercase tracking-[0.6px]">Hasta</label>
           <input
+            id="filter-hasta"
             type="date"
             className="bg-[rgba(180,210,240,0.15)] dark:bg-white/[0.06]
               border border-[rgba(180,210,240,0.35)] dark:border-white/[0.12]
