@@ -9,27 +9,29 @@ describe('Flujo 3: Panel Ejecutivo', () => {
     cy.visit('/dashboard/panel-ejecutivo')
   })
 
-  it('navega al panel ejecutivo sin redirigir', () => {
-    cy.url().should('include', '/dashboard/panel-ejecutivo')
+  it('carga el contenedor principal del panel ejecutivo', () => {
+    cy.get('[data-testid="panel-ejecutivo"]', { timeout: 12000 }).should('be.visible')
   })
 
-  it('la página carga y muestra contenido', () => {
-    cy.url().should('not.include', '/login')
-    cy.get('body').should('not.be.empty')
+  it('muestra los 3 KPI cards con datos reales del backend', () => {
+    cy.get('[data-testid="kpi-costo-directo"]', { timeout: 12000 }).should('be.visible')
+    cy.get('[data-testid="kpi-recaudacion"]').should('be.visible')
+    cy.get('[data-testid="kpi-prevalencia"]').should('be.visible')
   })
 
-  it('no muestra ErrorBanner si el backend responde', () => {
+  it('los KPI muestran valores en pesos (Mdp)', () => {
+    cy.get('[data-testid="kpi-costo-directo"]', { timeout: 12000 })
+      .find('p.font-display')
+      .invoke('text')
+      .should('match', /\$[\d,]+/)
+  })
+
+  it('la tabla de costos por patología existe y tiene filas', () => {
+    cy.get('[data-testid="tabla-costos-patologia"]', { timeout: 12000 }).should('be.visible')
+    cy.get('[data-testid="costos-table"] tbody tr').should('have.length.greaterThan', 0)
+  })
+
+  it('no muestra ErrorBanner cuando el backend responde correctamente', () => {
     cy.get('[data-testid="error-banner"]', { timeout: 12000 }).should('not.exist')
-  })
-
-  it('botón de exportar Excel existe si hay datos', () => {
-    cy.get('body').then(($body) => {
-      // Si existe botón de exportar, verificar que es clickeable
-      if ($body.find('[data-testid="export-excel"]').length > 0) {
-        cy.get('[data-testid="export-excel"]').should('be.visible').and('not.be.disabled')
-      } else {
-        cy.log('Botón de exportar no encontrado — puede ser normal si no hay datos')
-      }
-    })
   })
 })
