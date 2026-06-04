@@ -609,20 +609,29 @@ function UserMenu() {
 
 // ── Nav items (usado para resolver el título del header) ───────────────────
 
-const NAV_ITEMS = [
+const BASE_NAV_ITEMS = [
   { label: 'Resumen Nacional', path: '/dashboard',                    end: true  },
   { label: 'Mapa de Calor',    path: '/dashboard/mapa',               end: false },
   { label: 'Bases de Datos',   path: '/dashboard/bases-de-datos',     end: false },
   { label: 'Panel Ejecutivo',  path: '/dashboard/panel-ejecutivo',    end: false },
   { label: 'Simulador',        path: '/dashboard/simulador',          end: false },
-  { label: 'Correlaciones',   path: '/dashboard/correlaciones',      end: false },
+  { label: 'Correlaciones',    path: '/dashboard/correlaciones',      end: false },
+]
+
+const ADMIN_NAV_ITEMS = [
+  { label: 'Usuarios',  path: '/dashboard/usuarios',  end: false },
+  { label: 'Audit Log', path: '/dashboard/audit-log', end: false },
 ]
 
 // ── Layout ─────────────────────────────────────────────────────────────────
 
 export function DashboardLayout() {
   const location = useLocation()
-  const currentNav = NAV_ITEMS.find((item) =>
+  const { role } = useAuth()
+  const navItems = role === 'ADMIN'
+    ? [...BASE_NAV_ITEMS, ...ADMIN_NAV_ITEMS]
+    : BASE_NAV_ITEMS
+  const currentNav = navItems.find((item) =>
     item.end
       ? location.pathname === item.path
       : location.pathname.startsWith(item.path)

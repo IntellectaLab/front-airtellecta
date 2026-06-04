@@ -453,6 +453,7 @@ export function Simulador() {
                 onExcelDownload={async () => {
                   if (lastRequest) await apiService.exportSimulacionExcel(lastRequest)
                 }}
+                onPdfDownload={() => apiService.logSimulacionPdf()}
               />
             </div>
 

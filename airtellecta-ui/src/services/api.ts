@@ -12,6 +12,8 @@ import type {
   UsuarioDto,
   CrearUsuarioRequest,
   ActualizarUsuarioRequest,
+  AuditLogPage,
+  AuditLogParams,
 } from '../types/api'
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL ?? ''
@@ -134,14 +136,29 @@ export const apiService = {
     a.click()
     URL.revokeObjectURL(url)
   },
-  recaudacion: () => get<RecaudacionAnual[]>('/api/recaudacion'),
-  simulacion:  (req: SimulacionRequest) =>
+  logSimulacionPdf:      () => post<void>('/api/export/simulacion/pdf', {}),
+  logPanelEjecutivoPdf:  () => post<void>('/api/export/panel-ejecutivo/pdf', {}),
+  recaudacion:     () => get<RecaudacionAnual[]>('/api/recaudacion'),
+  simulacion:      (req: SimulacionRequest) =>
     post<SimulacionResultado>('/api/simulacion', req),
 
   me: () => get<UsuarioDto>('/api/me'),
 
-  listarUsuarios:    () => get<UsuarioDto[]>('/api/admin/usuarios'),
-  crearUsuario:      (req: CrearUsuarioRequest) => post<UsuarioDto>('/api/admin/usuarios', req),
-  actualizarUsuario: (id: number, req: ActualizarUsuarioRequest) =>
-    put<UsuarioDto>(`/api/admin/usuarios/${id}`, req),
+  // Admin usuarios
+  listarUsuarios:     () => get<UsuarioDto[]>('/api/admin/usuarios'),
+  crearUsuario:       (req: CrearUsuarioRequest) => post<UsuarioDto>('/api/admin/usuarios', req),
+  actualizarUsuario:  (id: number, req: ActualizarUsuarioRequest) => put<UsuarioDto>(`/api/admin/usuarios/${id}`, req),
+
+  // Admin audit log
+  auditLog: (params: AuditLogParams = {}) => {
+    const qs = new URLSearchParams()
+    if (params.page        != null) qs.set('page',        String(params.page))
+    if (params.size        != null) qs.set('size',        String(params.size))
+    if (params.accion      != null) qs.set('accion',      params.accion)
+    if (params.usuarioId   != null) qs.set('usuarioId',   String(params.usuarioId))
+    if (params.fechaInicio != null) qs.set('fechaInicio', params.fechaInicio)
+    if (params.fechaFin       != null) qs.set('fechaFin',       params.fechaFin)
+    if (params.emailBusqueda  != null) qs.set('emailBusqueda',  params.emailBusqueda)
+    return get<AuditLogPage>(`/api/admin/audit-log?${qs.toString()}`)
+  },
 }
