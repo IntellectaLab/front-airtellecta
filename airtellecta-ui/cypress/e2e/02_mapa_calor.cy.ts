@@ -9,31 +9,26 @@ describe('Flujo 2: Mapa de Calor Estatal', () => {
     cy.visit('/dashboard/mapa')
   })
 
-  it('navega al mapa de calor sin redirigir a login', () => {
-    cy.url().should('include', '/dashboard/mapa')
+  it('carga el contenedor principal del mapa estatal', () => {
+    cy.get('[data-testid="mapa-calor"]', { timeout: 12000 }).should('be.visible')
   })
 
-  it('la página del mapa carga correctamente', () => {
-    // Espera a que algún elemento cargue (mapa o estado de carga)
-    cy.get('body').should('not.be.empty')
-    // Verifica que no hay error de ruta (no redirige a /login)
-    cy.url().should('not.include', '/login')
+  it('muestra la sección de estados con mayor riesgo', () => {
+    cy.contains('Estados con mayor riesgo', { timeout: 12000 }).should('be.visible')
   })
 
-  it('permite filtrar por sexo si existen controles de filtro', () => {
-    // Si existen botones/selects de sexo, interactúa con ellos
-    cy.get('body').then(($body) => {
-      if ($body.find('[data-testid="filtro-sexo"]').length > 0) {
-        cy.get('[data-testid="filtro-sexo"]').first().click()
-        cy.url().should('include', '/dashboard/mapa')
-      } else {
-        // Fallback: verificar que la página no tiene errores visibles
-        cy.get('[data-testid="error-banner"]').should('not.exist')
-      }
-    })
+  it('muestra al menos 3 tarjetas de estados críticos', () => {
+    cy.get('[data-testid="mapa-calor"]', { timeout: 12000 })
+      .find('.metric-card-glass')
+      .should('have.length.greaterThan', 2)
   })
 
-  it('no muestra ErrorBanner en condiciones normales', () => {
+  it('no muestra ErrorBanner cuando el backend responde correctamente', () => {
     cy.get('[data-testid="error-banner"]', { timeout: 12000 }).should('not.exist')
+  })
+
+  it('muestra el ranking de estados con valores de prevalencia', () => {
+    cy.contains(/riesgo|prevalencia|ranking/i, { timeout: 12000 }).should('exist')
+    cy.get('[data-testid="mapa-calor"]').should('contain.text', '%')
   })
 })
