@@ -241,24 +241,32 @@ function PageExecutiveSummary({ resultado, horizonte, impuesto }: {
       <Text style={styles.h3}>Parametros del Escenario</Text>
       <View style={styles.table}>
         <View style={styles.tableHeaderRow}>
-          <Text style={[styles.tableHeaderCell, { flex: 3 }]}>Parametro</Text>
-          <Text style={[styles.tableHeaderCell, { flex: 2, textAlign: 'right' }]}>Valor</Text>
+          <Text style={[styles.tableHeaderCell, styles.tableColDivider, { flex: 3 }]}>Parametro</Text>
+          <Text style={[styles.tableHeaderCell, styles.tableColDivider, { flex: 2, textAlign: 'right' }]}>Valor</Text>
           <Text style={[styles.tableHeaderCell, { flex: 3 }]}>Fuente</Text>
         </View>
-        {[
-          { p: 'Prevalencia base',       v: `${fmt(pb.prevalenciaBasePct, 2)}%`,   f: 'ENCODAT 2016-2017' },
-          { p: 'Poblacion 18+ anos',     v: fmt(pb.poblacion18Plus),               f: 'CONAPO 2025' },
-          { p: 'Fumadores base',         v: fmt(pb.fumadoresBase),                 f: 'Calculado (prev x pob)' },
-          { p: 'Defunciones atribuibles', v: fmt(pb.defuncionesAtribuiblesBase),    f: 'GBD 2023 + INEGI EDR' },
-          { p: 'Impuesto configurado',   v: `${fmt(impuesto, 1)}% del precio`,    f: 'Parametro usuario' },
-          { p: 'Horizonte',              v: `${horizonte} anos`,                   f: 'Parametro usuario' },
-        ].map((r, i) => (
-          <View key={i} style={[styles.tableRow, i % 2 === 1 ? styles.tableRowAlt : {}]}>
-            <Text style={[styles.tableCell, { flex: 3 }]}>{r.p}</Text>
-            <Text style={[styles.tableCellBold, { flex: 2, textAlign: 'right' }]}>{r.v}</Text>
-            <Text style={[styles.tableCell, { flex: 3, color: COLORS.gray, fontStyle: 'italic' }]}>{r.f}</Text>
-          </View>
-        ))}
+        {(() => {
+          const rows = [
+            { p: 'Prevalencia base',        v: `${fmt(pb.prevalenciaBasePct, 2)}%`, f: 'ENCODAT 2016-2017' },
+            { p: 'Poblacion 18+ anos',      v: fmt(pb.poblacion18Plus),              f: 'CONAPO 2025' },
+            { p: 'Fumadores base',          v: fmt(pb.fumadoresBase),                f: 'Calculado (prev x pob)' },
+            { p: 'Defunciones atribuibles', v: fmt(pb.defuncionesAtribuiblesBase),   f: 'GBD 2023 + INEGI EDR' },
+            { p: 'Impuesto configurado',    v: `${fmt(impuesto, 1)}% del precio`,   f: 'Parametro usuario' },
+            { p: 'Horizonte',               v: `${horizonte} anos`,                  f: 'Parametro usuario' },
+          ]
+          return rows.map((r, i) => {
+            const isLast = i === rows.length - 1
+            return (
+              <View key={i} style={[isLast ? styles.tableRowLast : styles.tableRow, i % 2 === 1 ? styles.tableRowAlt : {}]}>
+                <Text style={[styles.tableCell, styles.tableColDivider, { flex: 3 }]}>{r.p}</Text>
+                <Text style={[styles.tableCellBold, styles.tableColDivider, { flex: 2, textAlign: 'right', color: COLORS.accent }]}>{r.v}</Text>
+                <View style={{ flex: 3 }}>
+                  <Text style={styles.tableCellSource}>{r.f}</Text>
+                </View>
+              </View>
+            )
+          })
+        })()}
       </View>
 
       {/* Policies */}
@@ -310,35 +318,39 @@ function PageProjection({ resultado }: {
       {/* Projection table with mini-bars */}
       <View style={styles.table}>
         <View style={styles.tableHeaderRow}>
-          <Text style={[styles.tableHeaderCell, { width: 35 }]}>Ano</Text>
-          <Text style={[styles.tableHeaderCell, { flex: 2, textAlign: 'right' }]}>Prevalencia</Text>
-          <Text style={[styles.tableHeaderCell, { flex: 2 }]}>{''}</Text>
-          <Text style={[styles.tableHeaderCell, { flex: 2, textAlign: 'right' }]}>Fumadores</Text>
-          <Text style={[styles.tableHeaderCell, { flex: 2, textAlign: 'right' }]}>Muertes evit.</Text>
+          <Text style={[styles.tableHeaderCell, styles.tableColDivider, { width: 35 }]}>Ano</Text>
+          <Text style={[styles.tableHeaderCell, styles.tableColDivider, { flex: 2, textAlign: 'right' }]}>Prevalencia</Text>
+          <Text style={[styles.tableHeaderCell, styles.tableColDivider, { flex: 2 }]}>Tendencia</Text>
+          <Text style={[styles.tableHeaderCell, styles.tableColDivider, { flex: 2, textAlign: 'right' }]}>Fumadores</Text>
+          <Text style={[styles.tableHeaderCell, styles.tableColDivider, { flex: 2, textAlign: 'right' }]}>Muertes evit.</Text>
           <Text style={[styles.tableHeaderCell, { flex: 2, textAlign: 'right' }]}>Ahorro MDP</Text>
         </View>
         {proj.map((row, i) => {
           const barWidth = maxPrev > 0 ? (row.prevalenciaPct / maxPrev) * 100 : 0
+          const isGood = row.prevalenciaPct <= resultado.parametrosBase.prevalenciaBasePct
+          const isLast = i === proj.length - 1
           return (
-            <View key={i} style={[styles.tableRow, i % 2 === 1 ? styles.tableRowAlt : {}]}>
-              <Text style={[styles.tableCellBold, { width: 35 }]}>{row.anio}</Text>
-              <Text style={[styles.tableCell, { flex: 2, textAlign: 'right' }]}>
+            <View key={i} style={[isLast ? styles.tableRowLast : styles.tableRow, i % 2 === 1 ? styles.tableRowAlt : {}]}>
+              <Text style={[styles.tableCellBold, styles.tableColDivider, { width: 35, color: COLORS.primaryLight }]}>{row.anio}</Text>
+              <Text style={[styles.tableCellBold, styles.tableColDivider, { flex: 2, textAlign: 'right', color: isGood ? COLORS.greenDark : COLORS.red }]}>
                 {fmt(row.prevalenciaPct, 2)}%
               </Text>
-              <View style={{ flex: 2, justifyContent: 'center', paddingHorizontal: 4 }}>
-                <View style={[ls.miniBar, {
-                  width: `${barWidth}%`,
-                  backgroundColor: row.prevalenciaPct <= resultado.parametrosBase.prevalenciaBasePct
-                    ? COLORS.green : COLORS.red,
-                  opacity: 0.4,
-                }]} />
+              <View style={[{ flex: 2, justifyContent: 'center', paddingHorizontal: 4 }, styles.tableColDivider]}>
+                <View style={{ backgroundColor: COLORS.grayLight, borderRadius: 3, height: 6 }}>
+                  <View style={[ls.miniBar, {
+                    width: `${barWidth}%`,
+                    backgroundColor: isGood ? COLORS.green : COLORS.red,
+                  }]} />
+                </View>
               </View>
-              <Text style={[styles.tableCell, { flex: 2, textAlign: 'right' }]}>
+              <Text style={[styles.tableCell, styles.tableColDivider, { flex: 2, textAlign: 'right' }]}>
                 {fmt(row.fumadoresAbsolutos)}
               </Text>
-              <Text style={[styles.tableCellBold, { flex: 2, textAlign: 'right', color: COLORS.green }]}>
-                {fmt(row.defuncionesEvitadas)}
-              </Text>
+              <View style={[{ flex: 2, alignItems: 'flex-end' }, styles.tableColDivider]}>
+                <Text style={[styles.tableCellBold, { color: COLORS.white, backgroundColor: isGood ? COLORS.green : COLORS.red, borderRadius: 3, paddingHorizontal: 4, paddingVertical: 1, fontSize: 8 }]}>
+                  {fmt(row.defuncionesEvitadas)}
+                </Text>
+              </View>
               <Text style={[styles.tableCell, { flex: 2, textAlign: 'right' }]}>
                 ${fmt(row.ahorroMdp, 1)}
               </Text>
@@ -347,23 +359,27 @@ function PageProjection({ resultado }: {
         })}
       </View>
 
-      {/* Summary row */}
+      {/* Summary row — aligned to match table columns */}
       <View style={{
         flexDirection: 'row',
         backgroundColor: COLORS.primary,
-        borderRadius: 4,
-        paddingVertical: 8,
+        borderRadius: 6,
+        paddingVertical: 9,
         paddingHorizontal: 12,
         marginTop: 4,
+        alignItems: 'center',
       }}>
-        <Text style={{ flex: 1, fontSize: 8, fontFamily: 'Helvetica-Bold', color: COLORS.white }}>
-          TOTAL ACUMULADO
+        <Text style={{ width: 35, fontSize: 7.5, fontFamily: 'Helvetica-Bold', color: COLORS.accentLight, textTransform: 'uppercase' }}>
+          Total
         </Text>
-        <Text style={{ fontSize: 8, fontFamily: 'Helvetica-Bold', color: COLORS.white, marginRight: 30 }}>
-          {fmt(resultado.resumenFinal.defuncionesEvitadasTotal)} muertes evitadas
+        <View style={{ flex: 2 }} />
+        <View style={{ flex: 2 }} />
+        <View style={{ flex: 2 }} />
+        <Text style={{ flex: 2, fontSize: 8, fontFamily: 'Helvetica-Bold', color: COLORS.white, textAlign: 'right' }}>
+          {fmt(resultado.resumenFinal.defuncionesEvitadasTotal)}
         </Text>
-        <Text style={{ fontSize: 8, fontFamily: 'Helvetica-Bold', color: COLORS.white }}>
-          ${fmt(resultado.resumenFinal.ahorroAcumuladoMdp, 1)} MDP ahorrados
+        <Text style={{ flex: 2, fontSize: 8, fontFamily: 'Helvetica-Bold', color: COLORS.accentLight, textAlign: 'right' }}>
+          ${fmt(resultado.resumenFinal.ahorroAcumuladoMdp, 1)} MDP
         </Text>
       </View>
     </Page>
