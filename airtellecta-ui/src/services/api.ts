@@ -102,6 +102,17 @@ async function put<T>(path: string, body: unknown): Promise<T> {
   return res.data.data
 }
 
+function triggerBlobDownload(blob: Blob, filename: string) {
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = filename
+  document.body.appendChild(a)
+  a.click()
+  document.body.removeChild(a)
+  setTimeout(() => URL.revokeObjectURL(url), 100)
+}
+
 export const apiService = {
   resumenNacional: () => get<ResumenNacional>('/api/resumen-nacional'),
   tendencias:      () => get<Tendencias>('/api/tendencias'),
@@ -113,28 +124,25 @@ export const apiService = {
       abreviatura: fixMojibake(e.abreviatura),
     }))
   },
-  panelEjecutivo:  () => get<PanelEjecutivo>('/api/panel-ejecutivo'),
+  panelEjecutivo: async () => {
+    const data = await get<PanelEjecutivo>('/api/panel-ejecutivo')
+    data.costosPorPatologia = data.costosPorPatologia?.map(c => ({
+      ...c,
+      trastorno: fixMojibake(c.trastorno),
+    }))
+    return data
+  },
   exportSimulacionExcel: async (req: SimulacionRequest) => {
     const res = await axiosInstance.post('/api/export/simulacion/excel', req, {
       responseType: 'blob',
     })
-    const url = URL.createObjectURL(res.data as Blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = `simulacion-airtellecta-${new Date().toISOString().slice(0, 10)}.xlsx`
-    a.click()
-    URL.revokeObjectURL(url)
+    triggerBlobDownload(res.data as Blob, `simulacion-airtellecta-${new Date().toISOString().slice(0, 10)}.xlsx`)
   },
   exportPanelEjecutivoExcel: async () => {
     const res = await axiosInstance.get('/api/export/panel-ejecutivo/excel', {
       responseType: 'blob',
     })
-    const url = URL.createObjectURL(res.data as Blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = `panel-ejecutivo-airtellecta-${new Date().toISOString().slice(0, 10)}.xlsx`
-    a.click()
-    URL.revokeObjectURL(url)
+    triggerBlobDownload(res.data as Blob, `panel-ejecutivo-airtellecta-${new Date().toISOString().slice(0, 10)}.xlsx`)
   },
   logSimulacionPdf:      () => post<void>('/api/export/simulacion/pdf', {}),
   logPanelEjecutivoPdf:  () => post<void>('/api/export/panel-ejecutivo/pdf', {}),
