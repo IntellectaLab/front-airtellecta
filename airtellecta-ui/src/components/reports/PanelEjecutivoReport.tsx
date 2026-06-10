@@ -144,43 +144,59 @@ export function PanelEjecutivoReport({ data, userName, institutionName }: PanelE
         <Text style={styles.h3}>Carga Economica Detallada</Text>
         <View style={styles.table}>
           <View style={styles.tableHeaderRow}>
-            <Text style={[styles.tableHeaderCell, { flex: 3 }]}>Concepto</Text>
-            <Text style={[styles.tableHeaderCell, { flex: 2, textAlign: 'right' }]}>Valor (Mdp)</Text>
+            <Text style={[styles.tableHeaderCell, styles.tableColDivider, { flex: 3 }]}>Concepto</Text>
+            <Text style={[styles.tableHeaderCell, styles.tableColDivider, { flex: 2, textAlign: 'right' }]}>Valor (Mdp)</Text>
             <Text style={[styles.tableHeaderCell, { flex: 3 }]}>Fuente</Text>
           </View>
-          {[
-            { l: 'Costo directo anual', v: `$${fmt(costoDir)}`, f: cargaEconomica.fuentes.find(f => f.campo === 'costoDirectoAnualMdp')?.fuente ?? '—' },
-            { l: 'Costo social anual', v: `$${fmt(cargaEconomica.costoSocialAnualMdp)}`, f: cargaEconomica.fuentes.find(f => f.campo === 'costoSocialAnualMdp')?.fuente ?? '—' },
-            { l: 'Inversion en prevencion', v: `$${fmt(cargaEconomica.inversionPrevencionMdp)}`, f: cargaEconomica.fuentes.find(f => f.campo === 'inversionPrevencionMdp')?.fuente ?? '—' },
-          ].map((r, i) => (
-            <View key={i} style={[styles.tableRow, i % 2 === 1 ? styles.tableRowAlt : {}]}>
-              <Text style={[styles.tableCell, { flex: 3 }]}>{r.l}</Text>
-              <Text style={[styles.tableCellBold, { flex: 2, textAlign: 'right' }]}>{r.v}</Text>
-              <Text style={[styles.tableCell, { flex: 3, color: COLORS.gray, fontStyle: 'italic' }]}>{r.f}</Text>
-            </View>
-          ))}
+          {(() => {
+            const rows = [
+              { l: 'Costo directo anual', v: `$${fmt(costoDir)}`, f: cargaEconomica.fuentes.find(f => f.campo === 'costoDirectoAnualMdp')?.fuente ?? '—' },
+              { l: 'Costo social anual', v: `$${fmt(cargaEconomica.costoSocialAnualMdp)}`, f: cargaEconomica.fuentes.find(f => f.campo === 'costoSocialAnualMdp')?.fuente ?? '—' },
+              { l: 'Inversion en prevencion', v: `$${fmt(cargaEconomica.inversionPrevencionMdp)}`, f: cargaEconomica.fuentes.find(f => f.campo === 'inversionPrevencionMdp')?.fuente ?? '—' },
+            ]
+            return rows.map((r, i) => {
+              const isLast = i === rows.length - 1
+              return (
+                <View key={i} style={[isLast ? styles.tableRowLast : styles.tableRow, i % 2 === 1 ? styles.tableRowAlt : {}]}>
+                  <Text style={[styles.tableCell, styles.tableColDivider, { flex: 3 }]}>{r.l}</Text>
+                  <Text style={[styles.tableCellBold, styles.tableColDivider, { flex: 2, textAlign: 'right', color: COLORS.accent }]}>{r.v}</Text>
+                  <View style={{ flex: 3 }}>
+                    <Text style={styles.tableCellSource}>{r.f}</Text>
+                  </View>
+                </View>
+              )
+            })
+          })()}
         </View>
 
         {/* Epidemiology table */}
         <Text style={[styles.h3, { marginTop: 10 }]}>Indicadores Epidemiologicos</Text>
         <View style={styles.table}>
           <View style={styles.tableHeaderRow}>
-            <Text style={[styles.tableHeaderCell, { flex: 3 }]}>Indicador</Text>
-            <Text style={[styles.tableHeaderCell, { flex: 2, textAlign: 'right' }]}>Valor</Text>
+            <Text style={[styles.tableHeaderCell, styles.tableColDivider, { flex: 3 }]}>Indicador</Text>
+            <Text style={[styles.tableHeaderCell, styles.tableColDivider, { flex: 2, textAlign: 'right' }]}>Valor</Text>
             <Text style={[styles.tableHeaderCell, { flex: 3 }]}>Fuente</Text>
           </View>
-          {[
-            { l: 'Prevalencia actual', v: `${fmt(epidemiologia.prevalenciaActualPct, 1)}%`, f: epidemiologia.fuentes.find(f => f.campo === 'prevalenciaActualPct')?.fuente ?? '—' },
-            { l: 'Fumadores estimados', v: fmt(epidemiologia.fumadoresEstimados), f: epidemiologia.fuentes.find(f => f.campo === 'fumadoresEstimados')?.fuente ?? '—' },
-            { l: 'Poblacion 18+', v: fmt(epidemiologia.poblacion18Plus), f: epidemiologia.fuentes.find(f => f.campo === 'poblacion18Plus')?.fuente ?? '—' },
-            { l: 'Defunciones atribuibles', v: fmt(epidemiologia.defuncionesAtribuiblesAnual), f: epidemiologia.fuentes.find(f => f.campo === 'defuncionesAtribuiblesAnual')?.fuente ?? '—' },
-          ].map((r, i) => (
-            <View key={i} style={[styles.tableRow, i % 2 === 1 ? styles.tableRowAlt : {}]}>
-              <Text style={[styles.tableCell, { flex: 3 }]}>{r.l}</Text>
-              <Text style={[styles.tableCellBold, { flex: 2, textAlign: 'right' }]}>{r.v}</Text>
-              <Text style={[styles.tableCell, { flex: 3, color: COLORS.gray, fontStyle: 'italic' }]}>{r.f}</Text>
-            </View>
-          ))}
+          {(() => {
+            const rows = [
+              { l: 'Prevalencia actual', v: `${fmt(epidemiologia.prevalenciaActualPct, 1)}%`, f: epidemiologia.fuentes.find(f => f.campo === 'prevalenciaActualPct')?.fuente ?? '—' },
+              { l: 'Fumadores estimados', v: fmt(epidemiologia.fumadoresEstimados), f: epidemiologia.fuentes.find(f => f.campo === 'fumadoresEstimados')?.fuente ?? '—' },
+              { l: 'Poblacion 18+', v: fmt(epidemiologia.poblacion18Plus), f: epidemiologia.fuentes.find(f => f.campo === 'poblacion18Plus')?.fuente ?? '—' },
+              { l: 'Defunciones atribuibles', v: fmt(epidemiologia.defuncionesAtribuiblesAnual), f: epidemiologia.fuentes.find(f => f.campo === 'defuncionesAtribuiblesAnual')?.fuente ?? '—' },
+            ]
+            return rows.map((r, i) => {
+              const isLast = i === rows.length - 1
+              return (
+                <View key={i} style={[isLast ? styles.tableRowLast : styles.tableRow, i % 2 === 1 ? styles.tableRowAlt : {}]}>
+                  <Text style={[styles.tableCell, styles.tableColDivider, { flex: 3 }]}>{r.l}</Text>
+                  <Text style={[styles.tableCellBold, styles.tableColDivider, { flex: 2, textAlign: 'right', color: COLORS.accent }]}>{r.v}</Text>
+                  <View style={{ flex: 3 }}>
+                    <Text style={styles.tableCellSource}>{r.f}</Text>
+                  </View>
+                </View>
+              )
+            })
+          })()}
         </View>
       </Page>
 
@@ -197,24 +213,31 @@ export function PanelEjecutivoReport({ data, userName, institutionName }: PanelE
 
         <View style={styles.table}>
           <View style={styles.tableHeaderRow}>
-            <Text style={[styles.tableHeaderCell, { width: 50 }]}>CIE-10</Text>
-            <Text style={[styles.tableHeaderCell, { flex: 4 }]}>Trastorno</Text>
-            <Text style={[styles.tableHeaderCell, { flex: 2, textAlign: 'right' }]}>Costo 2025 (MDP)</Text>
+            <Text style={[styles.tableHeaderCell, styles.tableColDivider, { width: 44 }]}>CIE-10</Text>
+            <Text style={[styles.tableHeaderCell, styles.tableColDivider, { flex: 4 }]}>Trastorno</Text>
+            <Text style={[styles.tableHeaderCell, styles.tableColDivider, { flex: 2, textAlign: 'right' }]}>Costo 2025 (MDP)</Text>
             <Text style={[styles.tableHeaderCell, { flex: 2.5 }]}>Fuente</Text>
           </View>
 
-          {costosPorPatologia.map((c, i) => (
-            <View key={c.codigo} style={[styles.tableRow, i % 2 === 1 ? styles.tableRowAlt : {}]}>
-              <Text style={[styles.tableCellBold, { width: 50, color: COLORS.accent }]}>{c.codigo}</Text>
-              <Text style={[styles.tableCell, { flex: 4 }]}>{c.trastorno}</Text>
-              <Text style={[styles.tableCellBold, { flex: 2, textAlign: 'right' }]}>
-                ${fmt(c.costoAjustado2025)}
-              </Text>
-              <Text style={[styles.tableCell, { flex: 2.5, color: COLORS.gray, fontSize: 7 }]}>
-                {c.fuente}
-              </Text>
-            </View>
-          ))}
+          {costosPorPatologia.map((c, i) => {
+            const isLast = i === costosPorPatologia.length - 1
+            return (
+              <View key={c.codigo} style={[isLast ? styles.tableRowLast : styles.tableRow, i % 2 === 1 ? styles.tableRowAlt : {}]}>
+                <View style={[styles.tableColDivider, { width: 44, justifyContent: 'center' }]}>
+                  <Text style={[styles.tableCellBold, { color: COLORS.white, backgroundColor: COLORS.accent, borderRadius: 3, paddingHorizontal: 4, paddingVertical: 2, fontSize: 7.5, textAlign: 'center' }]}>
+                    {c.codigo}
+                  </Text>
+                </View>
+                <Text style={[styles.tableCell, styles.tableColDivider, { flex: 4 }]}>{c.trastorno}</Text>
+                <Text style={[styles.tableCellBold, styles.tableColDivider, { flex: 2, textAlign: 'right', color: COLORS.accent }]}>
+                  ${fmt(c.costoAjustado2025)}
+                </Text>
+                <View style={{ flex: 2.5 }}>
+                  <Text style={styles.tableCellSource}>{c.fuente}</Text>
+                </View>
+              </View>
+            )
+          })}
         </View>
 
         {/* Sources */}
